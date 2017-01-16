@@ -6,23 +6,21 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.slimroms.themecore.IThemeService;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
     private static App mInstance;
-    private ServiceConnection mBackendConnection;
     private Gson mGson = new GsonBuilder().create();
     private Random mRandom = new Random(new Date().getTime());
-    private HashMap<ComponentName, IThemeService> mBackends = new HashMap<>();
+    private final HashMap<ComponentName, IThemeService> mBackends = new HashMap<>();
+    private final List<ServiceConnection> mConnections = new ArrayList<>();
 
     public static App getInstance() {
         return mInstance;
@@ -33,28 +31,58 @@ public class App extends Application {
         super.onCreate();
         mInstance = this;
 
-        mBackendConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                mBackends.put(componentName, IThemeService.Stub.asInterface(iBinder));
-                Log.i(TAG, componentName.getClassName() + " service connected");
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-                mBackends.remove(componentName);
-                Log.i(TAG, componentName.getClassName() + " service disconnected");
-            }
-        };
-
         final String backendAction = "org.slim.theming.BACKEND";
         final Intent filterIntent = new Intent(backendAction);
         final List<ResolveInfo> services = getPackageManager().queryIntentServices(filterIntent, 0);
         for (ResolveInfo ri : services) {
             Log.i(TAG, "Found backend: " + ri.serviceInfo.name);
+            final ServiceConnection backendConnection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                    final IThemeService backend = IThemeService.Stub.asInterface(iBinder);
+                    try {
+                        // if backend is unusable in current ROM setup, drop the connection
+                        if (backend.isAvailable()) {
+                            synchronized (mBackends) {
+                                mBackends.put(componentName, backend);
+                            }
+                            synchronized (mConnections) {
+                                mConnections.add(this);
+                            }
+                            Log.i(TAG, componentName.getClassName() + " service connected");
+                        } else {
+                            unbindService(this);
+                        }
+                    }
+                    catch (RemoteException ex) {
+                        Log.e(TAG, componentName.getClassName() + " remote exception");
+                        ex.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+                    synchronized (mBackends) {
+                        if (mBackends.containsKey(componentName))
+                            mBackends.remove(componentName);
+                    }
+                    synchronized (mConnections) {
+                        if (mConnections.contains(this))
+                            mConnections.remove(this);
+                    }
+                    Log.i(TAG, componentName.getClassName() + " service disconnected");
+                }
+            };
+
             final Intent backendIntent = new Intent(backendAction);
             backendIntent.setPackage(ri.serviceInfo.packageName);
-            bindService(backendIntent, mBackendConnection, BIND_AUTO_CREATE);
+            bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
+        }
+    }
+
+    public void unbindBackends() {
+        while (!mConnections.isEmpty()) {
+            unbindService(mConnections.get(0));
         }
     }
 }

@@ -10,4 +10,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generic);
     }
+
+    @Override
+    protected void onDestroy() {
+        App.getInstance().unbindBackends();
+        super.onDestroy();
+    }
 }
