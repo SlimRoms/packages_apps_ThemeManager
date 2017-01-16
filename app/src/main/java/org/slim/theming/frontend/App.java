@@ -8,17 +8,15 @@ import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.slimroms.themecore.IThemeService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
     private static App mInstance;
-    private Gson mGson = new GsonBuilder().create();
-    private Random mRandom = new Random(new Date().getTime());
     private final HashMap<ComponentName, IThemeService> mBackends = new HashMap<>();
     private final List<ServiceConnection> mConnections = new ArrayList<>();
 
