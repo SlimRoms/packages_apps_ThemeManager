@@ -57,6 +57,7 @@ public class App extends Application {
                         catch (RemoteException ex) {
                             Log.e(TAG, componentName.getClassName() + " remote exception");
                             ex.printStackTrace();
+                            unbindService(this);
                         }
                     }
 
