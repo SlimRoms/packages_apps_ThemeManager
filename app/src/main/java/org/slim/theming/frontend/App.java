@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
-import android.os.Messenger;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.slimroms.themecore.IThemeService;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class App extends Application {
     private ServiceConnection mBackendConnection;
     private Gson mGson = new GsonBuilder().create();
     private Random mRandom = new Random(new Date().getTime());
-    private HashMap<ComponentName, Messenger> mBackends = new HashMap<>();
+    private HashMap<ComponentName, IThemeService> mBackends = new HashMap<>();
 
     public static App getInstance() {
         return mInstance;
@@ -36,7 +36,7 @@ public class App extends Application {
         mBackendConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                mBackends.put(componentName, new Messenger(iBinder));
+                mBackends.put(componentName, IThemeService.Stub.asInterface(iBinder));
                 Log.i(TAG, componentName.getClassName() + " service connected");
             }
 
