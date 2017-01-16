@@ -33,48 +33,51 @@ public class App extends Application {
         final Intent filterIntent = new Intent(backendAction);
         final List<ResolveInfo> services = getPackageManager().queryIntentServices(filterIntent, 0);
         for (ResolveInfo ri : services) {
-            Log.i(TAG, "Found backend: " + ri.serviceInfo.name);
-            final ServiceConnection backendConnection = new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                    final IThemeService backend = IThemeService.Stub.asInterface(iBinder);
-                    try {
-                        // if backend is unusable in current ROM setup, drop the connection
-                        if (backend.isAvailable()) {
-                            synchronized (mBackends) {
-                                mBackends.put(componentName, backend);
+            if (ri.serviceInfo.exported) {
+                Log.i(TAG, "Found backend: " + ri.serviceInfo.name);
+                final ServiceConnection backendConnection = new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                        final IThemeService backend = IThemeService.Stub.asInterface(iBinder);
+                        try {
+                            // if backend is unusable in current ROM setup, drop the connection
+                            if (backend.isAvailable()) {
+                                synchronized (mBackends) {
+                                    mBackends.put(componentName, backend);
+                                }
+                                synchronized (mConnections) {
+                                    mConnections.add(this);
+                                }
+                                Log.i(TAG, componentName.getClassName() + " service connected");
                             }
-                            synchronized (mConnections) {
-                                mConnections.add(this);
+                            else {
+                                unbindService(this);
                             }
-                            Log.i(TAG, componentName.getClassName() + " service connected");
-                        } else {
-                            unbindService(this);
+                        }
+                        catch (RemoteException ex) {
+                            Log.e(TAG, componentName.getClassName() + " remote exception");
+                            ex.printStackTrace();
                         }
                     }
-                    catch (RemoteException ex) {
-                        Log.e(TAG, componentName.getClassName() + " remote exception");
-                        ex.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onServiceDisconnected(ComponentName componentName) {
-                    synchronized (mBackends) {
-                        if (mBackends.containsKey(componentName))
-                            mBackends.remove(componentName);
+                    @Override
+                    public void onServiceDisconnected(ComponentName componentName) {
+                        synchronized (mBackends) {
+                            if (mBackends.containsKey(componentName))
+                                mBackends.remove(componentName);
+                        }
+                        synchronized (mConnections) {
+                            if (mConnections.contains(this))
+                                mConnections.remove(this);
+                        }
+                        Log.i(TAG, componentName.getClassName() + " service disconnected");
                     }
-                    synchronized (mConnections) {
-                        if (mConnections.contains(this))
-                            mConnections.remove(this);
-                    }
-                    Log.i(TAG, componentName.getClassName() + " service disconnected");
-                }
-            };
+                };
 
-            final Intent backendIntent = new Intent(backendAction);
-            backendIntent.setPackage(ri.serviceInfo.packageName);
-            bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
+                final Intent backendIntent = new Intent(backendAction);
+                backendIntent.setPackage(ri.serviceInfo.packageName);
+                bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
+            }
         }
     }
 
