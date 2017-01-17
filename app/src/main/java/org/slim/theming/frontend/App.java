@@ -83,8 +83,14 @@ public class App extends Application {
     }
 
     public void unbindBackends() {
-        while (!mConnections.isEmpty()) {
-            unbindService(mConnections.get(0));
+        synchronized (mBackends) {
+            mBackends.clear();
+        }
+        synchronized (mConnections) {
+            while (!mConnections.isEmpty()) {
+                unbindService(mConnections.get(0));
+                mConnections.remove(0);
+            }
         }
     }
 }
