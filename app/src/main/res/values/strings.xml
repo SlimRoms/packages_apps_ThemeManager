@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Slim Theme Engine</string>
+
+    <string name="list_empty">No items found</string>
+
+    <!-- NavDrawer -->
+    <string name="nav_themes">Themes</string>
+    <string name="nav_group_more">More</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_about">About</string>
 </resources>

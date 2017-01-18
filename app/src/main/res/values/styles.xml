@@ -1,24 +1,21 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorButtonNormal">@drawable/button_color_state</item>
         <item name="android:buttonStyle">@style/AppTheme.Button</item>
-        <item name="themedToolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <!--Preferences-->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="android:activatedBackgroundIndicator">?android:attr/selectableItemBackground</item>
     </style>
 
-    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:background">@color/primary</item>
-    </style>
-
     <style name="AppTheme.Button" parent="Widget.AppCompat.Button">
         <item name="android:textColor">@drawable/button_text_state</item>
     </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
