@@ -30,6 +30,7 @@ public class ThemesPackagesFragment extends Fragment {
     RecyclerView mRecycler;
 
     private Unbinder mUnbinder;
+    private ThemesPackagesAdapter mAdapter;
 
     @Nullable
     @Override
@@ -46,8 +47,8 @@ public class ThemesPackagesFragment extends Fragment {
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycler.addItemDecoration(new LineDividerItemDecoration(getContext()));
         mRecycler.setItemAnimator(new DefaultItemAnimator());
-        //mAdapter = new ThemesPackagesAdapter(getContext());
-        //mRecycler.setAdapter(mAdapter);
+        mAdapter = new ThemesPackagesAdapter(getContext());
+        mRecycler.setAdapter(mAdapter);
     }
 
     @Override

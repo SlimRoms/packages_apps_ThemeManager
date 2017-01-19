@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/list_item_margin"
+    android:id="@+id/click_container"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/img_theme"
+        android:layout_width="@dimen/list_item_icon_size"
+        android:layout_height="@dimen/list_item_icon_size"
+        android:layout_marginTop="@dimen/list_item_icon_margin"
+        android:layout_marginBottom="@dimen/list_item_icon_margin"
+        android:layout_marginEnd="@dimen/list_item_icon_margin_large"
+        android:layout_marginStart="@dimen/list_item_icon_margin"
+        android:layout_centerVertical="true"
+        android:clickable="false"
+        android:src="@mipmap/ic_launcher_round" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:id="@+id/lbl_theme_type"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/margin_tiny"
+        android:padding="@dimen/margin_tiny"
+        android:text="debug"
+        android:textAllCaps="true"
+        android:background="@color/accent"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/lbl_theme_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/img_theme"
+        android:layout_marginTop="@dimen/margin_tiny"
+        android:layout_toEndOf="@+id/img_theme"
+        android:layout_toStartOf="@id/lbl_theme_type"
+        android:text="Foo Theme"
+        android:clickable="false"
+        android:textStyle="bold"
+        style="@style/TextAppearance.AppCompat.Subhead" />
+
+    <TextView
+        android:id="@+id/lbl_theme_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/lbl_theme_name"
+        android:layout_below="@+id/lbl_theme_name"
+        android:layout_marginTop="@dimen/margin_tiny"
+        android:layout_toStartOf="@id/lbl_theme_type"
+        android:text="John Developer"
+        android:clickable="false"
+        style="@style/TextAppearance.AppCompat" />
+
+    <TextView
+        android:id="@+id/lbl_theme_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/lbl_theme_author"
+        android:layout_below="@+id/lbl_theme_author"
+        android:layout_marginTop="@dimen/margin_tiny"
+        android:layout_marginBottom="@dimen/margin_tiny"
+        android:layout_toStartOf="@id/lbl_theme_type"
+        android:text="Version 3.3.1"
+        android:clickable="false"
+        style="@style/TextAppearance.AppCompat.Small" />
+
+</RelativeLayout>
