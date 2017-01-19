@@ -7,8 +7,10 @@ import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.slimroms.themecore.IThemeService;
+import org.slim.theming.frontend.helpers.BroadcastHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +51,10 @@ public class App extends Application {
                                     mConnections.add(this);
                                 }
                                 Log.i(TAG, componentName.getClassName() + " service connected");
+                                final Intent eventIntent = new Intent(BroadcastHelper.ACTION_BACKEND_CONNECTED);
+                                eventIntent.putExtra(BroadcastHelper.EXTRA_BACKEND_NAME, componentName);
+                                LocalBroadcastManager.getInstance(getApplicationContext())
+                                        .sendBroadcast(eventIntent);
                             }
                             else {
                                 unbindService(this);
@@ -72,6 +78,10 @@ public class App extends Application {
                                 mConnections.remove(this);
                         }
                         Log.i(TAG, componentName.getClassName() + " service disconnected");
+                        final Intent eventIntent = new Intent(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
+                        eventIntent.putExtra(BroadcastHelper.EXTRA_BACKEND_NAME, componentName);
+                        LocalBroadcastManager.getInstance(getApplicationContext())
+                                .sendBroadcast(eventIntent);
                     }
                 };
 
@@ -92,5 +102,9 @@ public class App extends Application {
                 mConnections.remove(0);
             }
         }
+    }
+
+    public IThemeService getBackend(ComponentName name) {
+        return mBackends.get(name);
     }
 }
