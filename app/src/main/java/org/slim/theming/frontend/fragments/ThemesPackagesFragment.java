@@ -10,9 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import org.slim.theming.frontend.R;
 import org.slim.theming.frontend.adapters.ThemesPackagesAdapter;
 import org.slim.theming.frontend.views.LineDividerItemDecoration;
@@ -24,12 +21,8 @@ public class ThemesPackagesFragment extends Fragment {
         return new ThemesPackagesFragment();
     }
 
-    @BindView(R.id.empty_view)
-    TextView mEmptyView;
-    @BindView(R.id.list)
-    RecyclerView mRecycler;
-
-    private Unbinder mUnbinder;
+    private TextView mEmptyView;
+    private RecyclerView mRecycler;
     private ThemesPackagesAdapter mAdapter;
 
     @Nullable
@@ -41,19 +34,14 @@ public class ThemesPackagesFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mUnbinder = ButterKnife.bind(this, view);
         getActivity().setTitle(R.string.nav_themes);
+        mRecycler = (RecyclerView) view.findViewById(R.id.list);
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
 
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycler.addItemDecoration(new LineDividerItemDecoration(getContext()));
         mRecycler.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new ThemesPackagesAdapter(getContext());
         mRecycler.setAdapter(mAdapter);
-    }
-
-    @Override
-    public void onDestroyView() {
-        mUnbinder.unbind();
-        super.onDestroyView();
     }
 }

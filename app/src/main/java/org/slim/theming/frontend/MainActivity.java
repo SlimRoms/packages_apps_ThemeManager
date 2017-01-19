@@ -18,19 +18,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import org.slim.theming.frontend.fragments.ThemesPackagesFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.coordinator)
-    CoordinatorLayout mCoordinator;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @BindView(R.id.nav_view)
-    NavigationView mNavigationView;
+    private Toolbar mToolbar;
+    private CoordinatorLayout mCoordinator;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,8 +34,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         window.setStatusBarColor(Color.TRANSPARENT);
 
         setContentView(R.layout.activity_drawer);
-        ButterKnife.bind(this);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
         final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,

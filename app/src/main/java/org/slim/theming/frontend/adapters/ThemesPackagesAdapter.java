@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.slimroms.themecore.Theme;
 import org.slim.theming.frontend.R;
 
@@ -20,21 +18,19 @@ import java.util.List;
 public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.lbl_theme_name)
         TextView themeName;
-        @BindView(R.id.lbl_theme_author)
         TextView themeDeveloper;
-        @BindView(R.id.img_theme)
         ImageView logo;
-        @BindView(R.id.click_container)
         ViewGroup clickContainer;
-        @BindView(R.id.lbl_theme_version)
         TextView themeVersion;
 
         ViewHolder(View itemView)
         {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            themeName = (TextView) itemView.findViewById(R.id.lbl_theme_name);
+            themeDeveloper = (TextView) itemView.findViewById(R.id.lbl_theme_author);
+            themeVersion = (TextView) itemView.findViewById(R.id.lbl_theme_version);
+            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
         }
     }
 
