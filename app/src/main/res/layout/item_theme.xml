@@ -7,7 +7,7 @@
     android:clickable="true">
 
     <ImageView
-        android:id="@+id/img_theme"
+        android:id="@+id/img_logo"
         android:layout_width="@dimen/list_item_icon_size"
         android:layout_height="@dimen/list_item_icon_size"
         android:layout_marginTop="@dimen/list_item_icon_margin"
@@ -33,9 +33,9 @@
         android:id="@+id/lbl_theme_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/img_theme"
+        android:layout_alignTop="@+id/img_logo"
         android:layout_marginTop="@dimen/margin_tiny"
-        android:layout_toEndOf="@+id/img_theme"
+        android:layout_toEndOf="@+id/img_logo"
         android:layout_toStartOf="@id/lbl_theme_type"
         android:text="Foo Theme"
         android:clickable="false"

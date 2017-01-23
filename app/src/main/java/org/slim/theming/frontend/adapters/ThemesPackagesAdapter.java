@@ -31,6 +31,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
             themeDeveloper = (TextView) itemView.findViewById(R.id.lbl_theme_author);
             themeVersion = (TextView) itemView.findViewById(R.id.lbl_theme_version);
             clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
+            logo = (ImageView) itemView.findViewById(R.id.img_logo);
         }
     }
 
@@ -54,7 +55,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         final Theme theme = mItems.get(position);
         holder.themeName.setText(theme.name);
         holder.themeDeveloper.setText(theme.themeAuthor);
-        //holder.logo.setImageDrawable(theme.logo);
+        holder.logo.setImageBitmap(theme.themeLogo);
         holder.themeVersion.setText(theme.themeVersion);
     }
 
