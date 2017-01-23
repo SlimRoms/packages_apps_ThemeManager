@@ -22,6 +22,7 @@ import org.slim.theming.frontend.adapters.ThemesPackagesAdapter;
 import org.slim.theming.frontend.helpers.BroadcastHelper;
 import org.slim.theming.frontend.views.LineDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ThemesPackagesFragment extends Fragment {
@@ -69,7 +70,9 @@ public class ThemesPackagesFragment extends Fragment {
                             if (componentNames.length > 0) {
                                 final IThemeService backend = App.getInstance().getBackend(componentNames[0]);
                                 try {
-                                    return backend.getThemePackages();
+                                    final List<Theme> result = new ArrayList<>();
+                                    final int count = backend.getThemePackages(result);
+                                    return (count > 0) ? result : null;
                                 }
                                 catch (RemoteException ex) {
                                     ex.printStackTrace();
