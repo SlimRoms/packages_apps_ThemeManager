@@ -24,8 +24,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         ViewGroup clickContainer;
         TextView themeVersion;
 
-        ViewHolder(View itemView)
-        {
+        ViewHolder(View itemView) {
             super(itemView);
             themeName = (TextView) itemView.findViewById(R.id.lbl_theme_name);
             themeDeveloper = (TextView) itemView.findViewById(R.id.lbl_theme_author);
@@ -38,8 +37,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
     private final LayoutInflater mInflater;
     private final List<Theme> mItems;
 
-    public ThemesPackagesAdapter(Context context)
-    {
+    public ThemesPackagesAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         mItems = new ArrayList<>();
     }
