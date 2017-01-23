@@ -30,7 +30,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+    }
 
+    public void bindBackends() {
         final String backendAction = "org.slim.theming.BACKEND";
         final Intent filterIntent = new Intent(backendAction);
         final List<ResolveInfo> services = getPackageManager().queryIntentServices(filterIntent, 0);
