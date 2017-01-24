@@ -2,7 +2,9 @@ package org.slim.theming.frontend.adapters;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.Theme;
+import org.slim.theming.frontend.App;
 import org.slim.theming.frontend.R;
+import org.slim.theming.frontend.ThemeContentActivity;
+import org.slim.theming.frontend.helpers.BroadcastHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +55,21 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Theme theme = mItems.get(position);
+        final int adapterPosition = holder.getAdapterPosition();
+        final Theme theme = mItems.get(adapterPosition);
         holder.themeName.setText(theme.name);
         holder.themeDeveloper.setText(theme.themeAuthor);
         holder.logo.setImageBitmap(theme.themeLogo);
         holder.themeVersion.setText(theme.themeVersion);
+        holder.clickContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Intent intent = new Intent(App.getInstance().getApplicationContext(),
+                        ThemeContentActivity.class);
+                intent.putExtra(BroadcastHelper.EXTRA_THEME, mItems.get(adapterPosition));
+                ActivityCompat.startActivity(App.getInstance().getApplicationContext(), intent, null);
+            }
+        });
     }
 
     @Override
