@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
+import org.slim.theming.frontend.adapters.ThemeContentPagerAdapter;
 import org.slim.theming.frontend.helpers.BroadcastHelper;
 
 public class ThemeContentActivity extends AppCompatActivity {
@@ -81,8 +82,12 @@ public class ThemeContentActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(OverlayThemeInfo overlayThemeInfo) {
-                if (overlayThemeInfo != null)
+                if (overlayThemeInfo != null) {
                     mOverlayInfo = overlayThemeInfo;
+                    final ThemeContentPagerAdapter adapter
+                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), overlayThemeInfo);
+                    mViewPager.setAdapter(adapter);
+                }
                 mLoadingSnackbar.dismiss();
             }
         }.execute(mTheme);
