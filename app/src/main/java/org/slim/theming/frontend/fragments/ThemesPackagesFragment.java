@@ -67,7 +67,7 @@ public class ThemesPackagesFragment extends Fragment {
                     new AsyncTask<ComponentName, Void, List<Theme>>() {
                         @Override
                         protected List<Theme> doInBackground(ComponentName... componentNames) {
-                            if (componentNames.length > 0) {
+                            if (componentNames[0] != null) {
                                 final IThemeService backend = App.getInstance().getBackend(componentNames[0]);
                                 try {
                                     final List<Theme> result = new ArrayList<>();
