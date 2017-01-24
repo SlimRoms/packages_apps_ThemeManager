@@ -15,16 +15,16 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return null;
+        return new Fragment();
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return mOverlayInfo.groups.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return super.getPageTitle(position);
+        return mOverlayInfo.groups.get(position).title;
     }
 }
