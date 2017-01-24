@@ -2,6 +2,7 @@
     <string name="app_name">Slim Theme Engine</string>
 
     <string name="list_empty">No items found</string>
+    <string name="loading">Loading, please wait…</string>
 
     <!-- NavDrawer -->
     <string name="nav_themes">Themes</string>
