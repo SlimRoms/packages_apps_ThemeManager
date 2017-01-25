@@ -15,6 +15,7 @@ import org.slim.theming.frontend.helpers.BroadcastHelper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
@@ -108,5 +109,9 @@ public class App extends Application {
 
     public IThemeService getBackend(ComponentName name) {
         return mBackends.get(name);
+    }
+
+    public Set<ComponentName> getBackendNames() {
+        return mBackends.keySet();
     }
 }

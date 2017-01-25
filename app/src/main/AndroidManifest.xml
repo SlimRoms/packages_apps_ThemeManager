@@ -17,6 +17,11 @@
             android:name=".ThemeContentActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity
+            android:label="@string/nav_about"
+            android:name=".AboutActivity"
+            android:configChanges="orientation|screenSize" />
+
     </application>
 
 </manifest>
