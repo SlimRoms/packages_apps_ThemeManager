@@ -88,12 +88,14 @@ public class ThemesPackagesFragment extends Fragment {
                             if (themes != null) {
                                 mAdapter.addThemes(themes);
                             }
+                            mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                         }
                     }.execute(backendName);
                     break;
                 case BroadcastHelper.ACTION_BACKEND_DISCONNECTED:
                     backendName = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
                     mAdapter.removeThemes(backendName);
+                    mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                     break;
             }
         }
