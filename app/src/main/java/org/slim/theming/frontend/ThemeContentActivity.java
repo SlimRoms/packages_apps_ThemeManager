@@ -18,35 +18,31 @@ import org.slim.theming.frontend.adapters.ThemeContentPagerAdapter;
 import org.slim.theming.frontend.helpers.BroadcastHelper;
 
 public class ThemeContentActivity extends AppCompatActivity {
-    private Toolbar mToolbar;
-    private CoordinatorLayout mCoordinator;
-    private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private Snackbar mLoadingSnackbar;
 
     private Theme mTheme;
-    private OverlayThemeInfo mOverlayInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_theme_content);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         final ActionBar bar = getSupportActionBar();
         assert bar != null;
         bar.setDisplayHomeAsUpEnabled(true);
         mTheme = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_THEME);
         bar.setTitle(mTheme.name);
 
-        mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
-        mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
+        mLoadingSnackbar = Snackbar.make(coordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
 
-        mTabLayout.setupWithViewPager(mViewPager);
-        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition(), true);
@@ -83,7 +79,6 @@ public class ThemeContentActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(OverlayThemeInfo overlayThemeInfo) {
                 if (overlayThemeInfo != null) {
-                    mOverlayInfo = overlayThemeInfo;
                     final ThemeContentPagerAdapter adapter
                             = new ThemeContentPagerAdapter(getSupportFragmentManager(), overlayThemeInfo);
                     mViewPager.setAdapter(adapter);
