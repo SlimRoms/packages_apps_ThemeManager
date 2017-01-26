@@ -1,6 +1,8 @@
 package org.slim.theming.frontend.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +37,19 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     private LayoutInflater mInflater;
     private OverlayGroup mOverlayGroup;
     private Context mContext;
+    private final ColorStateList mDefaultTextColors;
+    private final int mEnabledTextColor;
+    private final int mDisabledTextColor;
 
     public OverlayGroupAdapter(Context context, OverlayGroup proxy) {
         mInflater = LayoutInflater.from(context);
         mOverlayGroup = proxy;
         mContext = context;
+
+        mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);
+        mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
+        final TextView dummyTextView = new TextView(context);
+        mDefaultTextColors = dummyTextView.getTextColors();
     }
 
     @Override
@@ -76,9 +86,17 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             holder.overlayFlavors.setOnItemSelectedListener(null);
         }
 
-        holder.overlayName.setEnabled(overlay.isTargetPackageInstalled);
-        holder.overlayTargetPackage.setEnabled(overlay.isTargetPackageInstalled);
-        holder.overlayInstalled.setVisibility(overlay.isOverlayInstalled ? View.VISIBLE : View.INVISIBLE);
+        if (overlay.isOverlayInstalled) {
+            holder.overlayInstalled.setVisibility(View.VISIBLE);
+            holder.overlayName.setTextColor(overlay.isOverlayEnabled ? mEnabledTextColor : mDisabledTextColor);
+        }
+        else {
+            holder.overlayInstalled.setVisibility(View.GONE);
+            holder.overlayName.setTextColor(mDefaultTextColors);
+            holder.overlayName.setEnabled(overlay.isTargetPackageInstalled);
+            holder.overlayTargetPackage.setEnabled(overlay.isTargetPackageInstalled);
+        }
+
         holder.checked.setChecked(overlay.checked);
         holder.checked.setOnClickListener(new View.OnClickListener() {
             @Override

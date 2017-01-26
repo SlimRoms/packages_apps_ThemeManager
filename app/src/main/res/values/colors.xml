@@ -9,4 +9,6 @@
     <color name="button_disabled">#DFDFDF</color>
     <color name="button_text_disabled">#A5A5A5</color>
     <color name="divider">#DCDCDC</color>
+    <color name="overlay_enabled">#00C853</color>
+    <color name="overlay_disabled">#EF6C00</color>
 </resources>
