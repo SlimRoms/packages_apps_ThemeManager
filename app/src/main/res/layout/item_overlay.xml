@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/click_container" android:background="?android:attr/selectableItemBackground"
+    android:clickable="true" android:padding="@dimen/margin_small">
+
+    <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:id="@+id/checkbox"
+        android:checked="false"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:id="@+id/overlay_name"
+        android:layout_toEndOf="@+id/checkbox"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_tiny"
+        android:layout_marginTop="@dimen/margin_tiny"
+        android:text="GoogleContacts"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="marquee" />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:id="@+id/overlay_package"
+        android:layout_below="@id/overlay_name"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="@dimen/margin_tiny"
+        android:text="com.google.android.contacts"
+        android:maxLines="1"
+        android:ellipsize="marquee"
+        style="@style/TextAppearance.AppCompat" />
+
+    <Spinner android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_below="@+id/overlay_package"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="@dimen/margin_tiny"
+        android:layout_marginEnd="@dimen/margin_medium"
+        android:spinnerMode="dropdown" />
+
+
+    <ImageView android:layout_width="24dp" android:layout_height="24dp"
+        android:id="@+id/img_cellphone"
+        android:src="@drawable/cellphone_android"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:tint="?android:attr/textColorPrimary" />
+
+</RelativeLayout>

@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import com.slimroms.themecore.OverlayThemeInfo;
+import org.slim.theming.frontend.fragments.OverlayGroupFragment;
 
 public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
     private OverlayThemeInfo mOverlayInfo;
@@ -15,7 +16,8 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return new Fragment();
+        // page with overlays
+        return OverlayGroupFragment.newInstance(mOverlayInfo.groups.get(position));
     }
 
     @Override
