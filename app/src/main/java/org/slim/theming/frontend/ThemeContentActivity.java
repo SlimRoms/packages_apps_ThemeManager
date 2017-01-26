@@ -1,5 +1,6 @@
 package org.slim.theming.frontend;
 
+import android.content.ComponentName;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -11,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
@@ -33,8 +35,18 @@ public class ThemeContentActivity extends AppCompatActivity {
         final ActionBar bar = getSupportActionBar();
         assert bar != null;
         bar.setDisplayHomeAsUpEnabled(true);
-        mTheme = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_THEME);
-        bar.setTitle(mTheme.name);
+
+        final String themePackage = getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
+        final ComponentName backendName = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
+        if (!TextUtils.isEmpty(themePackage) && backendName != null) {
+            try {
+                mTheme = App.getInstance().getBackend(backendName).getThemeByPackage(themePackage);
+                bar.setTitle(mTheme.name);
+            }
+            catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        }
 
         CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);

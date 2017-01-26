@@ -64,9 +64,11 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         holder.clickContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Theme theme = mItems.get(adapterPosition);
                 final Intent intent = new Intent(App.getInstance().getApplicationContext(),
                         ThemeContentActivity.class);
-                intent.putExtra(BroadcastHelper.EXTRA_THEME, mItems.get(adapterPosition));
+                intent.putExtra(BroadcastHelper.EXTRA_THEME_PACKAGE, theme.packageName);
+                intent.putExtra(BroadcastHelper.EXTRA_BACKEND_NAME, theme.backendName);
                 ActivityCompat.startActivity(App.getInstance().getApplicationContext(), intent, null);
             }
         });
