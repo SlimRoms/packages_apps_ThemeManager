@@ -19,7 +19,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         CheckBox checked;
         TextView overlayName;
         TextView overlayTargetPackage;
-        ImageView overlayInstalled;
+        ImageView overlayImage;
         Spinner overlayFlavors;
         ViewGroup clickContainer;
 
@@ -28,7 +28,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             checked = (CheckBox) itemView.findViewById(R.id.checkbox);
             overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
             overlayTargetPackage = (TextView) itemView.findViewById(R.id.overlay_package);
-            overlayInstalled = (ImageView) itemView.findViewById(R.id.img_cellphone);
+            overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
             overlayFlavors = (Spinner) itemView.findViewById(R.id.spinner);
             clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
         }
@@ -87,16 +87,15 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         }
 
         if (overlay.isOverlayInstalled) {
-            holder.overlayInstalled.setVisibility(View.VISIBLE);
             holder.overlayName.setTextColor(overlay.isOverlayEnabled ? mEnabledTextColor : mDisabledTextColor);
         }
         else {
-            holder.overlayInstalled.setVisibility(View.GONE);
             holder.overlayName.setTextColor(mDefaultTextColors);
             holder.overlayName.setEnabled(overlay.isTargetPackageInstalled);
             holder.overlayTargetPackage.setEnabled(overlay.isTargetPackageInstalled);
         }
 
+        holder.overlayImage.setImageBitmap(overlay.overlayImage);
         holder.checked.setChecked(overlay.checked);
         holder.checked.setOnClickListener(new View.OnClickListener() {
             @Override
