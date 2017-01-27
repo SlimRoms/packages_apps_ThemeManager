@@ -13,6 +13,9 @@ import com.slimroms.themecore.OverlayFlavor;
 import com.slimroms.themecore.OverlayGroup;
 import org.slim.theming.frontend.R;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapter.ViewHolder> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -20,7 +23,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         TextView overlayName;
         TextView overlayTargetPackage;
         ImageView overlayImage;
-        Spinner overlayFlavors;
+        LinearLayout overlayFlavors;
         ViewGroup clickContainer;
 
         ViewHolder(View itemView) {
@@ -29,7 +32,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
             overlayTargetPackage = (TextView) itemView.findViewById(R.id.overlay_package);
             overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
-            overlayFlavors = (Spinner) itemView.findViewById(R.id.spinner);
+            overlayFlavors = (LinearLayout) itemView.findViewById(R.id.spinner_layout);
             clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
         }
     }
@@ -63,27 +66,36 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         final Overlay overlay = mOverlayGroup.overlays.get(position);
         holder.overlayName.setText(overlay.overlayName);
         holder.overlayTargetPackage.setText(overlay.targetPackage);
-        final ArrayAdapter<OverlayFlavor> adapter = new ArrayAdapter<>(mContext, R.layout.item_flavor, overlay.flavors);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.overlayFlavors.setAdapter(adapter);
-        if (overlay.flavors.size() > 1) {
+        if (overlay.flavors.size() > 0) {
             holder.overlayFlavors.setVisibility(View.VISIBLE);
-            holder.overlayFlavors.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    overlay.clearSelectedFlavors();
-                    overlay.flavors.get(position).selected = true;
-                }
+            for (final OverlayFlavor flavor : overlay.flavors) {
+                Spinner spinner = (Spinner) View.inflate(mContext, R.layout.flavor_spinner, null);
+                spinner.setTag(flavor);
+                final ArrayList<String> array = new ArrayList<>();
+                array.addAll(flavor.flavors.values());
+                Collections.sort(array);
+                array.add(0, flavor.name);
+                final ArrayAdapter<String> adapter =
+                        new ArrayAdapter<>(mContext, R.layout.item_flavor, array);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        overlay.clearSelectedFlavors();
+                        OverlayFlavor flavor1 = (OverlayFlavor) adapterView.getTag();
+                        flavor1.selected = array.get(i);
+                    }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                    }
+                });
+                holder.overlayFlavors.addView(spinner);
+            }
         }
         else {
             holder.overlayFlavors.setVisibility(View.GONE);
-            holder.overlayFlavors.setOnItemSelectedListener(null);
         }
 
         if (overlay.isOverlayInstalled) {

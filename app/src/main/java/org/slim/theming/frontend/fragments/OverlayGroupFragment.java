@@ -8,12 +8,17 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import org.slim.theming.frontend.R;
 import org.slim.theming.frontend.adapters.OverlayGroupAdapter;
 import org.slim.theming.frontend.helpers.MenuTintHelper;
 import org.slim.theming.frontend.views.LineDividerItemDecoration;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class OverlayGroupFragment extends Fragment {
     private OverlayGroup mOverlayGroup;
@@ -40,6 +45,23 @@ public class OverlayGroupFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+        if (mOverlayGroup.styles.size() > 0) {
+            String def = mOverlayGroup.styles.get("type3");
+            if (def != null) {
+                mOverlayGroup.styles.remove("type3");
+            }
+            ArrayList<String> array = new ArrayList<>();
+            array.addAll(mOverlayGroup.styles.values());
+            Collections.sort(array);
+            array.add(0, def);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.item_flavor, array);
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(arrayAdapter);
+            spinner.setVisibility(View.VISIBLE);
+        }
+
 
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));

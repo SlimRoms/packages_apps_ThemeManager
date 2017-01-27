@@ -2,7 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"

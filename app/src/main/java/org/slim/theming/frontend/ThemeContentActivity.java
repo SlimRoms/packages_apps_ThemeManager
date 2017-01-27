@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
 import org.slim.theming.frontend.adapters.ThemeContentPagerAdapter;
