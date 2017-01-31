@@ -4,6 +4,9 @@
     <string name="list_empty">No items found</string>
     <string name="loading">Loading, please wait…</string>
 
+    <!-- Actions -->
+    <string name="action_select_all">Select all</string>
+
     <!-- NavDrawer -->
     <string name="nav_themes">Themes</string>
     <string name="nav_group_more">More</string>
