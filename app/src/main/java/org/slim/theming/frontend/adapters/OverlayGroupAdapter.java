@@ -43,6 +43,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     private final ColorStateList mDefaultTextColors;
     private final int mEnabledTextColor;
     private final int mDisabledTextColor;
+    private final int mSpinnerPadding;
 
     public OverlayGroupAdapter(Context context, OverlayGroup proxy) {
         mInflater = LayoutInflater.from(context);
@@ -53,6 +54,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
         final TextView dummyTextView = new TextView(context);
         mDefaultTextColors = dummyTextView.getTextColors();
+        mSpinnerPadding = context.getResources().getDimensionPixelSize(R.dimen.margin_small);
     }
 
     @Override
@@ -71,6 +73,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             for (final OverlayFlavor flavor : overlay.flavors.values()) {
                 Spinner spinner = (Spinner) View.inflate(mContext, R.layout.flavor_spinner, null);
                 spinner.setTag(flavor);
+                spinner.setPadding(0, mSpinnerPadding, 0, mSpinnerPadding);
                 final ArrayList<String> array = new ArrayList<>();
                 array.addAll(flavor.flavors.values());
                 Collections.sort(array);
