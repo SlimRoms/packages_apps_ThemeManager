@@ -69,6 +69,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         holder.overlayName.setText(overlay.overlayName);
         holder.overlayTargetPackage.setText(overlay.targetPackage);
         if (overlay.flavors.size() > 0) {
+            holder.overlayFlavors.removeAllViewsInLayout();
             holder.overlayFlavors.setVisibility(View.VISIBLE);
             for (final OverlayFlavor flavor : overlay.flavors.values()) {
                 Spinner spinner = (Spinner) View.inflate(mContext, R.layout.flavor_spinner, null);
@@ -94,6 +95,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
                     public void onNothingSelected(AdapterView<?> adapterView) {
                     }
                 });
+                spinner.setSelection(array.indexOf(flavor.selected), true);
                 holder.overlayFlavors.addView(spinner);
             }
         }
