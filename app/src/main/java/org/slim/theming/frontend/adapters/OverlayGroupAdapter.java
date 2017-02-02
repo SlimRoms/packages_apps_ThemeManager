@@ -68,7 +68,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         holder.overlayTargetPackage.setText(overlay.targetPackage);
         if (overlay.flavors.size() > 0) {
             holder.overlayFlavors.setVisibility(View.VISIBLE);
-            for (final OverlayFlavor flavor : overlay.flavors) {
+            for (final OverlayFlavor flavor : overlay.flavors.values()) {
                 Spinner spinner = (Spinner) View.inflate(mContext, R.layout.flavor_spinner, null);
                 spinner.setTag(flavor);
                 final ArrayList<String> array = new ArrayList<>();
