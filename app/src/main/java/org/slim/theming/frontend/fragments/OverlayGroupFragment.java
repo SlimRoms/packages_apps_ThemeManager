@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import com.slimroms.themecore.Overlay;
@@ -39,15 +40,15 @@ public class OverlayGroupFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        return inflater.inflate(R.layout.fragment_overlay_group, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
         if (mOverlayGroup.styles.size() > 0) {
+            final Spinner stylesSpinner = (Spinner) view.findViewById(R.id.spinner);
             String def = mOverlayGroup.styles.get("type3");
             if (def != null) {
                 mOverlayGroup.styles.remove("type3");
@@ -58,8 +59,18 @@ public class OverlayGroupFragment extends Fragment {
             array.add(0, def);
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.item_flavor, array);
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(arrayAdapter);
-            spinner.setVisibility(View.VISIBLE);
+            stylesSpinner.setAdapter(arrayAdapter);
+            stylesSpinner.setVisibility(View.VISIBLE);
+            stylesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    mOverlayGroup.selectedStyle = mOverlayGroup.styles.keyAt(i);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                }
+            });
         }
 
 
