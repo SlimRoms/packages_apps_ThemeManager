@@ -13,4 +13,6 @@
     <dimen name="list_item_icon_margin">8dp</dimen>
     <dimen name="list_item_icon_margin_large">16dp</dimen>
     <dimen name="avatar_size">48dp</dimen>
+    <dimen name="fab_elevation">8dp</dimen>
+    <dimen name="fab_elevation_pressed">12dp</dimen>
 </resources>

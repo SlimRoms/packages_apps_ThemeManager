@@ -18,4 +18,15 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.Fab">
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="borderWidth">0dp</item>
+        <item name="elevation">@dimen/fab_elevation</item>
+        <item name="pressedTranslationZ">@dimen/fab_elevation_pressed</item>
+        <item name="rippleColor">@android:color/white</item>
+        <item name="backgroundTint">@color/accent</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
 </resources>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -15,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import android.view.View;
+import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
 import org.slim.theming.frontend.adapters.ThemeContentPagerAdapter;
@@ -23,8 +26,11 @@ import org.slim.theming.frontend.helpers.BroadcastHelper;
 public class ThemeContentActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Snackbar mLoadingSnackbar;
+    private FloatingActionButton mFab;
+    private CoordinatorLayout mCoordinator;
 
     private Theme mTheme;
+    private OverlayThemeInfo mOverlayInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,10 +55,12 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         }
 
-        CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
+        mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mLoadingSnackbar = Snackbar.make(coordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
+        mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(mFabListener);
 
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -92,8 +100,9 @@ public class ThemeContentActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(OverlayThemeInfo overlayThemeInfo) {
                 if (overlayThemeInfo != null) {
+                    mOverlayInfo = overlayThemeInfo;
                     final ThemeContentPagerAdapter adapter
-                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), overlayThemeInfo);
+                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo);
                     mViewPager.setAdapter(adapter);
                 }
                 mLoadingSnackbar.dismiss();
@@ -111,4 +120,62 @@ public class ThemeContentActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private View.OnClickListener mFabListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (mOverlayInfo.getSelectedCount() > 0) {
+                new AsyncTask<Void, Void, Boolean>() {
+                    @Override
+                    protected void onPreExecute() {
+                        mFab.setEnabled(false);
+                    }
+
+                    @Override
+                    protected Boolean doInBackground(Void... voids) {
+                        try {
+                            return App.getInstance().getBackend(mTheme.backendName)
+                                    .installOverlaysFromTheme(mTheme, mOverlayInfo);
+                        }
+                        catch (RemoteException ex) {
+                            ex.printStackTrace();
+                            return false;
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(Boolean aBoolean) {
+                        if (aBoolean) {
+                            try {
+                                final IThemeService backend = App.getInstance().getBackend(mTheme.backendName);
+                                if (backend != null && backend.isRebootRequired()) {
+                                    final Snackbar snackbar = Snackbar.make(mCoordinator, R.string.reboot_required,
+                                            Snackbar.LENGTH_INDEFINITE);
+                                    snackbar.setAction(R.string.action_reboot, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            try {
+                                                App.getInstance().getBackend(mTheme.backendName).reboot();
+                                            }
+                                            catch (RemoteException ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                    snackbar.show();
+                                }
+                            }
+                            catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                        mFab.setEnabled(true);
+                    }
+                }.execute();
+            } else {
+                Snackbar.make(mCoordinator, R.string.no_overlays_selected, Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    };
 }
