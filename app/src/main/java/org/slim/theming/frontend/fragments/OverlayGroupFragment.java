@@ -64,7 +64,8 @@ public class OverlayGroupFragment extends Fragment {
             stylesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    mOverlayGroup.selectedStyle = mOverlayGroup.styles.keyAt(i);
+                    mOverlayGroup.selectedStyle =
+                            mOverlayGroup.styles.keySet().toArray(new String[0])[i];
                 }
 
                 @Override
