@@ -3,10 +3,10 @@ package org.slim.theming.frontend.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import org.slim.theming.frontend.fragments.OverlayGroupFragment;
+import org.slim.theming.frontend.fragments.WallpaperGroupFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +29,15 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        // page with overlays
-        return OverlayGroupFragment.newInstance(mOverlayInfo.groups.get(mKeys.get(position)));
+        final OverlayGroup group = mOverlayInfo.groups.get(mKeys.get(position));
+        switch (group.title) {
+            case OverlayGroup.WALLPAPERS:
+                //page with wallpapers
+                return WallpaperGroupFragment.newInstance(group);
+            default:
+                // page with overlays
+                return OverlayGroupFragment.newInstance(group);
+        }
     }
 
     @Override
