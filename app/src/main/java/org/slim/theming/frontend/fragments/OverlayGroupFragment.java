@@ -2,10 +2,7 @@ package org.slim.theming.frontend.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
 import android.widget.AdapterView;
@@ -16,19 +13,21 @@ import com.slimroms.themecore.OverlayGroup;
 import org.slim.theming.frontend.R;
 import org.slim.theming.frontend.adapters.OverlayGroupAdapter;
 import org.slim.theming.frontend.helpers.MenuTintHelper;
-import org.slim.theming.frontend.views.LineDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class OverlayGroupFragment extends Fragment {
-    private OverlayGroup mOverlayGroup;
-    private OverlayGroupAdapter mAdapter;
+public class OverlayGroupFragment extends AbstractGroupFragment {
 
     public static OverlayGroupFragment newInstance(OverlayGroup group) {
         final OverlayGroupFragment fragment = new OverlayGroupFragment();
         fragment.mOverlayGroup = group;
         return fragment;
+    }
+
+    @Override
+    public RecyclerView.Adapter getAdapter() {
+        return new OverlayGroupAdapter(getContext(), mOverlayGroup);
     }
 
     @Override
@@ -73,14 +72,6 @@ public class OverlayGroupFragment extends Fragment {
                 }
             });
         }
-
-
-        final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler.addItemDecoration(new LineDividerItemDecoration(getContext()));
-        recycler.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new OverlayGroupAdapter(getContext(), mOverlayGroup);
-        recycler.setAdapter(mAdapter);
     }
 
     @Override
