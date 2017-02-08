@@ -1,6 +1,10 @@
 package org.slim.theming.frontend;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -9,11 +13,13 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
 import android.view.View;
@@ -43,17 +49,24 @@ public class ThemeContentActivity extends AppCompatActivity {
         assert bar != null;
         bar.setDisplayHomeAsUpEnabled(true);
 
-        final String themePackage = getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
-        final ComponentName backendName = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
-        if (!TextUtils.isEmpty(themePackage) && backendName != null) {
-            try {
-                mTheme = App.getInstance().getBackend(backendName).getThemeByPackage(themePackage);
-                bar.setTitle(mTheme.name);
-            }
-            catch (RemoteException ex) {
-                ex.printStackTrace();
-            }
+        Log.d("TEST", "ThemeContentActivity.onCreate");
+        Log.d("TEST", "savedInstanceState=" + (savedInstanceState != null));
+
+        String themePackage = null;
+        ComponentName backendName = null;
+        if (savedInstanceState != null) {
+            themePackage = savedInstanceState.getString(BroadcastHelper.EXTRA_THEME_PACKAGE);
+            backendName = savedInstanceState.getParcelable(BroadcastHelper.EXTRA_BACKEND_NAME);
         }
+        if (TextUtils.isEmpty(themePackage)) {
+            themePackage = getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
+        }
+        if (backendName == null) {
+            backendName = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
+        }
+        final String themePackageName = themePackage;
+        final ComponentName backendComponent = backendName;
+        Log.d("TEST", "themePackage = " + themePackage);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -78,7 +91,50 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         });
 
-        setupTabLayout();
+        if (!TextUtils.isEmpty(themePackageName) && backendComponent != null) {
+            try {
+                if (App.getInstance().getBackend(backendName) != null) {
+                    mTheme = App.getInstance().getBackend(backendComponent).getThemeByPackage(themePackageName);
+                    bar.setTitle(mTheme.name);
+                    setupTabLayout();
+                } else {
+                    BroadcastReceiver receiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            Log.d("TEST", "onReceive=" + intent.getAction());
+                            Log.d("TEST", "theme=" + themePackageName);
+                            Log.d("TEST", "backend-" + backendComponent.flattenToString());
+                            try {
+                                if (App.getInstance().getBackend(backendComponent) != null) {
+                                    mTheme = App.getInstance().getBackend(backendComponent).getThemeByPackage(themePackageName);
+                                    if (mTheme != null) {
+                                        bar.setTitle(mTheme.name);
+                                        setupTabLayout();
+                                    }
+                                }
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    LocalBroadcastManager.getInstance(this)
+                            .registerReceiver(receiver,
+                                    new IntentFilter(BroadcastHelper.ACTION_BACKEND_CONNECTED));
+                }
+            }
+            catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        if (mTheme != null) {
+            out.putString(BroadcastHelper.EXTRA_THEME_PACKAGE, mTheme.packageName);
+            out.putParcelable(BroadcastHelper.EXTRA_BACKEND_NAME, mTheme.backendName);
+        }
     }
 
     private void setupTabLayout() {

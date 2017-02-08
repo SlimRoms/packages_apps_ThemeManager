@@ -46,16 +46,10 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (mOverlayGroup.styles.size() > 0) {
+        if (mOverlayGroup != null && mOverlayGroup.styles.size() > 0) {
             final Spinner stylesSpinner = (Spinner) view.findViewById(R.id.spinner);
-            String def = mOverlayGroup.styles.get("type3");
-            if (def != null) {
-                mOverlayGroup.styles.remove("type3");
-            }
             ArrayList<String> array = new ArrayList<>();
             array.addAll(mOverlayGroup.styles.values());
-            Collections.sort(array);
-            array.add(0, def);
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.item_flavor, array);
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             stylesSpinner.setAdapter(arrayAdapter);
