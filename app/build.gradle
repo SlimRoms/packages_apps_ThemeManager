@@ -56,7 +56,7 @@ android {
 }
 
 dependencies {
-    compile 'com.slimroms.themecore:themecore2:1.0@aar'
+    compile 'com.slimroms.themecore:core-debug:1.0@aar'
     compile "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:design:${rootProject.ext.supportLibVersion}"
