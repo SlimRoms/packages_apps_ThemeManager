@@ -58,6 +58,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (item.isChecked()) {
+            // if user has pressed the already selected item, do nothing
+            mDrawerLayout.closeDrawers();
+            return true;
+        }
+
         Fragment fragment = null;
         Intent intent = null;
         String tag = "";
