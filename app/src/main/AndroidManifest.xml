@@ -22,6 +22,11 @@
             android:name=".AboutActivity"
             android:configChanges="orientation|screenSize" />
 
+        <activity
+            android:label="@string/nav_uninstall_overlays"
+            android:name=".UninstallActivity"
+            android:configChanges="orientation|screenSize" />
+
     </application>
 
 </manifest>

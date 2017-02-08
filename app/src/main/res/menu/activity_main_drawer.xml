@@ -6,6 +6,13 @@
             android:title="@string/nav_themes" />
     </group>
 
+    <item android:title="@string/nav_group_actions">
+        <menu>
+            <item android:id="@+id/nav_uninstall_overlays" android:icon="@drawable/delete"
+                android:title="@string/nav_uninstall_overlays" />
+        </menu>
+    </item>
+
     <item android:title="@string/nav_group_more">
         <menu>
             <item android:id="@+id/nav_settings" android:title="@string/nav_settings"
