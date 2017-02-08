@@ -43,31 +43,27 @@ public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {
 
     // Same animation that FloatingActionButton.Behavior uses to hide the FAB when the AppBarLayout exits
     private void animateOut(final FloatingActionButton button) {
-        if (button.getVisibility() != View.INVISIBLE) {
-            ViewCompat.animate(button).scaleX(0.0F).scaleY(0.0F).alpha(0.0F)
-                    .setInterpolator(INTERPOLATOR).withLayer().setListener(new ViewPropertyAnimatorListener() {
-                public void onAnimationStart(View view) {
-                    ScrollAwareFABBehavior.this.mIsAnimatingOut = true;
-                }
+        ViewCompat.animate(button).scaleX(0.0F).scaleY(0.0F).alpha(0.0F)
+                .setInterpolator(INTERPOLATOR).withLayer().setListener(new ViewPropertyAnimatorListener() {
+            public void onAnimationStart(View view) {
+                ScrollAwareFABBehavior.this.mIsAnimatingOut = true;
+            }
 
-                public void onAnimationCancel(View view) {
-                    ScrollAwareFABBehavior.this.mIsAnimatingOut = false;
-                }
+            public void onAnimationCancel(View view) {
+                ScrollAwareFABBehavior.this.mIsAnimatingOut = false;
+            }
 
-                public void onAnimationEnd(View view) {
-                    ScrollAwareFABBehavior.this.mIsAnimatingOut = false;
-                    view.setVisibility(View.GONE);
-                }
-            }).start();
-        }
+            public void onAnimationEnd(View view) {
+                ScrollAwareFABBehavior.this.mIsAnimatingOut = false;
+                view.setVisibility(View.INVISIBLE);
+            }
+        }).start();
     }
 
     // Same animation that FloatingActionButton.Behavior uses to show the FAB when the AppBarLayout enters
     private void animateIn(FloatingActionButton button) {
-        if (button.getVisibility() != View.INVISIBLE) {
-            button.setVisibility(View.VISIBLE);
-            ViewCompat.animate(button).scaleX(1.0F).scaleY(1.0F).alpha(1.0F)
-                    .setInterpolator(INTERPOLATOR).withLayer().setListener(null).start();
-        }
+        button.setVisibility(View.VISIBLE);
+        ViewCompat.animate(button).scaleX(1.0F).scaleY(1.0F).alpha(1.0F)
+                .setInterpolator(INTERPOLATOR).withLayer().setListener(null).start();
     }
 }
