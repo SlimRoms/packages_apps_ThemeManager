@@ -1,10 +1,13 @@
 package org.slim.theming.frontend.adapters;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.util.ArrayMap;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
+import org.slim.theming.frontend.R;
 import org.slim.theming.frontend.fragments.OverlayGroupFragment;
 import org.slim.theming.frontend.fragments.WallpaperGroupFragment;
 
@@ -15,8 +18,9 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
     private OverlayThemeInfo mOverlayInfo;
 
     private ArrayList<String> mKeys = new ArrayList<>();
+    private ArrayMap<String, String> mTitles = new ArrayMap<>();
 
-    public ThemeContentPagerAdapter(FragmentManager fm, OverlayThemeInfo overlayInfo) {
+    public ThemeContentPagerAdapter(FragmentManager fm, OverlayThemeInfo overlayInfo, Context context) {
         super(fm);
         mOverlayInfo = overlayInfo;
 
@@ -25,12 +29,35 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
         if (mKeys.contains(OverlayGroup.OVERLAYS)) {
             Collections.swap(mKeys, mKeys.indexOf(OverlayGroup.OVERLAYS), 0);
         }
+
+        for (String key : mKeys) {
+            String title;
+            switch (key) {
+                case OverlayGroup.OVERLAYS:
+                    title = context.getString(R.string.group_title_overlays);
+                    break;
+                case OverlayGroup.FONTS:
+                    title = context.getString(R.string.group_title_fonts);
+                    break;
+                case OverlayGroup.BOOTANIMATIONS:
+                    title = context.getString(R.string.group_title_bootanimations);
+                    break;
+                case OverlayGroup.WALLPAPERS:
+                    title = context.getString(R.string.group_title_wallpapers);
+                    break;
+                default:
+                    title = key;
+                    break;
+            }
+            mTitles.put(key, title);
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
-        final OverlayGroup group = mOverlayInfo.groups.get(mKeys.get(position));
-        switch (group.title) {
+        final String key = mKeys.get(position);
+        final OverlayGroup group = mOverlayInfo.groups.get(key);
+        switch (key) {
             case OverlayGroup.WALLPAPERS:
                 //page with wallpapers
                 return WallpaperGroupFragment.newInstance(group);
@@ -47,6 +74,6 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return mOverlayInfo.groups.get(mKeys.get(position)).title;
+        return mTitles.get(mKeys.get(position));
     }
 }

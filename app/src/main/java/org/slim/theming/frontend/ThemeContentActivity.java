@@ -102,7 +102,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                 if (overlayThemeInfo != null) {
                     mOverlayInfo = overlayThemeInfo;
                     final ThemeContentPagerAdapter adapter
-                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo);
+                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, getBaseContext());
                     mViewPager.setAdapter(adapter);
                 }
                 mLoadingSnackbar.dismiss();
