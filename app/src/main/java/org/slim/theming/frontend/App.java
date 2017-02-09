@@ -90,7 +90,8 @@ public class App extends Application {
 
                 final Intent backendIntent = new Intent(backendAction);
                 backendIntent.setPackage(ri.serviceInfo.packageName);
-                bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
+                startService(backendIntent);
+                bindService(backendIntent, backendConnection, 0);
             }
         }
     }

@@ -48,6 +48,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     public OverlayGroupAdapter(Context context, OverlayGroup proxy) {
         mInflater = LayoutInflater.from(context);
         mOverlayGroup = proxy;
+        if (mOverlayGroup == null) {
+            mOverlayGroup = new OverlayGroup();
+        }
         mContext = context;
 
         mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);

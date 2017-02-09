@@ -29,6 +29,8 @@ import com.slimroms.themecore.Theme;
 import org.slim.theming.frontend.adapters.ThemeContentPagerAdapter;
 import org.slim.theming.frontend.helpers.BroadcastHelper;
 
+import java.util.ArrayList;
+
 public class ThemeContentActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Snackbar mLoadingSnackbar;
@@ -37,11 +39,17 @@ public class ThemeContentActivity extends AppCompatActivity {
 
     private Theme mTheme;
     private OverlayThemeInfo mOverlayInfo;
+    private String mThemePackageName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_theme_content);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
+        filter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,22 +59,6 @@ public class ThemeContentActivity extends AppCompatActivity {
 
         Log.d("TEST", "ThemeContentActivity.onCreate");
         Log.d("TEST", "savedInstanceState=" + (savedInstanceState != null));
-
-        String themePackage = null;
-        ComponentName backendName = null;
-        if (savedInstanceState != null) {
-            themePackage = savedInstanceState.getString(BroadcastHelper.EXTRA_THEME_PACKAGE);
-            backendName = savedInstanceState.getParcelable(BroadcastHelper.EXTRA_BACKEND_NAME);
-        }
-        if (TextUtils.isEmpty(themePackage)) {
-            themePackage = getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
-        }
-        if (backendName == null) {
-            backendName = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
-        }
-        final String themePackageName = themePackage;
-        final ComponentName backendComponent = backendName;
-        Log.d("TEST", "themePackage = " + themePackage);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -91,54 +83,57 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         });
 
-        if (!TextUtils.isEmpty(themePackageName) && backendComponent != null) {
+        if (savedInstanceState == null) {
+            mThemePackageName =
+                    getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
+        } else {
+            mThemePackageName = savedInstanceState.getString(BroadcastHelper.EXTRA_THEME_PACKAGE);
+        }
+        final ComponentName backendComponent = getIntent()
+                .getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
+        if (!TextUtils.isEmpty(mThemePackageName) && backendComponent != null) {
             try {
-                if (App.getInstance().getBackend(backendName) != null) {
-                    mTheme = App.getInstance().getBackend(backendComponent).getThemeByPackage(themePackageName);
-                    bar.setTitle(mTheme.name);
-                    setupTabLayout();
-                } else {
-                    BroadcastReceiver receiver = new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            Log.d("TEST", "onReceive=" + intent.getAction());
-                            Log.d("TEST", "theme=" + themePackageName);
-                            Log.d("TEST", "backend-" + backendComponent.flattenToString());
-                            try {
-                                if (App.getInstance().getBackend(backendComponent) != null) {
-                                    mTheme = App.getInstance().getBackend(backendComponent).getThemeByPackage(themePackageName);
-                                    if (mTheme != null) {
-                                        bar.setTitle(mTheme.name);
-                                        setupTabLayout();
-                                    }
-                                }
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    LocalBroadcastManager.getInstance(this)
-                            .registerReceiver(receiver,
-                                    new IntentFilter(BroadcastHelper.ACTION_BACKEND_CONNECTED));
+                if (App.getInstance().getBackend(backendComponent) != null) {
+                    mTheme = App.getInstance().getBackend(backendComponent)
+                            .getThemeByPackage(mThemePackageName);
                 }
-            }
-            catch (RemoteException ex) {
-                ex.printStackTrace();
+                setupTabLayout();
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }
     }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ComponentName backendComponent = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
+            if (intent.getAction().equals(BroadcastHelper.ACTION_BACKEND_CONNECTED)) {
+                if (App.getInstance().getBackend(backendComponent) != null) {
+                    try {
+                        App.getInstance().getBackend(backendComponent).getThemePackages(new ArrayList<Theme>());
+                        mTheme = App.getInstance().getBackend(backendComponent).getThemeByPackage(mThemePackageName);
+                        setupTabLayout();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                mTheme = null;
+                mLoadingSnackbar.show();
+            }
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
-        if (mTheme != null) {
-            out.putString(BroadcastHelper.EXTRA_THEME_PACKAGE, mTheme.packageName);
-            out.putParcelable(BroadcastHelper.EXTRA_BACKEND_NAME, mTheme.backendName);
-        }
+        out.putString(BroadcastHelper.EXTRA_THEME_PACKAGE, mThemePackageName);
     }
 
     private void setupTabLayout() {
         mLoadingSnackbar.show();
+        if (mTheme == null) return;
         new AsyncTask<Theme, Void, OverlayThemeInfo>() {
             @Override
             protected OverlayThemeInfo doInBackground(Theme... themes) {
@@ -159,7 +154,9 @@ public class ThemeContentActivity extends AppCompatActivity {
                     mOverlayInfo = overlayThemeInfo;
                     final ThemeContentPagerAdapter adapter
                             = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, getBaseContext());
-                    mViewPager.setAdapter(adapter);
+                    //if (!ThemeContentActivity.this.isDestroyed()) {
+                        mViewPager.setAdapter(adapter);
+                    //}
                 }
                 mLoadingSnackbar.dismiss();
             }

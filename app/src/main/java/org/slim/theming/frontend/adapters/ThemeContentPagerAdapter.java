@@ -1,6 +1,8 @@
 package org.slim.theming.frontend.adapters;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,6 +12,7 @@ import com.slimroms.themecore.OverlayThemeInfo;
 import org.slim.theming.frontend.R;
 import org.slim.theming.frontend.fragments.OverlayGroupFragment;
 import org.slim.theming.frontend.fragments.WallpaperGroupFragment;
+import org.slim.theming.frontend.helpers.BroadcastHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +54,8 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
             }
             mTitles.put(key, title);
         }
+
+
     }
 
     @Override
