@@ -156,7 +156,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                 if (overlayThemeInfo != null) {
                     mOverlayInfo = overlayThemeInfo;
                     final ThemeContentPagerAdapter adapter
-                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, getBaseContext());
+                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, mTheme, getBaseContext());
                     if (!ThemeContentActivity.this.isDestroyed()) {
                         mViewPager.setAdapter(adapter);
                     } else {

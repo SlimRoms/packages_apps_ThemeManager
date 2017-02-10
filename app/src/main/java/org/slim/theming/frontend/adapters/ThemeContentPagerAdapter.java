@@ -9,23 +9,28 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.ArrayMap;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
+import com.slimroms.themecore.Theme;
+
 import org.slim.theming.frontend.R;
+import org.slim.theming.frontend.fragments.BootAnimationFragment;
 import org.slim.theming.frontend.fragments.OverlayGroupFragment;
 import org.slim.theming.frontend.fragments.WallpaperGroupFragment;
-import org.slim.theming.frontend.helpers.BroadcastHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
     private OverlayThemeInfo mOverlayInfo;
+    private Theme mTheme;
 
     private ArrayList<String> mKeys = new ArrayList<>();
     private ArrayMap<String, String> mTitles = new ArrayMap<>();
 
-    public ThemeContentPagerAdapter(FragmentManager fm, OverlayThemeInfo overlayInfo, Context context) {
+    public ThemeContentPagerAdapter(FragmentManager fm,
+                                    OverlayThemeInfo overlayInfo, Theme theme, Context context) {
         super(fm);
         mOverlayInfo = overlayInfo;
+        mTheme = theme;
 
         mKeys.addAll(mOverlayInfo.groups.keySet());
         Collections.sort(mKeys);
@@ -66,6 +71,8 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
             case OverlayGroup.WALLPAPERS:
                 //page with wallpapers
                 return WallpaperGroupFragment.newInstance(group);
+            case OverlayGroup.BOOTANIMATIONS:
+                return BootAnimationFragment.newInstance(group, mTheme);
             default:
                 // page with overlays
                 return OverlayGroupFragment.newInstance(group);
