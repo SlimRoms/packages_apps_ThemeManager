@@ -139,8 +139,11 @@ public class ThemeContentActivity extends AppCompatActivity {
             protected OverlayThemeInfo doInBackground(Theme... themes) {
                 try {
                     final OverlayThemeInfo result = new OverlayThemeInfo();
-                    App.getInstance().getBackend(themes[0].backendName).getThemeContent(themes[0], result);
-                    return result;
+                    if (App.getInstance().getBackend(themes[0].backendName) != null) {
+                        App.getInstance().getBackend(themes[0].backendName).getThemeContent(themes[0], result);
+                        return result;
+                    }
+                    return null;
                 }
                 catch (RemoteException ex) {
                     ex.printStackTrace();
@@ -154,9 +157,15 @@ public class ThemeContentActivity extends AppCompatActivity {
                     mOverlayInfo = overlayThemeInfo;
                     final ThemeContentPagerAdapter adapter
                             = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, getBaseContext());
-                    //if (!ThemeContentActivity.this.isDestroyed()) {
+                    if (!ThemeContentActivity.this.isDestroyed()) {
                         mViewPager.setAdapter(adapter);
-                    //}
+                    } else {
+                        Log.d("TEST", "isDestroyed");
+                        ThemeContentActivity.this.finish();
+                        Intent intent = ThemeContentActivity.this.getIntent();
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
                 }
                 mLoadingSnackbar.dismiss();
             }

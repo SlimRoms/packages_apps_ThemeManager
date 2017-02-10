@@ -1,9 +1,12 @@
 package org.slim.theming.frontend.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
@@ -55,6 +58,9 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             stylesSpinner.setAdapter(arrayAdapter);
             stylesSpinner.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(mOverlayGroup.selectedStyle)) {
+                stylesSpinner.setSelection(array.indexOf(mOverlayGroup.styles.get(mOverlayGroup.selectedStyle)));
+            }
             stylesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

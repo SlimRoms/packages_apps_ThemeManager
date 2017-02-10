@@ -14,7 +14,7 @@
         </activity>
 
         <activity
-            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTop"
             android:name=".ThemeContentActivity"
             android:configChanges="orientation|screenSize" />
 
