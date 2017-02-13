@@ -1,10 +1,6 @@
 package org.slim.theming.frontend;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -21,7 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-
 import android.view.View;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayThemeInfo;
@@ -40,6 +35,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     private Theme mTheme;
     private OverlayThemeInfo mOverlayInfo;
     private String mThemePackageName;
+    private ComponentName mBackendComponent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,8 +53,10 @@ public class ThemeContentActivity extends AppCompatActivity {
         assert bar != null;
         bar.setDisplayHomeAsUpEnabled(true);
 
-        Log.d("TEST", "ThemeContentActivity.onCreate");
-        Log.d("TEST", "savedInstanceState=" + (savedInstanceState != null));
+        if (App.isDebug()) {
+            Log.d("TEST", "ThemeContentActivity.onCreate");
+            Log.d("TEST", "savedInstanceState=" + (savedInstanceState != null));
+        }
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -83,18 +81,17 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         });
 
-        if (savedInstanceState == null) {
-            mThemePackageName =
-                    getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
-        } else {
-            mThemePackageName = savedInstanceState.getString(BroadcastHelper.EXTRA_THEME_PACKAGE);
-        }
-        final ComponentName backendComponent = getIntent()
-                .getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
-        if (!TextUtils.isEmpty(mThemePackageName) && backendComponent != null) {
+        mThemePackageName = (savedInstanceState == null)
+                ? getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE)
+                : savedInstanceState.getString(BroadcastHelper.EXTRA_THEME_PACKAGE);
+        mBackendComponent = (savedInstanceState == null)
+                ? (ComponentName) getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME)
+                : (ComponentName) savedInstanceState.getParcelable(BroadcastHelper.EXTRA_BACKEND_NAME);
+
+        if (!TextUtils.isEmpty(mThemePackageName) && mBackendComponent != null) {
             try {
-                if (App.getInstance().getBackend(backendComponent) != null) {
-                    mTheme = App.getInstance().getBackend(backendComponent)
+                if (App.getInstance().getBackend(mBackendComponent) != null) {
+                    mTheme = App.getInstance().getBackend(mBackendComponent)
                             .getThemeByPackage(mThemePackageName);
                 }
                 setupTabLayout();
@@ -107,12 +104,11 @@ public class ThemeContentActivity extends AppCompatActivity {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ComponentName backendComponent = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
             if (intent.getAction().equals(BroadcastHelper.ACTION_BACKEND_CONNECTED)) {
-                if (App.getInstance().getBackend(backendComponent) != null) {
+                if (App.getInstance().getBackend(mBackendComponent) != null) {
                     try {
-                        App.getInstance().getBackend(backendComponent).getThemePackages(new ArrayList<Theme>());
-                        mTheme = App.getInstance().getBackend(backendComponent).getThemeByPackage(mThemePackageName);
+                        App.getInstance().getBackend(mBackendComponent).getThemePackages(new ArrayList<Theme>());
+                        mTheme = App.getInstance().getBackend(mBackendComponent).getThemeByPackage(mThemePackageName);
                         setupTabLayout();
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -129,6 +125,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
         out.putString(BroadcastHelper.EXTRA_THEME_PACKAGE, mThemePackageName);
+        out.putParcelable(BroadcastHelper.EXTRA_BACKEND_NAME, mBackendComponent);
     }
 
     private void setupTabLayout() {
@@ -160,7 +157,9 @@ public class ThemeContentActivity extends AppCompatActivity {
                     if (!ThemeContentActivity.this.isDestroyed()) {
                         mViewPager.setAdapter(adapter);
                     } else {
-                        Log.d("TEST", "isDestroyed");
+                        if (App.isDebug()) {
+                            Log.d("TEST", "isDestroyed");
+                        }
                         ThemeContentActivity.this.finish();
                         Intent intent = ThemeContentActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
