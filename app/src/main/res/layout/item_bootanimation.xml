@@ -1,57 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_small"
-    android:layout_marginEnd="@dimen/margin_small"
-    android:layout_marginStart="@dimen/margin_small"
-    android:layout_marginTop="@dimen/margin_small"
-    android:clickable="true"
-    card_view:cardBackgroundColor="@color/white"
-    card_view:elevation="@dimen/margin_small">
+    android:id="@+id/click_container" android:background="?android:attr/selectableItemBackground"
+    android:clickable="true" android:padding="@dimen/margin_small">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/overlay_image"
+        android:layout_width="@dimen/list_item_icon_size"
+        android:layout_height="@dimen/list_item_icon_size"
+        android:layout_marginEnd="@dimen/list_item_icon_margin_large"
+        android:layout_marginStart="@dimen/list_item_icon_margin"
+        android:layout_centerVertical="true"
+        android:clickable="false"
+        android:src="@mipmap/ic_launcher_round" />
 
-        <ImageView
-            android:id="@+id/iv_themeImage"
-            android:layout_width="@dimen/list_item_icon_size"
-            android:layout_height="@dimen/list_item_icon_size"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginEnd="@dimen/margin_medium"
-            android:layout_marginStart="@dimen/margin_small"
-            android:layout_marginTop="@dimen/margin_small"
-            android:src="@mipmap/ic_launcher" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_centerVertical="true" android:orientation="vertical"
+        android:layout_toEndOf="@id/overlay_image" android:layout_toStartOf="@id/checkbox"
+        android:layout_marginTop="@dimen/margin_tiny" android:layout_marginBottom="@dimen/margin_tiny">
 
-        <TextView
-            android:id="@+id/txtName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/iv_themeImage"
-            android:layout_marginTop="12dp"
-            android:layout_toEndOf="@+id/iv_themeImage"
-            android:gravity="center_vertical"
-            android:text="Title"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="12sp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/overlay_name"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            android:text="Pixel bootanimation"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="marquee" />
 
-        <TextView
-            android:id="@+id/txtSurname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/txtName"
-            android:layout_below="@+id/txtName"
-            android:layout_marginBottom="12dp"
-            android:gravity="center_vertical"
-            android:text="Subtitle"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="10sp" />
-
-    </RelativeLayout>
+    </LinearLayout>
 
 
-</android.support.v7.widget.CardView>
+</RelativeLayout>

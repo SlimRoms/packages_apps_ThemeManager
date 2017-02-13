@@ -3,8 +3,11 @@
 
     <string name="list_empty">No items found</string>
     <string name="loading">Loading, please wait…</string>
+    <string name="loading_short">Loading…</string>
     <string name="no_overlays_selected">No overlays selected</string>
     <string name="reboot_required">A restart is required after the overlays have been applied</string>
+    <string name="preview">Preview</string>
+    <string name="apply">Apply</string>
 
     <!-- Actions -->
     <string name="action_select_all">Select all</string>

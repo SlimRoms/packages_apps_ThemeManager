@@ -1,10 +1,7 @@
 package org.slim.theming.frontend.fragments;
 
 import android.support.v7.widget.RecyclerView;
-
 import com.slimroms.themecore.OverlayGroup;
-import com.slimroms.themecore.Theme;
-
 import org.slim.theming.frontend.adapters.BootAnimationAdapter;
 
 /**
@@ -13,17 +10,17 @@ import org.slim.theming.frontend.adapters.BootAnimationAdapter;
 
 public class BootAnimationFragment extends AbstractGroupFragment {
 
-    private Theme mTheme;
+    private String mThemePackage;
 
-    public static BootAnimationFragment newInstance(OverlayGroup group, Theme theme) {
+    public static BootAnimationFragment newInstance(OverlayGroup group, String themePackage) {
         BootAnimationFragment fragment = new BootAnimationFragment();
         fragment.mOverlayGroup = group;
-        fragment.mTheme = theme;
+        fragment.mThemePackage = themePackage;
         return fragment;
     }
 
     @Override
     public RecyclerView.Adapter getAdapter() {
-        return new BootAnimationAdapter(getContext(), mOverlayGroup, mTheme);
+        return new BootAnimationAdapter(getContext(), mOverlayGroup, mThemePackage);
     }
 }

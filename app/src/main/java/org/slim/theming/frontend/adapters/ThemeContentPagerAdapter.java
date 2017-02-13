@@ -1,8 +1,6 @@
 package org.slim.theming.frontend.adapters;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -72,7 +70,8 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
                 //page with wallpapers
                 return WallpaperGroupFragment.newInstance(group);
             case OverlayGroup.BOOTANIMATIONS:
-                return BootAnimationFragment.newInstance(group, mTheme);
+                // page with boot animations
+                return BootAnimationFragment.newInstance(group, mTheme.packageName);
             default:
                 // page with overlays
                 return OverlayGroupFragment.newInstance(group);
