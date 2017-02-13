@@ -81,13 +81,8 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         });
 
-        mThemePackageName = (savedInstanceState == null)
-                ? getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE)
-                : savedInstanceState.getString(BroadcastHelper.EXTRA_THEME_PACKAGE);
-        mBackendComponent = (savedInstanceState == null)
-                ? (ComponentName) getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME)
-                : (ComponentName) savedInstanceState.getParcelable(BroadcastHelper.EXTRA_BACKEND_NAME);
-
+        mThemePackageName = getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
+        mBackendComponent = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
         if (!TextUtils.isEmpty(mThemePackageName) && mBackendComponent != null) {
             try {
                 if (App.getInstance().getBackend(mBackendComponent) != null) {
@@ -120,13 +115,6 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         }
     };
-
-    @Override
-    public void onSaveInstanceState(Bundle out) {
-        super.onSaveInstanceState(out);
-        out.putString(BroadcastHelper.EXTRA_THEME_PACKAGE, mThemePackageName);
-        out.putParcelable(BroadcastHelper.EXTRA_BACKEND_NAME, mBackendComponent);
-    }
 
     private void setupTabLayout() {
         mLoadingSnackbar.show();
