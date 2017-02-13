@@ -115,4 +115,8 @@ public class App extends Application {
     public Set<ComponentName> getBackendNames() {
         return mBackends.keySet();
     }
+
+    public static boolean isDebug() {
+        return true;
+    }
 }
