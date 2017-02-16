@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import org.apache.commons.io.FileUtils;
+
 import org.slim.theming.frontend.App;
 import org.slim.theming.frontend.R;
 import org.slim.theming.frontend.views.BootAnimationImageView;
