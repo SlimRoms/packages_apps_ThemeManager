@@ -94,11 +94,8 @@ public class ThemeContentActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
-        filter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+                App.getInstance().getBackendConnectFilter());
     }
 
     @Override

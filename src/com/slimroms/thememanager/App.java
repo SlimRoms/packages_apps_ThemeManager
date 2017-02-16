@@ -3,6 +3,7 @@ package com.slimroms.thememanager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
@@ -123,5 +124,15 @@ public class App extends Application {
 
     public static boolean isDebug() {
         return true;
+    }
+
+    private IntentFilter mBackendConnectFilter;
+    public IntentFilter getBackendConnectFilter() {
+        if (mBackendConnectFilter == null) {
+            mBackendConnectFilter = new IntentFilter();
+            mBackendConnectFilter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
+            mBackendConnectFilter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
+        }
+        return mBackendConnectFilter;
     }
 }

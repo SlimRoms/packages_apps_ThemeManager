@@ -104,11 +104,8 @@ public class ThemesPackagesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        final IntentFilter filter = new IntentFilter();
-        filter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
-        filter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
         LocalBroadcastManager.getInstance(getContext())
-                .registerReceiver(mEventReceiver, filter);
+                .registerReceiver(mEventReceiver, App.getInstance().getBackendConnectFilter());
     }
 
     @Override
