@@ -1,3 +1,30 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.0-beta4'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
+ext {
+    minSdkVersion = 22
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.2"
+    supportLibVersion = "25.1.1"
+    versionCode = 1
+    versionName = "1.0"
+}
+
 apply plugin: 'com.android.application'
 
 android {
@@ -15,7 +42,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("../debug.keystore")
+            storeFile file("debug.keystore")
             storePassword "android"
             keyAlias "androiddebugkey"
             keyPassword "android"
@@ -33,6 +60,14 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+        }
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = ['res']
+            java.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
         }
     }
 
@@ -63,5 +98,5 @@ dependencies {
     compile "com.android.support:preference-v7:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:preference-v14:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
-    compile 'commons-io:commons-io:2.4'
+    compile 'commons-io:commons-io:2.5'
 }
