@@ -42,11 +42,6 @@ public class ThemeContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_theme_content);
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
-        filter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar bar = getSupportActionBar();
@@ -96,6 +91,22 @@ public class ThemeContentActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
+        filter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
+        super.onPause();
+    }
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -110,8 +121,10 @@ public class ThemeContentActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                mTheme = null;
-                mLoadingSnackbar.show();
+                if (App.getInstance().getBackend(mBackendComponent) == null) {
+                    mTheme = null;
+                    mLoadingSnackbar.show();
+                }
             }
         }
     };
