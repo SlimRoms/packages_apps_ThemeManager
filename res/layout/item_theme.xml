@@ -24,7 +24,6 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/margin_tiny"
         android:padding="@dimen/margin_tiny"
-        android:text="debug"
         android:textAllCaps="true"
         android:background="@color/accent"
         android:textColor="@android:color/white" />
@@ -38,7 +37,6 @@
             android:id="@+id/lbl_theme_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Foo Theme"
             android:clickable="false"
             android:textStyle="bold"
             style="@style/TextAppearance.AppCompat.Subhead" />
@@ -48,7 +46,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_tiny"
-            android:text="John Developer"
             android:clickable="false"
             style="@style/TextAppearance.AppCompat" />
 
@@ -57,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_tiny"
-            android:text="Version 3.3.1"
             android:clickable="false"
             style="@style/TextAppearance.AppCompat.Small" />
 
