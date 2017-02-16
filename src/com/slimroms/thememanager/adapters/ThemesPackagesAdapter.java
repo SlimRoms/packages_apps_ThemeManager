@@ -28,6 +28,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         ImageView logo;
         ViewGroup clickContainer;
         TextView themeVersion;
+        TextView themeType;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -36,6 +37,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
             themeVersion = (TextView) itemView.findViewById(R.id.lbl_theme_version);
             clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
             logo = (ImageView) itemView.findViewById(R.id.img_logo);
+            themeType = (TextView) itemView.findViewById(R.id.lbl_theme_type);
         }
     }
 
@@ -61,6 +63,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         holder.themeDeveloper.setText(theme.themeAuthor);
         holder.logo.setImageBitmap(theme.themeLogo);
         holder.themeVersion.setText(theme.themeVersion);
+        holder.themeType.setText(theme.themeType);
         holder.clickContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
