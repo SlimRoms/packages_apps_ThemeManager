@@ -1,4 +1,4 @@
-package org.slim.theming.frontend;
+package com.slimroms.thememanager;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import org.slim.theming.frontend.fragments.AboutFragment;
+import com.slimroms.thememanager.fragments.AboutFragment;
 
 public class AboutActivity extends AppCompatActivity {
 

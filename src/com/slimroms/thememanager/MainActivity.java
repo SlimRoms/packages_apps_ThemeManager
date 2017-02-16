@@ -1,4 +1,4 @@
-package org.slim.theming.frontend;
+package com.slimroms.thememanager;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,7 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import org.slim.theming.frontend.fragments.ThemesPackagesFragment;
+import com.slimroms.thememanager.fragments.ThemesPackagesFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout mDrawerLayout;

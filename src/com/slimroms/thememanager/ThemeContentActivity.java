@@ -1,4 +1,4 @@
-package org.slim.theming.frontend;
+package com.slimroms.thememanager;
 
 import android.content.*;
 import android.os.AsyncTask;
@@ -21,8 +21,8 @@ import android.view.View;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
-import org.slim.theming.frontend.adapters.ThemeContentPagerAdapter;
-import org.slim.theming.frontend.helpers.BroadcastHelper;
+import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
+import com.slimroms.thememanager.helpers.BroadcastHelper;
 
 import java.util.ArrayList;
 

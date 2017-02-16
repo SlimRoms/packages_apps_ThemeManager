@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.adapters;
+package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -9,10 +9,10 @@ import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
 
-import org.slim.theming.frontend.R;
-import org.slim.theming.frontend.fragments.BootAnimationFragment;
-import org.slim.theming.frontend.fragments.OverlayGroupFragment;
-import org.slim.theming.frontend.fragments.WallpaperGroupFragment;
+import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.fragments.BootAnimationFragment;
+import com.slimroms.thememanager.fragments.OverlayGroupFragment;
+import com.slimroms.thememanager.fragments.WallpaperGroupFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;

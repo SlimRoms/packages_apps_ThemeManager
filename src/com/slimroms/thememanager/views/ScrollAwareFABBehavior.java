@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.views;
+package com.slimroms.thememanager.views;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

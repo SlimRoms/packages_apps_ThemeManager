@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.adapters;
+package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
-import org.slim.theming.frontend.R;
+import com.slimroms.thememanager.R;
 
 public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAdapter.ViewHolder>{
 

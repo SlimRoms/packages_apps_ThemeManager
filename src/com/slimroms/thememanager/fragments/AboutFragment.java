@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.fragments;
+package com.slimroms.thememanager.fragments;
 
 import android.content.ComponentName;
 import android.content.pm.PackageInfo;
@@ -12,9 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import org.slim.theming.frontend.App;
-import org.slim.theming.frontend.R;
-import org.slim.theming.frontend.adapters.AboutAdapter;
+import com.slimroms.thememanager.App;
+import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.adapters.AboutAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

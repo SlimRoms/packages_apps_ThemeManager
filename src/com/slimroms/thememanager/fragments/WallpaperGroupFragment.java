@@ -1,8 +1,8 @@
-package org.slim.theming.frontend.fragments;
+package com.slimroms.thememanager.fragments;
 
 import android.support.v7.widget.RecyclerView;
 import com.slimroms.themecore.OverlayGroup;
-import org.slim.theming.frontend.adapters.WallpaperGroupAdapter;
+import com.slimroms.thememanager.adapters.WallpaperGroupAdapter;
 
 public class WallpaperGroupFragment extends AbstractGroupFragment {
 

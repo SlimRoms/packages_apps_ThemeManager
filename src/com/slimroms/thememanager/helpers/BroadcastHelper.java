@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.helpers;
+package com.slimroms.thememanager.helpers;
 
 public class BroadcastHelper {
     public static final String ACTION_BACKEND_CONNECTED = "ACTION_BACKEND_CONNECTED";

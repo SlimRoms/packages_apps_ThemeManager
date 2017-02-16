@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.adapters;
+package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import org.slim.theming.frontend.R;
+import com.slimroms.thememanager.R;
 
 import java.util.ArrayList;
 import java.util.List;

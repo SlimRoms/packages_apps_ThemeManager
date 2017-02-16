@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/creation"
         android:layout_gravity="end|bottom"
-        app:layout_behavior="org.slim.theming.frontend.views.ScrollAwareFABBehavior"
+        app:layout_behavior="com.slimroms.thememanager.views.ScrollAwareFABBehavior"
         style="@style/AppTheme.Fab" />
 
 </android.support.design.widget.CoordinatorLayout>

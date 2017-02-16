@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.adapters;
+package com.slimroms.thememanager.adapters;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.Theme;
-import org.slim.theming.frontend.App;
-import org.slim.theming.frontend.R;
-import org.slim.theming.frontend.ThemeContentActivity;
-import org.slim.theming.frontend.helpers.BroadcastHelper;
+import com.slimroms.thememanager.App;
+import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.ThemeContentActivity;
+import com.slimroms.thememanager.helpers.BroadcastHelper;
 
 import java.util.ArrayList;
 import java.util.List;

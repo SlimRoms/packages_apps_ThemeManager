@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.views;
+package com.slimroms.thememanager.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import org.slim.theming.frontend.R;
+import com.slimroms.thememanager.R;
 
 public class LineDividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;

@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.fragments;
+package com.slimroms.thememanager.fragments;
 
 import android.content.*;
 import android.os.AsyncTask;
@@ -16,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Theme;
-import org.slim.theming.frontend.App;
-import org.slim.theming.frontend.R;
-import org.slim.theming.frontend.adapters.ThemesPackagesAdapter;
-import org.slim.theming.frontend.helpers.BroadcastHelper;
-import org.slim.theming.frontend.views.LineDividerItemDecoration;
+import com.slimroms.thememanager.App;
+import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.adapters.ThemesPackagesAdapter;
+import com.slimroms.thememanager.helpers.BroadcastHelper;
+import com.slimroms.thememanager.views.LineDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,25 +1,21 @@
-package org.slim.theming.frontend.fragments;
+package com.slimroms.thememanager.fragments;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
-import org.slim.theming.frontend.R;
-import org.slim.theming.frontend.adapters.OverlayGroupAdapter;
-import org.slim.theming.frontend.helpers.MenuTintHelper;
+import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.adapters.OverlayGroupAdapter;
+import com.slimroms.thememanager.helpers.MenuTintHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class OverlayGroupFragment extends AbstractGroupFragment {
 

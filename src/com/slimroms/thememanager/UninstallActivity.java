@@ -1,4 +1,4 @@
-package org.slim.theming.frontend;
+package com.slimroms.thememanager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,10 +32,10 @@ import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
 
-import org.slim.theming.frontend.adapters.UninstallAdapter;
-import org.slim.theming.frontend.helpers.BroadcastHelper;
-import org.slim.theming.frontend.helpers.MenuTintHelper;
-import org.slim.theming.frontend.views.LineDividerItemDecoration;
+import com.slimroms.thememanager.adapters.UninstallAdapter;
+import com.slimroms.thememanager.helpers.BroadcastHelper;
+import com.slimroms.thememanager.helpers.MenuTintHelper;
+import com.slimroms.thememanager.views.LineDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;

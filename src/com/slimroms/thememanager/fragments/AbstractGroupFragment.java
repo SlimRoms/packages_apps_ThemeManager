@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.fragments;
+package com.slimroms.thememanager.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.slimroms.themecore.OverlayGroup;
-import org.slim.theming.frontend.R;
-import org.slim.theming.frontend.views.LineDividerItemDecoration;
+import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.views.LineDividerItemDecoration;
 
 public abstract class AbstractGroupFragment extends Fragment {
     protected OverlayGroup mOverlayGroup;

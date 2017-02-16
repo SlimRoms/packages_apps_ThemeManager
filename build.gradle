@@ -32,12 +32,12 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "org.slim.theming.frontend"
+        applicationId "com.slimroms.thememanager"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.compileSdkVersion
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
-        archivesBaseName = "SlimThemeEngine"
+        archivesBaseName = "ThemeManager"
     }
 
     buildTypes {
@@ -87,5 +87,5 @@ dependencies {
     compile "com.android.support:preference-v7:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:preference-v14:${rootProject.ext.supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
-    compile 'commons-io:commons-io:2.5'
+    compile 'commons-io:commons-io:2.4'
 }

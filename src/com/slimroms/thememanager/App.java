@@ -1,4 +1,4 @@
-package org.slim.theming.frontend;
+package com.slimroms.thememanager;
 
 import android.app.Application;
 import android.content.ComponentName;
@@ -10,7 +10,7 @@ import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.slimroms.themecore.IThemeService;
-import org.slim.theming.frontend.helpers.BroadcastHelper;
+import com.slimroms.thememanager.helpers.BroadcastHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

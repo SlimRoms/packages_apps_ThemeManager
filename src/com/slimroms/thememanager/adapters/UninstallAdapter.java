@@ -1,9 +1,7 @@
-package org.slim.theming.frontend.adapters;
+package com.slimroms.thememanager.adapters;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.RemoteException;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,18 +11,13 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Overlay;
-import com.slimroms.themecore.OverlayGroup;
-import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
 
-import org.slim.theming.frontend.App;
-import org.slim.theming.frontend.R;
+import com.slimroms.thememanager.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by gmillz on 2/15/17.

@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.adapters;
+package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -11,7 +11,7 @@ import android.widget.*;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayFlavor;
 import com.slimroms.themecore.OverlayGroup;
-import org.slim.theming.frontend.R;
+import com.slimroms.thememanager.R;
 
 import java.util.ArrayList;
 import java.util.Collections;

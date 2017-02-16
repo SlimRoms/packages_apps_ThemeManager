@@ -1,4 +1,4 @@
-package org.slim.theming.frontend.helpers;
+package com.slimroms.thememanager.helpers;
 
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
