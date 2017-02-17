@@ -59,11 +59,9 @@ public class ThemesPackagesFragment extends Fragment {
     private BroadcastReceiver mEventReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ComponentName backendName;
-
+            final ComponentName backendName = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
             switch (intent.getAction()) {
                 case BroadcastHelper.ACTION_BACKEND_CONNECTED:
-                    backendName = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
                     new AsyncTask<ComponentName, Void, List<Theme>>() {
                         @Override
                         protected List<Theme> doInBackground(ComponentName... componentNames) {
@@ -93,7 +91,6 @@ public class ThemesPackagesFragment extends Fragment {
                     }.execute(backendName);
                     break;
                 case BroadcastHelper.ACTION_BACKEND_DISCONNECTED:
-                    backendName = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
                     mAdapter.removeThemes(backendName);
                     mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                     break;
