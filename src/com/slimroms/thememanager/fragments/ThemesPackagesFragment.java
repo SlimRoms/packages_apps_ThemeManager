@@ -102,7 +102,7 @@ public class ThemesPackagesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(getContext())
-                .registerReceiver(mEventReceiver, App.getInstance().getBackendConnectFilter());
+                .registerReceiver(mEventReceiver, BroadcastHelper.getBackendConnectFilter());
     }
 
     @Override

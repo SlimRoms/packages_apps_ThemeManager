@@ -95,7 +95,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-                App.getInstance().getBackendConnectFilter());
+                BroadcastHelper.getBackendConnectFilter());
     }
 
     @Override

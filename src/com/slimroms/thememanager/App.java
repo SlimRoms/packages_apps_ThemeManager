@@ -125,14 +125,4 @@ public class App extends Application {
     public static boolean isDebug() {
         return true;
     }
-
-    private IntentFilter mBackendConnectFilter;
-    public IntentFilter getBackendConnectFilter() {
-        if (mBackendConnectFilter == null) {
-            mBackendConnectFilter = new IntentFilter();
-            mBackendConnectFilter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
-            mBackendConnectFilter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
-        }
-        return mBackendConnectFilter;
-    }
 }
