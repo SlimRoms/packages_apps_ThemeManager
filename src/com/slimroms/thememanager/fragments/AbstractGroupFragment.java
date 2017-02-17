@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.views.LineDividerItemDecoration;
@@ -44,5 +45,7 @@ public abstract class AbstractGroupFragment extends Fragment {
         recycler.setItemAnimator(new DefaultItemAnimator());
         mAdapter = getAdapter();
         recycler.setAdapter(mAdapter);
+        final TextView emptyView = (TextView) view.findViewById(R.id.empty_view);
+        emptyView.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
     }
 }
