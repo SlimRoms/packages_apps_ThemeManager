@@ -21,7 +21,6 @@ import java.util.Set;
 public class App extends Application {
     private static final String TAG = App.class.getSimpleName();
     private static App mInstance;
-    private ComponentName mCurrentBackend;
     private final HashMap<ComponentName, IThemeService> mBackends = new HashMap<>();
     private final List<ServiceConnection> mConnections = new ArrayList<>();
 
@@ -33,10 +32,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-    }
-
-    public ComponentName getCurrentBackend() {
-        return mCurrentBackend;
     }
 
     public void bindBackends() {
@@ -64,7 +59,6 @@ public class App extends Application {
                                 eventIntent.putExtra(BroadcastHelper.EXTRA_BACKEND_NAME, componentName);
                                 LocalBroadcastManager.getInstance(getApplicationContext())
                                         .sendBroadcast(eventIntent);
-                                mCurrentBackend = componentName;
                             }
                             else {
                                 unbindService(this);

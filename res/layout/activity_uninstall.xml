@@ -12,23 +12,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            android:id="@+id/list"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/empty_view"
-            android:text="@string/list_empty"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
-    </RelativeLayout>
+    <include layout="@layout/fragment_list" android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
