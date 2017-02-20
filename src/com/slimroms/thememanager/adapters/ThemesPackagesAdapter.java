@@ -11,11 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.ThemeContentActivity;
-import com.slimroms.thememanager.helpers.Broadcast;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,8 +9,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
-import com.slimroms.thememanager.helpers.Broadcast;
 
 import java.util.ArrayList;
 import java.util.HashMap;

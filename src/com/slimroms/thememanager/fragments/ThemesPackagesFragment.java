@@ -14,12 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.adapters.ThemesPackagesAdapter;
-import com.slimroms.thememanager.helpers.Broadcast;
 import com.slimroms.thememanager.views.LineDividerItemDecoration;
 
 import java.util.ArrayList;

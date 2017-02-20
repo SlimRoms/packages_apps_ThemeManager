@@ -20,13 +20,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-
+import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayGroup;
-
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
-import com.slimroms.thememanager.helpers.Broadcast;
 
 import java.util.HashMap;
 
