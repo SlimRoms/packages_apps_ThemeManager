@@ -89,22 +89,25 @@ public class ThemeContentActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        mFab.setVisibility(App.getInstance().isBackendBusy(mBackendComponent) ? View.GONE : View.VISIBLE);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
+        LocalBroadcastManager.getInstance(this).registerReceiver(mConnectReceiver,
                 Broadcast.getBackendConnectFilter());
+        registerReceiver(mBusyReceiver, Broadcast.getBackendBusyFilter());
     }
 
     @Override
     protected void onStop() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mConnectReceiver);
+        unregisterReceiver(mBusyReceiver);
         super.onStop();
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Broadcast.ACTION_BACKEND_CONNECTED)) {
@@ -122,6 +125,17 @@ public class ThemeContentActivity extends AppCompatActivity {
                     mTheme = null;
                     mLoadingSnackbar.show();
                 }
+            }
+        }
+    };
+
+    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
+                mFab.setVisibility(View.GONE);
+            } else {
+                mFab.setVisibility(View.VISIBLE);
             }
         }
     };
@@ -192,7 +206,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                 new AsyncTask<Void, Void, Boolean>() {
                     @Override
                     protected void onPreExecute() {
-                        mFab.setEnabled(false);
+                        mFab.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -233,8 +247,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                                 ex.printStackTrace();
                             }
                         }
-
-                        mFab.setEnabled(true);
+                        mFab.setVisibility(View.VISIBLE);
                     }
                 }.execute();
             } else {
