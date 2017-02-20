@@ -56,7 +56,7 @@ public class ThemesPackagesFragment extends Fragment {
         mRecycler.setAdapter(mAdapter);
     }
 
-    private BroadcastReceiver mEventReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final ComponentName backendName = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
@@ -99,15 +99,15 @@ public class ThemesPackagesFragment extends Fragment {
     };
 
     @Override
-    public void onResume() {
-        super.onResume();
-        LocalBroadcastManager.getInstance(getContext())
-                .registerReceiver(mEventReceiver, BroadcastHelper.getBackendConnectFilter());
+    public void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mConnectReceiver,
+                BroadcastHelper.getBackendConnectFilter());
     }
 
     @Override
-    public void onPause() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mEventReceiver);
-        super.onPause();
+    public void onStop() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mConnectReceiver);
+        super.onStop();
     }
 }
