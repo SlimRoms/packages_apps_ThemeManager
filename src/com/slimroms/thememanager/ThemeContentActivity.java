@@ -127,9 +127,14 @@ public class ThemeContentActivity extends AppCompatActivity {
     };
 
     private void setupTabLayout() {
-        mLoadingSnackbar.show();
         if (mTheme == null) return;
+        setTitle(mTheme.name);
         new AsyncTask<Theme, Void, OverlayThemeInfo>() {
+            @Override
+            protected void onPreExecute() {
+                mLoadingSnackbar.show();
+            }
+
             @Override
             protected OverlayThemeInfo doInBackground(Theme... themes) {
                 try {
