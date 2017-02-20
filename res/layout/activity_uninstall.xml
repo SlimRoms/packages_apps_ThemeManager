@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/coordinator"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_height="match_parent" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator">
 
-    <android.support.design.widget.AppBarLayout android:layout_height="wrap_content" android:layout_width="match_parent"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.v7.widget.Toolbar android:id="@+id/toolbar" android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" android:background="?attr/colorPrimary"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <android.support.design.widget.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:id="@+id/tabLayout"
+            app:tabMode="scrollable"
+        />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/fragment_list" android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -21,7 +39,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/delete"
         android:layout_gravity="end|bottom"
-        app:layout_behavior="org.slim.theming.frontend.views.ScrollAwareFABBehavior"
+        app:layout_behavior="com.slimroms.thememanager.views.ScrollAwareFABBehavior"
         style="@style/AppTheme.Fab" />
 
 </android.support.design.widget.CoordinatorLayout>
