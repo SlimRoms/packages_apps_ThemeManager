@@ -26,7 +26,7 @@ import com.slimroms.themecore.OverlayGroup;
 
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
-import com.slimroms.thememanager.helpers.BroadcastHelper;
+import com.slimroms.thememanager.helpers.Broadcast;
 
 import java.util.HashMap;
 
@@ -80,7 +80,7 @@ public class UninstallActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-                BroadcastHelper.getBackendConnectFilter());
+                Broadcast.getBackendConnectFilter());
     }
 
     @Override

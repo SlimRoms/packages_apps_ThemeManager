@@ -22,7 +22,7 @@ import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
-import com.slimroms.thememanager.helpers.BroadcastHelper;
+import com.slimroms.thememanager.helpers.Broadcast;
 
 import java.util.ArrayList;
 
@@ -76,8 +76,8 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         });
 
-        mThemePackageName = getIntent().getStringExtra(BroadcastHelper.EXTRA_THEME_PACKAGE);
-        mBackendComponent = getIntent().getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
+        mThemePackageName = getIntent().getStringExtra(Broadcast.EXTRA_THEME_PACKAGE);
+        mBackendComponent = getIntent().getParcelableExtra(Broadcast.EXTRA_BACKEND_NAME);
         if (!TextUtils.isEmpty(mThemePackageName) && mBackendComponent != null) {
             try {
                 if (App.getInstance().getBackend(mBackendComponent) != null) {
@@ -95,7 +95,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
-                BroadcastHelper.getBackendConnectFilter());
+                Broadcast.getBackendConnectFilter());
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(BroadcastHelper.ACTION_BACKEND_CONNECTED)) {
+            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_CONNECTED)) {
                 if (App.getInstance().getBackend(mBackendComponent) != null) {
                     try {
                         App.getInstance().getBackend(mBackendComponent).getThemePackages(new ArrayList<Theme>());

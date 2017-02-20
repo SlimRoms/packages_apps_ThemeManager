@@ -5,7 +5,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MenuTintHelper {
+public class MenuTint {
     public static void tintMenu(Menu menu, int color) {
         for (int i = 0; i < menu.size(); ++i) {
             final MenuItem item = menu.getItem(i);

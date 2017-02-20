@@ -19,7 +19,7 @@ import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.adapters.ThemesPackagesAdapter;
-import com.slimroms.thememanager.helpers.BroadcastHelper;
+import com.slimroms.thememanager.helpers.Broadcast;
 import com.slimroms.thememanager.views.LineDividerItemDecoration;
 
 import java.util.ArrayList;
@@ -59,9 +59,9 @@ public class ThemesPackagesFragment extends Fragment {
     private BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final ComponentName backendName = intent.getParcelableExtra(BroadcastHelper.EXTRA_BACKEND_NAME);
+            final ComponentName backendName = intent.getParcelableExtra(Broadcast.EXTRA_BACKEND_NAME);
             switch (intent.getAction()) {
-                case BroadcastHelper.ACTION_BACKEND_CONNECTED:
+                case Broadcast.ACTION_BACKEND_CONNECTED:
                     new AsyncTask<ComponentName, Void, List<Theme>>() {
                         @Override
                         protected List<Theme> doInBackground(ComponentName... componentNames) {
@@ -90,7 +90,7 @@ public class ThemesPackagesFragment extends Fragment {
                         }
                     }.execute(backendName);
                     break;
-                case BroadcastHelper.ACTION_BACKEND_DISCONNECTED:
+                case Broadcast.ACTION_BACKEND_DISCONNECTED:
                     mAdapter.removeThemes(backendName);
                     mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                     break;
@@ -102,7 +102,7 @@ public class ThemesPackagesFragment extends Fragment {
     public void onStart() {
         super.onStart();
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mConnectReceiver,
-                BroadcastHelper.getBackendConnectFilter());
+                Broadcast.getBackendConnectFilter());
     }
 
     @Override

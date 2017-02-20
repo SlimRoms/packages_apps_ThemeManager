@@ -13,7 +13,7 @@ import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.adapters.OverlayGroupAdapter;
-import com.slimroms.thememanager.helpers.MenuTintHelper;
+import com.slimroms.thememanager.helpers.MenuTint;
 
 import java.util.ArrayList;
 
@@ -79,7 +79,7 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuTintHelper.tintMenu(menu, ContextCompat.getColor(getContext(), android.R.color.white));
+        MenuTint.tintMenu(menu, ContextCompat.getColor(getContext(), android.R.color.white));
     }
 
     @Override

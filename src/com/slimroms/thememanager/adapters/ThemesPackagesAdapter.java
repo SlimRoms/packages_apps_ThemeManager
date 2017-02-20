@@ -15,7 +15,7 @@ import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.ThemeContentActivity;
-import com.slimroms.thememanager.helpers.BroadcastHelper;
+import com.slimroms.thememanager.helpers.Broadcast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,8 +70,8 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
                 final Theme theme = mItems.get(adapterPosition);
                 final Intent intent = new Intent(App.getInstance().getApplicationContext(),
                         ThemeContentActivity.class);
-                intent.putExtra(BroadcastHelper.EXTRA_THEME_PACKAGE, theme.packageName);
-                intent.putExtra(BroadcastHelper.EXTRA_BACKEND_NAME, theme.backendName);
+                intent.putExtra(Broadcast.EXTRA_THEME_PACKAGE, theme.packageName);
+                intent.putExtra(Broadcast.EXTRA_BACKEND_NAME, theme.backendName);
                 ActivityCompat.startActivity(App.getInstance().getApplicationContext(), intent, null);
             }
         });

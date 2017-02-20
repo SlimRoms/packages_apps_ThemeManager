@@ -2,7 +2,7 @@ package com.slimroms.thememanager.helpers;
 
 import android.content.IntentFilter;
 
-public class BroadcastHelper {
+public class Broadcast {
     public static final String ACTION_BACKEND_CONNECTED = "ACTION_BACKEND_CONNECTED";
     public static final String ACTION_BACKEND_DISCONNECTED = "ACTION_BACKEND_DISCONNECTED";
 
@@ -13,8 +13,8 @@ public class BroadcastHelper {
     public static IntentFilter getBackendConnectFilter() {
         if (mBackendConnectFilter == null) {
             mBackendConnectFilter = new IntentFilter();
-            mBackendConnectFilter.addAction(BroadcastHelper.ACTION_BACKEND_CONNECTED);
-            mBackendConnectFilter.addAction(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
+            mBackendConnectFilter.addAction(Broadcast.ACTION_BACKEND_CONNECTED);
+            mBackendConnectFilter.addAction(Broadcast.ACTION_BACKEND_DISCONNECTED);
         }
         return mBackendConnectFilter;
     }

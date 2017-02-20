@@ -3,7 +3,6 @@ package com.slimroms.thememanager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
@@ -11,7 +10,7 @@ import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import com.slimroms.themecore.IThemeService;
-import com.slimroms.thememanager.helpers.BroadcastHelper;
+import com.slimroms.thememanager.helpers.Broadcast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,8 +54,8 @@ public class App extends Application {
                                     mConnections.add(this);
                                 }
                                 Log.i(TAG, componentName.getClassName() + " service connected");
-                                final Intent eventIntent = new Intent(BroadcastHelper.ACTION_BACKEND_CONNECTED);
-                                eventIntent.putExtra(BroadcastHelper.EXTRA_BACKEND_NAME, componentName);
+                                final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_CONNECTED);
+                                eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
                                 LocalBroadcastManager.getInstance(getApplicationContext())
                                         .sendBroadcast(eventIntent);
                             }
@@ -82,8 +81,8 @@ public class App extends Application {
                                 mConnections.remove(this);
                         }
                         Log.i(TAG, componentName.getClassName() + " service disconnected");
-                        final Intent eventIntent = new Intent(BroadcastHelper.ACTION_BACKEND_DISCONNECTED);
-                        eventIntent.putExtra(BroadcastHelper.EXTRA_BACKEND_NAME, componentName);
+                        final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_DISCONNECTED);
+                        eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
                         LocalBroadcastManager.getInstance(getApplicationContext())
                                 .sendBroadcast(eventIntent);
                     }
