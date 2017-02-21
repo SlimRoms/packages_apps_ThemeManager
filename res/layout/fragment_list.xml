@@ -5,7 +5,7 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
+        android:scrollbars="vertical|none"
         android:id="@+id/list"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
@@ -14,7 +14,7 @@
         android:id="@+id/empty_view"
         android:text="@string/list_empty"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-    />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:visibility="gone" />
 
 </RelativeLayout>
