@@ -72,9 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_about:
                 intent = new Intent(this, AboutActivity.class);
                 break;
-            case R.id.nav_settings:
-                //intent = new Intent(this, SettingsActivity.class);
-                break;
             case R.id.nav_uninstall_overlays:
                 intent = new Intent(this, UninstallActivity.class);
                 break;
