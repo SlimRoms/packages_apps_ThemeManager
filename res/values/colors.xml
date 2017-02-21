@@ -4,10 +4,7 @@
     <color name="primary_dark">#00796B</color>
     <color name="primary_light">#4DB6AC</color>
     <color name="accent">#FFAB00</color>
-    <color name="white">#FFFFFF</color>
     <color name="preference_fallback_accent_color">@color/accent</color>
-    <color name="button_disabled">#DFDFDF</color>
-    <color name="button_text_disabled">#A5A5A5</color>
     <color name="divider">#DCDCDC</color>
     <color name="overlay_enabled">#00C853</color>
     <color name="overlay_disabled">#EF6C00</color>
