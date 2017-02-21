@@ -141,18 +141,20 @@ public class BootAnimationAdapter extends RecyclerView.Adapter<BootAnimationAdap
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                     .setView(animationView)
                     .setTitle(mContext.getString(R.string.preview));
-            builder.setNegativeButton(android.R.string.cancel, null);
-            builder.setPositiveButton(mContext.getString(R.string.apply), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    mGroup.selectedStyle = file.getName();
-                    dialogInterface.dismiss();
-                }
-            });
             mProgress.dismiss();
-            animationView.setBootAnimation(file);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            if (file != null) {
+                builder.setPositiveButton(mContext.getString(R.string.apply), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mGroup.selectedStyle = file.getName();
+                        dialogInterface.dismiss();
+                    }
+                });
+                animationView.setBootAnimation(file);
+                animationView.start();
+            }
             builder.show();
-            animationView.start();
         }
     }
 
