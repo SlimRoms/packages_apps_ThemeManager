@@ -33,7 +33,6 @@ public class ThemesPackagesFragment extends Fragment {
     }
 
     private TextView mEmptyView;
-    private RecyclerView mRecycler;
     private ThemesPackagesAdapter mAdapter;
 
     @Nullable
@@ -46,14 +45,15 @@ public class ThemesPackagesFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.nav_themes);
-        mRecycler = (RecyclerView) view.findViewById(R.id.list);
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
+        mEmptyView.setVisibility(View.VISIBLE);
 
-        mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecycler.addItemDecoration(new LineDividerItemDecoration(getContext()));
-        mRecycler.setItemAnimator(new DefaultItemAnimator());
+        final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        recycler.addItemDecoration(new LineDividerItemDecoration(getContext()));
+        recycler.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new ThemesPackagesAdapter(getContext());
-        mRecycler.setAdapter(mAdapter);
+        recycler.setAdapter(mAdapter);
     }
 
     private BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
