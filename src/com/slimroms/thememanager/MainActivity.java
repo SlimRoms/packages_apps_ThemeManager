@@ -1,6 +1,8 @@
 package com.slimroms.thememanager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,20 +14,42 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import com.slimroms.thememanager.fragments.ThemesPackagesFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.getInstance().bindBackends();
+        // check signatures first, do stuff later
+        final int signatureCheckResult = App.getInstance().getPackageManager()
+                .checkSignatures(App.getInstance().getPackageName(), "android");
+        if (signatureCheckResult != PackageManager.SIGNATURE_MATCH && !App.isDebug()) {
+            // found security issue, should finish work
+            Log.i(TAG, App.class.getName() + " encountered a signature mismatch: " + signatureCheckResult);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.signature_mismatch)
+                    .setTitle(R.string.signature_mismatch_title)
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            MainActivity.this.finishAffinity();
+                        }
+                    });
+            builder.create().show();
+        } else {
+            App.getInstance().bindBackends();
+        }
 
         final Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

@@ -8,6 +8,8 @@
     <string name="reboot_required">A restart is required after the overlays have been applied</string>
     <string name="preview">Preview</string>
     <string name="apply">Apply</string>
+    <string name="signature_mismatch_title">Signature mismatch</string>
+    <string name="signature_mismatch">This version of the app does not seem to be properly signed. Slim Theme Manager will close.</string>
 
     <!-- Actions -->
     <string name="action_select_all">Select all</string>
