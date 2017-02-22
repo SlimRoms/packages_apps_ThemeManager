@@ -31,6 +31,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     private Snackbar mLoadingSnackbar;
     private FloatingActionButton mFab;
     private CoordinatorLayout mCoordinator;
+    private TabLayout mTabLayout;
 
     private Theme mTheme;
     private OverlayThemeInfo mOverlayInfo;
@@ -54,14 +55,14 @@ public class ThemeContentActivity extends AppCompatActivity {
         }
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
-        final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
 
-        tabLayout.setupWithViewPager(mViewPager);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition(), true);
@@ -173,6 +174,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                             = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, mTheme, getBaseContext());
                     if (!ThemeContentActivity.this.isDestroyed()) {
                         mViewPager.setAdapter(adapter);
+                        mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
                     } else {
                         if (App.isDebug()) {
                             Log.d("TEST", "isDestroyed");
