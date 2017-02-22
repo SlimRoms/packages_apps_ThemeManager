@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
-import org.apache.commons.io.FileUtils;
 
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
@@ -22,12 +21,11 @@ import com.slimroms.thememanager.views.BootAnimationImageView;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.zip.ZipFile;
 
-public class BootAnimationAdapter extends RecyclerView.Adapter<BootAnimationAdapter.ViewHolder> {
+public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimationGroupAdapter.ViewHolder> {
 
-    private static final String TAG = BootAnimationAdapter.class.getSimpleName();
+    private static final String TAG = BootAnimationGroupAdapter.class.getSimpleName();
 
     private static final String CACHED_SUFFIX = "_bootanimation.zip";
 
@@ -36,7 +34,7 @@ public class BootAnimationAdapter extends RecyclerView.Adapter<BootAnimationAdap
     private String mThemePackage;
     private LayoutInflater mInflater;
 
-    public BootAnimationAdapter(Context context, OverlayGroup group, String themePackage) {
+    public BootAnimationGroupAdapter(Context context, OverlayGroup group, String themePackage) {
         mContext = context;
         mGroup = group;
         mThemePackage = themePackage;
@@ -97,42 +95,16 @@ public class BootAnimationAdapter extends RecyclerView.Adapter<BootAnimationAdap
 
         @Override
         protected ZipFile doInBackground(String... boot) {
-            ZipFile zip;
-            // check if the bootanimation is cached
-            File bootanimFile = new File(mContext.getCacheDir(), mThemePackage + CACHED_SUFFIX);
+            final File bootanimFile = new File(mContext.getCacheDir(), mThemePackage + CACHED_SUFFIX);
             if (App.isDebug()) {
                 Log.d("TEST", "f=" + bootanimFile.getAbsolutePath());
             }
-            if (bootanimFile.exists()) {
-                bootanimFile.delete();
-            }
-            if (!bootanimFile.exists()) {
-                // go easy on cache storage and clear out any previous boot animations
-                clearBootAnimationCache();
-                try {
-                    Context themeContext = mContext.createPackageContext(mThemePackage, 0);
-                    if (App.isDebug()) {
-                        Log.d("TEST", "name=" + boot[0]);
-                    }
-                    InputStream is = themeContext.getAssets().open("bootanimation/" + boot[0]);
-                    try {
-                        FileUtils.copyInputStreamToFile(is, bootanimFile);
-                    }
-                    finally {
-                        is.close();
-                    }
-                } catch (Exception e) {
-                    Log.w(TAG, "Unable to load boot animation", e);
-                    return null;
-                }
-            }
             try {
-                zip = new ZipFile(bootanimFile);
+                return new ZipFile(bootanimFile);
             } catch (IOException e) {
                 Log.w(TAG, "Unable to load boot animation", e);
                 return null;
             }
-            return zip;
         }
 
         @Override
@@ -155,20 +127,6 @@ public class BootAnimationAdapter extends RecyclerView.Adapter<BootAnimationAdap
                 animationView.start();
             }
             builder.show();
-        }
-    }
-
-    private void clearBootAnimationCache() {
-        File cache = mContext.getCacheDir();
-        if (cache.exists()) {
-            for(File f : cache.listFiles()) {
-                // volley stores stuff in cache so don't delete the volley directory
-                if(!f.isDirectory() && f.getName().endsWith(CACHED_SUFFIX)) {
-                    if (!f.delete()) {
-                        Log.e(TAG, "Can't delete " + f.getAbsolutePath());
-                    }
-                }
-            }
         }
     }
 }
