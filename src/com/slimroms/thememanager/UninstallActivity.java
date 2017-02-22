@@ -209,9 +209,10 @@ public class UninstallActivity extends AppCompatActivity {
                 protected void onPostExecute(OverlayThemeInfo info) {
                     if (info != null && !info.groups.isEmpty()) {
                         mOverlayInfo = info;
-                        final ThemeContentPagerAdapter adapter
-                                = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, null, getBaseContext());
                         if (!UninstallActivity.this.isDestroyed()) {
+                            final ThemeContentPagerAdapter adapter
+                                    = new ThemeContentPagerAdapter(getSupportFragmentManager(),
+                                    mOverlayInfo, null, getBaseContext());
                             mViewPager.setAdapter(adapter);
                             mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
                         } else {

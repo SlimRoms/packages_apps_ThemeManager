@@ -170,9 +170,10 @@ public class ThemeContentActivity extends AppCompatActivity {
             protected void onPostExecute(OverlayThemeInfo overlayThemeInfo) {
                 if (overlayThemeInfo != null) {
                     mOverlayInfo = overlayThemeInfo;
-                    final ThemeContentPagerAdapter adapter
-                            = new ThemeContentPagerAdapter(getSupportFragmentManager(), mOverlayInfo, mTheme, getBaseContext());
                     if (!ThemeContentActivity.this.isDestroyed()) {
+                        final ThemeContentPagerAdapter adapter
+                                = new ThemeContentPagerAdapter(getSupportFragmentManager(),
+                                mOverlayInfo, mTheme, getBaseContext());
                         mViewPager.setAdapter(adapter);
                         mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
                     } else {
