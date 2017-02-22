@@ -35,8 +35,7 @@ public class App extends Application {
     }
 
     public void bindBackends() {
-        final String backendAction = "org.slim.theming.BACKEND";
-        final Intent filterIntent = new Intent(backendAction);
+        final Intent filterIntent = new Intent(Broadcast.ACTION_BACKEND_QUERY);
         final List<ResolveInfo> services = getPackageManager().queryIntentServices(filterIntent, 0);
         for (ResolveInfo ri : services) {
             if (ri.serviceInfo.exported) {
@@ -91,7 +90,7 @@ public class App extends Application {
                         }
                     };
 
-                    final Intent backendIntent = new Intent(backendAction);
+                    final Intent backendIntent = new Intent(Broadcast.ACTION_BACKEND_QUERY);
                     backendIntent.setPackage(ri.serviceInfo.packageName);
                     bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
                 } else {
