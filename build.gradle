@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-beta4'
+        classpath 'com.android.tools.build:gradle:2.3.0-rc1'
     }
 }
 
@@ -72,11 +72,11 @@ android {
 
 dependencies {
     compile 'com.slimroms.themecore:core-debug:1.0@aar'
-    compile 'com.android.support:support-v4:25.1.1'
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:preference-v7:25.1.1'
-    compile 'com.android.support:preference-v14:25.1.1'
-    compile 'com.android.support:recyclerview-v7:25.1.1'
+    compile 'com.android.support:support-v4:25.2.0'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:preference-v7:25.2.0'
+    compile 'com.android.support:preference-v14:25.2.0'
+    compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'commons-io:commons-io:2.5'
 }
