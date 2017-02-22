@@ -34,6 +34,13 @@
             android:ellipsize="marquee"
             style="@style/TextAppearance.AppCompat" />
 
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/overlay_theme"
+            android:layout_marginBottom="@dimen/margin_tiny"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            style="@style/TextAppearance.AppCompat" />
+
         <LinearLayout
         android:id="@+id/spinner_layout"
         android:orientation="vertical"

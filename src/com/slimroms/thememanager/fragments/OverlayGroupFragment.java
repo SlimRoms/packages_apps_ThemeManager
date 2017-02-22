@@ -18,16 +18,18 @@ import com.slimroms.thememanager.helpers.MenuTint;
 import java.util.ArrayList;
 
 public class OverlayGroupFragment extends AbstractGroupFragment {
+    private boolean mIsThemeGroup;
 
-    public static OverlayGroupFragment newInstance(OverlayGroup group) {
+    public static OverlayGroupFragment newInstance(OverlayGroup group, boolean isThemeGroup) {
         final OverlayGroupFragment fragment = new OverlayGroupFragment();
         fragment.mOverlayGroup = group;
+        fragment.mIsThemeGroup = isThemeGroup;
         return fragment;
     }
 
     @Override
     public RecyclerView.Adapter getAdapter() {
-        return new OverlayGroupAdapter(getContext(), mOverlayGroup);
+        return new OverlayGroupAdapter(getContext(), mOverlayGroup, mIsThemeGroup);
     }
 
     @Override

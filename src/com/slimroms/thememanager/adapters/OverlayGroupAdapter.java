@@ -25,6 +25,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         ImageView overlayImage;
         LinearLayout overlayFlavors;
         ViewGroup clickContainer;
+        TextView overlayTheme;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -34,6 +35,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
             overlayFlavors = (LinearLayout) itemView.findViewById(R.id.spinner_layout);
             clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
+            overlayTheme = (TextView) itemView.findViewById(R.id.overlay_theme);
         }
     }
 
@@ -44,11 +46,13 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     private final int mEnabledTextColor;
     private final int mDisabledTextColor;
     private final int mSpinnerPadding;
+    private boolean mIsThemeGroup;
 
-    public OverlayGroupAdapter(Context context, OverlayGroup proxy) {
+    public OverlayGroupAdapter(Context context, OverlayGroup proxy, boolean isThemeGroup) {
         mInflater = LayoutInflater.from(context);
         mOverlayGroup = proxy;
         mContext = context;
+        mIsThemeGroup = isThemeGroup;
 
         mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);
         mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
@@ -68,6 +72,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         final Overlay overlay = mOverlayGroup.overlays.get(position);
         holder.overlayName.setText(overlay.overlayName);
         holder.overlayTargetPackage.setText(overlay.targetPackage);
+        holder.overlayTheme.setText(overlay.themePackage
+                + " (" + String.valueOf(overlay.overlayVersion) + ")");
+        holder.overlayTheme.setVisibility(mIsThemeGroup ? View.GONE : View.VISIBLE);
         if (overlay.flavors.size() > 0) {
             holder.overlayFlavors.removeAllViewsInLayout();
             holder.overlayFlavors.setVisibility(View.VISIBLE);
@@ -110,6 +117,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             holder.overlayName.setTextColor(mDefaultTextColors);
             holder.overlayName.setEnabled(overlay.isTargetPackageInstalled);
             holder.overlayTargetPackage.setEnabled(overlay.isTargetPackageInstalled);
+            holder.overlayTheme.setEnabled(overlay.isTargetPackageInstalled);
         }
 
         holder.overlayImage.setImageBitmap(overlay.overlayImage);

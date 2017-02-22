@@ -74,7 +74,7 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
                 return BootAnimationFragment.newInstance(group, mTheme.packageName);
             default:
                 // page with overlays
-                return OverlayGroupFragment.newInstance(group);
+                return OverlayGroupFragment.newInstance(group, mTheme != null);
         }
     }
 
