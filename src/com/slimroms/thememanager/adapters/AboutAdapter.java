@@ -1,6 +1,8 @@
 package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,12 +21,14 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         TextView name;
         TextView description;
         ImageView picture;
+        TextView signature;
 
         ViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.lbl_name);
             description = (TextView) itemView.findViewById(R.id.lbl_description);
             picture = (ImageView) itemView.findViewById(R.id.img_picture);
+            signature = (TextView) itemView.findViewById(R.id.lbl_signature);
         }
     }
 
@@ -32,6 +36,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         public CharSequence name;
         public CharSequence description;
         public Drawable image;
+        public int signatureCheckResult = -1000;
     }
 
     public static final String ITEM_VERSIONS = "ITEM_VERSIONS";
@@ -44,11 +49,17 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     private final List<Object> mItems = new ArrayList<>();
     private final String strVersions;
     private final String strTeam;
+    private final String strSigned;
+    private final String strNotSigned;
+    private final String strWrongSignature;
 
     public AboutAdapter(Context context, List<Object> items) {
         mInflater = LayoutInflater.from(context);
-        strVersions = context.getResources().getString(R.string.versions);
-        strTeam = context.getResources().getString(R.string.the_team);
+        strVersions = context.getString(R.string.versions);
+        strTeam = context.getString(R.string.the_team);
+        strSigned = context.getString(R.string.signed);
+        strNotSigned = context.getString(R.string.not_signed);
+        strWrongSignature = context.getString(R.string.wrong_signature);
         mItems.addAll(items);
     }
 
@@ -82,6 +93,27 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 holder.name.setText(bean.name);
                 holder.description.setText(bean.description);
                 holder.picture.setImageDrawable(bean.image);
+                switch (bean.signatureCheckResult) {
+                    case PackageManager.SIGNATURE_MATCH:
+                        holder.signature.setText(strSigned);
+                        holder.signature.setTextColor(Color.GREEN);
+                        holder.signature.setVisibility(View.VISIBLE);
+                        break;
+                    case PackageManager.SIGNATURE_FIRST_NOT_SIGNED:
+                    case PackageManager.SIGNATURE_NEITHER_SIGNED:
+                        holder.signature.setText(strNotSigned);
+                        holder.signature.setTextColor(Color.RED);
+                        holder.signature.setVisibility(View.VISIBLE);
+                        break;
+                    case PackageManager.SIGNATURE_NO_MATCH:
+                        holder.signature.setText(strWrongSignature);
+                        holder.signature.setTextColor(Color.RED);
+                        holder.signature.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        holder.signature.setVisibility(View.GONE);
+                        break;
+                }
                 break;
         }
     }

@@ -61,6 +61,7 @@ public class AboutFragment extends Fragment {
             bean.image = packageInfo.applicationInfo.loadIcon(pm);
             bean.description = String.format(Locale.getDefault(),
                     "%s (%d)", packageInfo.versionName, packageInfo.versionCode);
+            bean.signatureCheckResult = App.getInstance().checkSignature(packageInfo.packageName);
             result.add(bean);
         }
         catch (PackageManager.NameNotFoundException ex) {
@@ -74,6 +75,7 @@ public class AboutFragment extends Fragment {
                 bean.image = packageInfo.applicationInfo.loadIcon(pm);
                 bean.description = String.format(Locale.getDefault(),
                         "%s (%d)", packageInfo.versionName, packageInfo.versionCode);
+                bean.signatureCheckResult = App.getInstance().checkSignature(packageInfo.packageName);
                 result.add(bean);
             }
             catch (PackageManager.NameNotFoundException ex) {

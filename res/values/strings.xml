@@ -10,6 +10,9 @@
     <string name="apply">Apply</string>
     <string name="signature_mismatch_title">Signature mismatch</string>
     <string name="signature_mismatch">This version of the app does not seem to be properly signed. Slim Theme Manager will close.</string>
+    <string name="signed">Signed</string>
+    <string name="not_signed">Not signed</string>
+    <string name="wrong_signature">Wrong signature</string>
 
     <!-- Actions -->
     <string name="action_select_all">Select all</string>
