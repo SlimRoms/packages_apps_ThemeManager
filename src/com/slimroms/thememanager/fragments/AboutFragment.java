@@ -41,9 +41,9 @@ public class AboutFragment extends Fragment {
         final RecyclerView mRecycler = (RecyclerView) view.findViewById(R.id.list);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecycler.setItemAnimator(new DefaultItemAnimator());
-        final AboutAdapter adapter = new AboutAdapter(getContext());
+        mRecycler.setHasFixedSize(true);
+        final AboutAdapter adapter = new AboutAdapter(getContext(), fillData());
         mRecycler.setAdapter(adapter);
-        adapter.fillData(fillData());
     }
 
     private List<Object> fillData() {

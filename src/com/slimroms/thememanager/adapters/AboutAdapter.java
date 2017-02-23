@@ -45,10 +45,11 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     private final String strVersions;
     private final String strTeam;
 
-    public AboutAdapter(Context context) {
+    public AboutAdapter(Context context, List<Object> items) {
         mInflater = LayoutInflater.from(context);
         strVersions = context.getResources().getString(R.string.versions);
         strTeam = context.getResources().getString(R.string.the_team);
+        mItems.addAll(items);
     }
 
     @Override
@@ -101,10 +102,5 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
             default:
                 return ITEM_TYPE_BEAN;
         }
-    }
-
-    public void fillData(List<Object> itemsToAdd) {
-        mItems.addAll(itemsToAdd);
-        notifyItemRangeInserted(0, itemsToAdd.size());
     }
 }

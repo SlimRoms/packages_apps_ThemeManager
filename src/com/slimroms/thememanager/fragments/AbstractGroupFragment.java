@@ -43,6 +43,7 @@ public abstract class AbstractGroupFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.addItemDecoration(new LineDividerItemDecoration(getContext()));
         recycler.setItemAnimator(new DefaultItemAnimator());
+        recycler.setHasFixedSize(true);
         mAdapter = getAdapter();
         recycler.setAdapter(mAdapter);
         final TextView emptyView = (TextView) view.findViewById(R.id.empty_view);
