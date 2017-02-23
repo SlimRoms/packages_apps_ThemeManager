@@ -27,17 +27,13 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
 
     private static final String TAG = BootAnimationGroupAdapter.class.getSimpleName();
 
-    private static final String CACHED_SUFFIX = "_bootanimation.zip";
-
     private Context mContext;
     private OverlayGroup mGroup;
-    private String mThemePackage;
     private LayoutInflater mInflater;
 
-    public BootAnimationGroupAdapter(Context context, OverlayGroup group, String themePackage) {
+    public BootAnimationGroupAdapter(Context context, OverlayGroup group) {
         mContext = context;
         mGroup = group;
-        mThemePackage = themePackage;
 
         mInflater = LayoutInflater.from(context);
     }
@@ -95,7 +91,7 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
 
         @Override
         protected ZipFile doInBackground(String... boot) {
-            final File bootanimFile = new File(mContext.getCacheDir(), mThemePackage + CACHED_SUFFIX);
+            final File bootanimFile = new File(boot[0]);
             if (App.isDebug()) {
                 Log.d("TEST", "f=" + bootanimFile.getAbsolutePath());
             }

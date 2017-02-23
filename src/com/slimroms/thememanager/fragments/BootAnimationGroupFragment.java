@@ -10,17 +10,14 @@ import com.slimroms.thememanager.adapters.BootAnimationGroupAdapter;
 
 public class BootAnimationGroupFragment extends AbstractGroupFragment {
 
-    private String mThemePackage;
-
-    public static BootAnimationGroupFragment newInstance(OverlayGroup group, String themePackage) {
+    public static BootAnimationGroupFragment newInstance(OverlayGroup group) {
         final BootAnimationGroupFragment fragment = new BootAnimationGroupFragment();
         fragment.mOverlayGroup = group;
-        fragment.mThemePackage = themePackage;
         return fragment;
     }
 
     @Override
     public RecyclerView.Adapter getAdapter() {
-        return new BootAnimationGroupAdapter(getContext(), mOverlayGroup, mThemePackage);
+        return new BootAnimationGroupAdapter(getContext(), mOverlayGroup);
     }
 }
