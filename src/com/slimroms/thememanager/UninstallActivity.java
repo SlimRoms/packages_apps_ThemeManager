@@ -17,7 +17,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import com.slimroms.themecore.Broadcast;
@@ -217,9 +216,6 @@ public class UninstallActivity extends AppCompatActivity {
                             mViewPager.setAdapter(adapter);
                             mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
                         } else {
-                            if (App.isDebug()) {
-                                Log.d("TEST", "isDestroyed");
-                            }
                             UninstallActivity.this.finish();
                             Intent intent = UninstallActivity.this.getIntent();
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

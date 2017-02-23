@@ -42,7 +42,7 @@ public class App extends Application {
                 Log.i(TAG, "Found backend: " + ri.serviceInfo.name);
                 // perform the signature check
                 final int signatureCheckResult = checkSignature(ri.serviceInfo.packageName);
-                if (signatureCheckResult == PackageManager.SIGNATURE_MATCH || isDebug()) {
+                if (signatureCheckResult == PackageManager.SIGNATURE_MATCH) {
                     final ServiceConnection backendConnection = new ServiceConnection() {
                         @Override
                         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -119,10 +119,6 @@ public class App extends Application {
 
     public Set<ComponentName> getBackendNames() {
         return mBackends.keySet();
-    }
-
-    public static boolean isDebug() {
-        return true;
     }
 
     public boolean isBackendBusy(ComponentName backendName) {

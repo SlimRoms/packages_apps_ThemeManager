@@ -1,6 +1,9 @@
 package com.slimroms.thememanager;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -15,7 +18,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import com.slimroms.themecore.Broadcast;
@@ -48,11 +50,6 @@ public class ThemeContentActivity extends AppCompatActivity {
         final ActionBar bar = getSupportActionBar();
         assert bar != null;
         bar.setDisplayHomeAsUpEnabled(true);
-
-        if (App.isDebug()) {
-            Log.d("TEST", "ThemeContentActivity.onCreate");
-            Log.d("TEST", "savedInstanceState=" + (savedInstanceState != null));
-        }
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -177,9 +174,6 @@ public class ThemeContentActivity extends AppCompatActivity {
                         mViewPager.setAdapter(adapter);
                         mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
                     } else {
-                        if (App.isDebug()) {
-                            Log.d("TEST", "isDestroyed");
-                        }
                         ThemeContentActivity.this.finish();
                         Intent intent = ThemeContentActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

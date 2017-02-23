@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         // check signatures first, do stuff later
         final int signatureCheckResult = App.getInstance().checkSignature(getPackageName());
-        if (signatureCheckResult != PackageManager.SIGNATURE_MATCH && !App.isDebug()) {
+        if (signatureCheckResult != PackageManager.SIGNATURE_MATCH) {
             // found security issue, should finish work
             Log.i(TAG, App.class.getName() + " encountered a signature mismatch: " + signatureCheckResult);
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);

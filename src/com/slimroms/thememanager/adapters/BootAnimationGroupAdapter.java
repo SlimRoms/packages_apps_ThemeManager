@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
-
-import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.views.BootAnimationImageView;
 
@@ -92,9 +90,6 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         @Override
         protected ZipFile doInBackground(String... boot) {
             final File bootanimFile = new File(boot[0]);
-            if (App.isDebug()) {
-                Log.d("TEST", "f=" + bootanimFile.getAbsolutePath());
-            }
             try {
                 return new ZipFile(bootanimFile);
             } catch (IOException e) {
