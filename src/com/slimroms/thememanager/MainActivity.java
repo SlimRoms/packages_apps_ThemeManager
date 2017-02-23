@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // check signatures first, do stuff later
-        final int signatureCheckResult = App.getInstance().getPackageManager()
-                .checkSignatures(App.getInstance().getPackageName(), "android");
+        final int signatureCheckResult = App.getInstance().checkSignature(getPackageName());
         if (signatureCheckResult != PackageManager.SIGNATURE_MATCH && !App.isDebug()) {
             // found security issue, should finish work
             Log.i(TAG, App.class.getName() + " encountered a signature mismatch: " + signatureCheckResult);

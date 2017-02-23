@@ -41,8 +41,7 @@ public class App extends Application {
             if (ri.serviceInfo.exported) {
                 Log.i(TAG, "Found backend: " + ri.serviceInfo.name);
                 // perform the signature check
-                final int signatureCheckResult = getPackageManager()
-                        .checkSignatures(getPackageName(), ri.serviceInfo.packageName);
+                final int signatureCheckResult = checkSignature(ri.serviceInfo.packageName);
                 if (signatureCheckResult == PackageManager.SIGNATURE_MATCH || isDebug()) {
                     final ServiceConnection backendConnection = new ServiceConnection() {
                         @Override
@@ -152,4 +151,8 @@ public class App extends Application {
             }
         }
     };
+
+    public int checkSignature(String packageName) {
+        return getPackageManager().checkSignatures(packageName, "android");
+    }
 }
