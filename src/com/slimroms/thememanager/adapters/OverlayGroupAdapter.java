@@ -12,6 +12,7 @@ import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayFlavor;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.helpers.PackageIconLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,7 +121,12 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             holder.overlayTheme.setEnabled(overlay.isTargetPackageInstalled);
         }
 
-        holder.overlayImage.setImageBitmap(overlay.overlayImage);
+        if (overlay.overlayImage != null) {
+            holder.overlayImage.setImageBitmap(overlay.overlayImage);
+        } else {
+            // load target package icon
+            PackageIconLoader.load(mContext, holder.overlayImage, overlay.targetPackage);
+        }
         holder.checked.setChecked(overlay.checked);
         holder.checked.setOnClickListener(new View.OnClickListener() {
             @Override

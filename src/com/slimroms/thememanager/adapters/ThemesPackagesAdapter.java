@@ -16,6 +16,7 @@ import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.ThemeContentActivity;
+import com.slimroms.thememanager.helpers.PackageIconLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +42,12 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         }
     }
 
+    private final Context mContext;
     private final LayoutInflater mInflater;
     private final List<Theme> mItems;
 
     public ThemesPackagesAdapter(Context context) {
+        mContext = context;
         mInflater = LayoutInflater.from(context);
         mItems = new ArrayList<>();
     }
@@ -61,7 +64,6 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         final Theme theme = mItems.get(adapterPosition);
         holder.themeName.setText(theme.name);
         holder.themeDeveloper.setText(theme.themeAuthor);
-        holder.logo.setImageBitmap(theme.themeLogo);
         holder.themeVersion.setText(theme.themeVersion);
         holder.themeType.setText(theme.themeType);
         holder.clickContainer.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +77,12 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
                 ActivityCompat.startActivity(App.getInstance().getApplicationContext(), intent, null);
             }
         });
+        if (theme.themeLogo != null) {
+            holder.logo.setImageBitmap(theme.themeLogo);
+        } else {
+            // load target package icon
+            PackageIconLoader.load(mContext, holder.logo, theme.packageName);
+        }
     }
 
     @Override
