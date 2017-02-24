@@ -46,7 +46,7 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         final Overlay overlay = mGroup.overlays.get(position);
         holder.name.setText(overlay.overlayName);
         holder.icon.setImageBitmap(overlay.overlayImage);
-        holder.setPackage(overlay.targetPackage);
+        holder.setPath(overlay.tag);
     }
 
     @Override
@@ -64,11 +64,11 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
             name = (TextView) view.findViewById(R.id.overlay_name);
         }
 
-        public void setPackage(final String bootanimation) {
+        void setPath(final String path) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new PreviewBootanimation().execute(bootanimation);
+                    new PreviewBootanimation().execute(path);
                 }
             });
         }
@@ -88,12 +88,11 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         }
 
         @Override
-        protected ZipFile doInBackground(String... boot) {
-            final File bootanimFile = new File(boot[0]);
+        protected ZipFile doInBackground(String... path) {
             try {
-                return new ZipFile(bootanimFile);
+                return new ZipFile(new File(path[0]));
             } catch (IOException e) {
-                Log.w(TAG, "Unable to load boot animation", e);
+                Log.w(TAG, "Unable to load boot animation: " + path[0], e);
                 return null;
             }
         }
