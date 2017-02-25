@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.helpers.PackageIconLoader;
 import com.slimroms.thememanager.views.BootAnimationImageView;
 
 import java.io.File;
@@ -45,7 +46,12 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Overlay overlay = mGroup.overlays.get(position);
         holder.name.setText(overlay.overlayName);
-        holder.icon.setImageBitmap(overlay.overlayImage);
+        if (overlay.overlayImage != null) {
+            holder.icon.setImageBitmap(overlay.overlayImage);
+        } else {
+            // load target package icon
+            PackageIconLoader.load(mContext, holder.icon, overlay.targetPackage);
+        }
         holder.setPath(overlay.tag);
     }
 
