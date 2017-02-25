@@ -73,8 +73,10 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         final Overlay overlay = mOverlayGroup.overlays.get(position);
         holder.overlayName.setText(overlay.overlayName);
         holder.overlayTargetPackage.setText(overlay.targetPackage);
-        holder.overlayTheme.setText(overlay.themePackage
-                + " (" + String.valueOf(overlay.overlayVersion) + ")");
+        holder.overlayTheme.setText((overlay.overlayVersion > 0f)
+                ? overlay.themePackage + " (" + String.valueOf(overlay.overlayVersion) + ")"
+                : overlay.themePackage
+        );
         holder.overlayTheme.setVisibility(mIsThemeGroup ? View.GONE : View.VISIBLE);
         if (overlay.flavors.size() > 0) {
             holder.overlayFlavors.removeAllViewsInLayout();
