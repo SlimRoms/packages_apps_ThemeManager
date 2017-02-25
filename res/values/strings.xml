@@ -13,6 +13,7 @@
     <string name="signed">Signed</string>
     <string name="not_signed">Not signed</string>
     <string name="wrong_signature">Wrong signature</string>
+    <string name="apply_wallpaper">Apply this wallpaper?</string>
 
     <!-- Actions -->
     <string name="action_select_all">Select all</string>

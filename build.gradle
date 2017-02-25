@@ -71,6 +71,7 @@ android {
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.slimroms.themecore:core-debug:1.0@aar'
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:appcompat-v7:25.2.0'

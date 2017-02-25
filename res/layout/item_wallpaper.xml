@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="@dimen/wallpaper_height"
-    android:id="@+id/click_container" android:background="?android:attr/selectableItemBackground"
+    android:layout_height="@dimen/wallpaper_height" android:id="@+id/click_container" android:background="?android:attr/selectableItemBackground"
     android:clickable="true">
 
     <ImageView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:id="@+id/overlay_image" />
+        android:id="@+id/overlay_image"
+        android:scaleType="centerCrop" />
 
     <View android:layout_width="match_parent" android:layout_height="match_parent"
         android:background="@drawable/gradient_bottom" />
