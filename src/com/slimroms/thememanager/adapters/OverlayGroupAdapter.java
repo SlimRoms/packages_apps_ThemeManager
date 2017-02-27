@@ -17,6 +17,7 @@ import com.slimroms.thememanager.helpers.PackageIconLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapter.ViewHolder> {
 
@@ -50,6 +51,8 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     private final int mSpinnerPadding;
     private boolean mIsThemeGroup;
 
+    private HashMap<String, String> mThemeNames = new HashMap<>();
+
     public OverlayGroupAdapter(Context context, OverlayGroup proxy, boolean isThemeGroup) {
         mInflater = LayoutInflater.from(context);
         mOverlayGroup = proxy;
@@ -74,12 +77,16 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         final Overlay overlay = mOverlayGroup.overlays.get(position);
         holder.overlayName.setText(overlay.overlayName);
         holder.overlayTargetPackage.setText(overlay.targetPackage);
-        holder.overlayTheme.setText((overlay.overlayVersion > 0f)
-                ? getAppName(overlay.themePackage)
-                        + " (" + String.valueOf(overlay.overlayVersion) + ")"
-                : getAppName(overlay.themePackage)
-        );
-        holder.overlayTheme.setVisibility(mIsThemeGroup ? View.GONE : View.VISIBLE);
+        if (!mIsThemeGroup) {
+            holder.overlayTheme.setText((overlay.overlayVersion > 0f)
+                    ? getAppName(overlay.themePackage)
+                    + " (" + String.valueOf(overlay.overlayVersion) + ")"
+                    : getAppName(overlay.themePackage)
+            );
+            holder.overlayTheme.setVisibility(View.VISIBLE);
+        } else {
+            holder.overlayTheme.setVisibility(View.GONE);
+        }
         if (overlay.flavors.size() > 0) {
             holder.overlayFlavors.removeAllViewsInLayout();
             holder.overlayFlavors.setVisibility(View.VISIBLE);
@@ -156,11 +163,17 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     }
 
     private String getAppName(String packageName) {
+        if (mThemeNames.containsKey(packageName)) {
+            return mThemeNames.get(packageName);
+        }
+
         try {
             ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(packageName, 0);
-            return (String) info.loadLabel(mContext.getPackageManager());
+            String appName = info.loadLabel(mContext.getPackageManager()).toString();
+            mThemeNames.put(packageName, appName);
+            return appName;
         } catch (Exception e) {
+            return packageName;
         }
-        return packageName;
     }
 }
