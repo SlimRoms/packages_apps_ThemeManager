@@ -21,6 +21,7 @@
             android:layout_height="?attr/actionBarSize"
             android:id="@+id/tabLayout"
             app:tabMode="scrollable"
+            android:visibility="gone"
         />
 
     </android.support.design.widget.AppBarLayout>

@@ -72,7 +72,6 @@ public class UninstallActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-        mTabLayout.setVisibility(View.GONE);
 
         setupTabLayout();
     }
