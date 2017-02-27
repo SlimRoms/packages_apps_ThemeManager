@@ -17,6 +17,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import com.slimroms.themecore.Broadcast;
@@ -123,7 +124,7 @@ public class UninstallActivity extends AppCompatActivity {
                     protected Boolean doInBackground(Void... voids) {
                         boolean result = false;
                         try {
-                            for (String key : mOverlayInfo.groups.keySet()){
+                            for (String key : mOverlayInfo.groups.keySet()) {
                                 final ComponentName backendName = mBackendsToUninstallFrom.get(key);
                                 if (backendName != null) {
                                     final IThemeService backend = App.getInstance().getBackend(backendName);

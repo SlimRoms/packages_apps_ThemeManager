@@ -1,6 +1,7 @@
 package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -74,8 +75,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         holder.overlayName.setText(overlay.overlayName);
         holder.overlayTargetPackage.setText(overlay.targetPackage);
         holder.overlayTheme.setText((overlay.overlayVersion > 0f)
-                ? overlay.themePackage + " (" + String.valueOf(overlay.overlayVersion) + ")"
-                : overlay.themePackage
+                ? getAppName(overlay.themePackage)
+                        + " (" + String.valueOf(overlay.overlayVersion) + ")"
+                : getAppName(overlay.themePackage)
         );
         holder.overlayTheme.setVisibility(mIsThemeGroup ? View.GONE : View.VISIBLE);
         if (overlay.flavors.size() > 0) {
@@ -148,6 +150,17 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
 
     @Override
     public int getItemCount() {
+        if (mOverlayGroup == null)
+            return 0;
         return mOverlayGroup.overlays.size();
+    }
+
+    private String getAppName(String packageName) {
+        try {
+            ApplicationInfo info = mContext.getPackageManager().getApplicationInfo(packageName, 0);
+            return (String) info.loadLabel(mContext.getPackageManager());
+        } catch (Exception e) {
+        }
+        return packageName;
     }
 }
