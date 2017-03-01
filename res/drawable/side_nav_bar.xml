@@ -1,4 +1,25 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <gradient android:startColor="@color/primary_dark" android:centerColor="@color/primary"
-        android:endColor="@color/primary_light" android:type="linear" android:angle="135" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!--<item>
+        <shape>
+            <solid android:color="?colorPrimary" />
+        </shape>
+    </item>-->
+
+
+
+    <item>
+        <bitmap android:src="@drawable/img_header_background"/>
+    </item>
+
+    <item>
+        <shape>
+            <gradient
+                android:angle="90"
+                android:endColor="#10000000"
+                android:startColor="#50000000"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>
