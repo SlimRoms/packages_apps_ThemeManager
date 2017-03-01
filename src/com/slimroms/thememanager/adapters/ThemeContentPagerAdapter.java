@@ -11,6 +11,7 @@ import com.slimroms.themecore.Theme;
 
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.fragments.BootAnimationGroupFragment;
+import com.slimroms.thememanager.fragments.FontGroupFragment;
 import com.slimroms.thememanager.fragments.OverlayGroupFragment;
 import com.slimroms.thememanager.fragments.WallpaperGroupFragment;
 
@@ -72,6 +73,9 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
             case OverlayGroup.BOOTANIMATIONS:
                 // page with boot animations
                 return BootAnimationGroupFragment.newInstance(group);
+            case OverlayGroup.FONTS:
+                // page with fonts
+                return FontGroupFragment.newInstance(group);
             default:
                 // page with overlays
                 return OverlayGroupFragment.newInstance(group, mTheme != null);
