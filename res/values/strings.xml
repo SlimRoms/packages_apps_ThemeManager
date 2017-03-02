@@ -15,10 +15,12 @@
     <string name="wrong_signature">Wrong signature</string>
     <string name="apply_wallpaper">Apply this wallpaper?</string>
     <string name="applying">Applying…</string>
+    <string name="select">Select</string>
 
     <!-- Actions -->
     <string name="action_select_all">Select all</string>
     <string name="action_reboot">Restart</string>
+    <string name="action_select_none">Clear selection</string>
 
     <!-- NavDrawer -->
     <string name="nav_themes">Themes</string>

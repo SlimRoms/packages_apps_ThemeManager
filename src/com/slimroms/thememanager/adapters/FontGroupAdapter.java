@@ -1,6 +1,5 @@
 package com.slimroms.thememanager.adapters;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -25,12 +24,14 @@ public class FontGroupAdapter extends RecyclerView.Adapter<FontGroupAdapter.View
         ImageView icon;
         TextView name;
         ViewGroup clickContainer;
+        ImageView check;
 
         ViewHolder(View view) {
             super(view);
             icon = (ImageView) view.findViewById(R.id.overlay_image);
             name = (TextView) view.findViewById(R.id.overlay_name);
             clickContainer = (ViewGroup) view.findViewById(R.id.click_container);
+            check = (ImageView) view.findViewById(R.id.image_check);
         }
     }
 
@@ -74,6 +75,15 @@ public class FontGroupAdapter extends RecyclerView.Adapter<FontGroupAdapter.View
                 final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                         .setTitle(mContext.getString(R.string.preview));
                 builder.setNegativeButton(android.R.string.cancel, null);
+                builder.setPositiveButton(mContext.getString(R.string.select), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        mGroup.clearSelected();
+                        overlay.checked = true;
+                        notifyDataSetChanged();
+                    }
+                });
                 if (typeface != null) {
                     // show the preview
                     final View preview = mInflater.inflate(R.layout.preview_font, null);
@@ -86,36 +96,11 @@ public class FontGroupAdapter extends RecyclerView.Adapter<FontGroupAdapter.View
                     final TextView txtCyrillicBold = (TextView) preview.findViewById(R.id.preview_cyrillic_bold);
                     txtCyrillicBold.setTypeface(typeface, Typeface.BOLD);
                     builder.setView(preview);
-
-                    builder.setPositiveButton(mContext.getString(R.string.apply), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            final ProgressDialog progress = new ProgressDialog(mContext);
-                            progress.setIndeterminate(true);
-                            progress.setCancelable(false);
-                            progress.setMessage(mContext.getString(R.string.applying));
-                            progress.show();
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        //TODO: apply font here
-                                    }
-                                    catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
-                                    finally {
-                                        progress.dismiss();
-                                    }
-                                }
-                            }).start();
-                        }
-                    });
                 }
                 builder.show();
             }
         });
+        holder.check.setVisibility(overlay.checked ? View.VISIBLE : View.GONE);
     }
 
     @Override
