@@ -75,7 +75,7 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
                                     final ProgressDialog progress = new ProgressDialog(mContext);
                                     progress.setIndeterminate(true);
                                     progress.setCancelable(false);
-                                    progress.setMessage(mContext.getString(R.string.loading_short));
+                                    progress.setMessage(mContext.getString(R.string.applying));
                                     progress.show();
                                     new Thread(new Runnable() {
                                         @Override
