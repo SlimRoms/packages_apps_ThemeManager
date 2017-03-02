@@ -87,6 +87,7 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         private Overlay mOverlay;
 
         PreviewBootanimation(@NonNull Overlay overlay) {
+            super();
             mOverlay = overlay;
         }
 
