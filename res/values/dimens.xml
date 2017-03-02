@@ -16,4 +16,5 @@
     <dimen name="fab_elevation">8dp</dimen>
     <dimen name="fab_elevation_pressed">12dp</dimen>
     <dimen name="wallpaper_height">180dp</dimen>
+    <dimen name="preview_font_size">24sp</dimen>
 </resources>

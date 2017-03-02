@@ -1,5 +1,6 @@
 package com.slimroms.thememanager.adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -71,15 +72,44 @@ public class FontGroupAdapter extends RecyclerView.Adapter<FontGroupAdapter.View
                 }
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                        //.setView(animationView)
                         .setTitle(mContext.getString(R.string.preview));
                 builder.setNegativeButton(android.R.string.cancel, null);
                 if (typeface != null) {
+                    // show the preview
+                    final View preview = mInflater.inflate(R.layout.preview_font, null);
+                    final TextView txtLatin = (TextView) preview.findViewById(R.id.preview_latin);
+                    txtLatin.setTypeface(typeface);
+                    final TextView txtLatinBold = (TextView) preview.findViewById(R.id.preview_latin_bold);
+                    txtLatinBold.setTypeface(typeface, Typeface.BOLD);
+                    final TextView txtCyrillic = (TextView) preview.findViewById(R.id.preview_cyrillic);
+                    txtCyrillic.setTypeface(typeface);
+                    final TextView txtCyrillicBold = (TextView) preview.findViewById(R.id.preview_cyrillic_bold);
+                    txtCyrillicBold.setTypeface(typeface, Typeface.BOLD);
+                    builder.setView(preview);
+
                     builder.setPositiveButton(mContext.getString(R.string.apply), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            //TODO: apply font here
                             dialogInterface.dismiss();
+                            final ProgressDialog progress = new ProgressDialog(mContext);
+                            progress.setIndeterminate(true);
+                            progress.setCancelable(false);
+                            progress.setMessage(mContext.getString(R.string.applying));
+                            progress.show();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        //TODO: apply font here
+                                    }
+                                    catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                    finally {
+                                        progress.dismiss();
+                                    }
+                                }
+                            }).start();
                         }
                     });
                 }
