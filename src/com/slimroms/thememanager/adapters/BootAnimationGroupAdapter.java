@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +26,21 @@ import java.util.zip.ZipFile;
 public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimationGroupAdapter.ViewHolder> {
 
     private static final String TAG = BootAnimationGroupAdapter.class.getSimpleName();
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView icon;
+        TextView name;
+        ViewGroup clickContainer;
+        ImageView check;
+
+        ViewHolder(View view) {
+            super(view);
+            icon = (ImageView) view.findViewById(R.id.overlay_image);
+            name = (TextView) view.findViewById(R.id.overlay_name);
+            clickContainer = (ViewGroup) view.findViewById(R.id.click_container);
+            check = (ImageView) view.findViewById(R.id.image_check);
+        }
+    }
 
     private Context mContext;
     private OverlayGroup mGroup;
@@ -52,7 +68,13 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
             // load target package icon
             PackageIconLoader.load(mContext, holder.icon, overlay.targetPackage);
         }
-        holder.setPath(overlay.tag);
+        holder.clickContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new PreviewBootanimation(overlay).execute();
+            }
+        });
+        holder.check.setVisibility(overlay.checked ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -60,33 +82,16 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         return mGroup.overlays.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView icon;
-        TextView name;
-
-        ViewHolder(View view) {
-            super(view);
-            icon = (ImageView) view.findViewById(R.id.overlay_image);
-            name = (TextView) view.findViewById(R.id.overlay_name);
-        }
-
-        void setPath(final String path) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new PreviewBootanimation().execute(path);
-                }
-            });
-        }
-    }
-
-    private class PreviewBootanimation extends AsyncTask<String, Void, ZipFile> {
+    private class PreviewBootanimation extends AsyncTask<Void, Void, ZipFile> {
         private ProgressDialog mProgress;
+        private Overlay mOverlay;
+
+        PreviewBootanimation(@NonNull Overlay overlay) {
+            mOverlay = overlay;
+        }
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-
             mProgress = new ProgressDialog(mContext);
             mProgress.setIndeterminate(true);
             mProgress.setMessage(mContext.getString(R.string.loading_short));
@@ -94,31 +99,33 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         }
 
         @Override
-        protected ZipFile doInBackground(String... path) {
+        protected ZipFile doInBackground(Void... voids) {
             try {
-                return new ZipFile(new File(path[0]));
+                return new ZipFile(new File(mOverlay.tag));
             } catch (IOException e) {
-                Log.w(TAG, "Unable to load boot animation: " + path[0], e);
+                Log.w(TAG, "Unable to load boot animation: " + mOverlay.tag, e);
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(final ZipFile file) {
-            BootAnimationImageView animationView = new BootAnimationImageView(mContext);
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                    .setView(animationView)
-                    .setTitle(mContext.getString(R.string.preview));
             mProgress.dismiss();
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+                    .setTitle(mContext.getString(R.string.preview));
             builder.setNegativeButton(android.R.string.cancel, null);
+            builder.setPositiveButton(mContext.getString(R.string.select), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    mGroup.clearSelected();
+                    mOverlay.checked = true;
+                    notifyDataSetChanged();
+                }
+            });
             if (file != null) {
-                builder.setPositiveButton(mContext.getString(R.string.apply), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mGroup.selectedStyle = file.getName();
-                        dialogInterface.dismiss();
-                    }
-                });
+                BootAnimationImageView animationView = new BootAnimationImageView(mContext);
+                builder.setView(animationView);
                 animationView.setBootAnimation(file);
                 animationView.start();
             }
