@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -54,7 +55,11 @@ public abstract class AbstractGroupFragment extends Fragment {
         mAdapter = getAdapter();
         recycler.setAdapter(mAdapter);
         final TextView emptyView = (TextView) view.findViewById(R.id.empty_view);
+        final TextView emptyViewDescription = (TextView) view.findViewById(R.id.empty_view_description);
+        final ImageView emptyViewImage = (ImageView) view.findViewById(R.id.empty_view_image);
         emptyView.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
+        emptyViewDescription.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
+        emptyViewImage.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
     }
 
     private class ExpandedLinearLayoutManager extends LinearLayoutManager {

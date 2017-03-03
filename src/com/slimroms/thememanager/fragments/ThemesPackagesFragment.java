@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
@@ -33,6 +34,8 @@ public class ThemesPackagesFragment extends Fragment {
     }
 
     private TextView mEmptyView;
+    private TextView mEmptyViewDescription;
+    private ImageView mEmptyViewImage;
     private ThemesPackagesAdapter mAdapter;
 
     @Nullable
@@ -46,7 +49,11 @@ public class ThemesPackagesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.nav_themes);
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
+        mEmptyViewDescription = (TextView) view.findViewById(R.id.empty_view_description);
+        mEmptyViewImage = (ImageView) view.findViewById(R.id.empty_view_image);
         mEmptyView.setVisibility(View.VISIBLE);
+        mEmptyViewDescription.setVisibility(View.VISIBLE);
+        mEmptyViewImage.setVisibility(View.VISIBLE);
 
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -87,12 +94,16 @@ public class ThemesPackagesFragment extends Fragment {
                                 mAdapter.addThemes(themes);
                             }
                             mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                            mEmptyViewImage.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                            mEmptyViewDescription.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                         }
                     }.execute(backendName);
                     break;
                 case Broadcast.ACTION_BACKEND_DISCONNECTED:
                     mAdapter.removeThemes(backendName);
                     mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                    mEmptyViewImage.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                    mEmptyViewDescription.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                     break;
             }
         }
