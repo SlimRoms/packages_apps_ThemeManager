@@ -6,7 +6,8 @@
     <color name="primary_lightstatus">#93e4d0</color>
     <color name="accent">#ff9600</color>
     <color name="preference_fallback_accent_color">@color/accent</color>
-    <color name="divider">#10ffffff</color>
+    <color name="divider">#dcdcdc</color>
+    <color name="divider_dark">#10ffffff</color>
     <color name="overlay_enabled">#2ca253</color>
     <color name="overlay_disabled">#d7083d</color>
 </resources>
