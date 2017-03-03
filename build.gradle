@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-rc1'
+        classpath 'com.android.tools.build:gradle:2.3.0'
     }
 }
 
@@ -32,13 +32,8 @@ android {
     }
 
     buildTypes {
-        debug {
-            debuggable true
-            versionNameSuffix "-DEBUG"
-        }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -49,24 +44,6 @@ android {
             java.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest.xml'
         }
-    }
-
-    lintOptions {
-        abortOnError false
-        disable 'InvalidPackage'
-        disable "ResourceType"
-        disable "MissingTranslation"
-    }
-
-    packagingOptions {
-        exclude 'META-INF/services/javax.annotation.processing.Processor'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'LICENSE.txt'
     }
 }
 
