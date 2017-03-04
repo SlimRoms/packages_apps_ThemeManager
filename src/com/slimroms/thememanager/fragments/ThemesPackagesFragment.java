@@ -13,8 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Theme;
@@ -33,9 +32,7 @@ public class ThemesPackagesFragment extends Fragment {
         return new ThemesPackagesFragment();
     }
 
-    private TextView mEmptyView;
-    private TextView mEmptyViewDescription;
-    private ImageView mEmptyViewImage;
+    private LinearLayout mListNoThemes;
     private ThemesPackagesAdapter mAdapter;
 
     @Nullable
@@ -48,12 +45,8 @@ public class ThemesPackagesFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.nav_themes);
-        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
-        mEmptyViewDescription = (TextView) view.findViewById(R.id.empty_view_description);
-        mEmptyViewImage = (ImageView) view.findViewById(R.id.empty_view_image);
-        mEmptyView.setVisibility(View.VISIBLE);
-        mEmptyViewDescription.setVisibility(View.VISIBLE);
-        mEmptyViewImage.setVisibility(View.VISIBLE);
+        mListNoThemes = (LinearLayout) view.findViewById(R.id.list_no_themes);
+        mListNoThemes.setVisibility(View.VISIBLE);
 
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -93,17 +86,13 @@ public class ThemesPackagesFragment extends Fragment {
                             if (themes != null) {
                                 mAdapter.addThemes(themes);
                             }
-                            mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-                            mEmptyViewImage.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-                            mEmptyViewDescription.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                            mListNoThemes.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                         }
                     }.execute(backendName);
                     break;
                 case Broadcast.ACTION_BACKEND_DISCONNECTED:
                     mAdapter.removeThemes(backendName);
-                    mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-                    mEmptyViewImage.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-                    mEmptyViewDescription.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                    mListNoThemes.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                     break;
             }
         }
