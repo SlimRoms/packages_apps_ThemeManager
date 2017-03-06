@@ -17,7 +17,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import com.slimroms.themecore.Broadcast;
@@ -207,31 +206,47 @@ public class UninstallActivity extends AppCompatActivity {
 
                 @Override
                 protected void onPostExecute(OverlayThemeInfo info) {
-                    if (info != null && !info.groups.isEmpty()) {
-                        mOverlayInfo = info;
-                        if (!UninstallActivity.this.isDestroyed()) {
-                            final ThemeContentPagerAdapter adapter
-                                    = new ThemeContentPagerAdapter(getSupportFragmentManager(),
-                                    mOverlayInfo, null, getBaseContext());
-                            mViewPager.setAdapter(adapter);
-                            mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
-                        } else {
-                            UninstallActivity.this.finish();
-                            Intent intent = UninstallActivity.this.getIntent();
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        }
+                    if (UninstallActivity.this.isDestroyed()) {
+                        UninstallActivity.this.finish();
+                        Intent intent = UninstallActivity.this.getIntent();
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                     } else {
-                        if (mOverlayInfo != null) {
-                            mOverlayInfo.groups.clear();
+                        if (info != null && !info.groups.isEmpty()) {
+                            mOverlayInfo = info;
+                        } else {
+                            if (mOverlayInfo == null) {
+                                mOverlayInfo = new OverlayThemeInfo();
+                            } else {
+                                mOverlayInfo.groups.clear();
+                            }
+                            mOverlayInfo.groups.put(OverlayGroup.OVERLAYS, new OverlayGroup());
+                            synchronized (mBackendsToUninstallFrom) {
+                                mBackendsToUninstallFrom.clear();
+                            }
                         }
-                        synchronized (mBackendsToUninstallFrom) {
-                            mBackendsToUninstallFrom.clear();
-                        }
+
+                        final ThemeContentPagerAdapter adapter =
+                                new ThemeContentPagerAdapter(getSupportFragmentManager(),
+                                        mOverlayInfo, null, getBaseContext());
+                        mViewPager.setAdapter(adapter);
+                        mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
+                        mLoadingSnackbar.dismiss();
                     }
-                    mLoadingSnackbar.dismiss();
                 }
             }.execute();
+        } else {
+            if (mOverlayInfo == null) {
+                mOverlayInfo = new OverlayThemeInfo();
+            } else {
+                mOverlayInfo.groups.clear();
+            }
+            mOverlayInfo.groups.put(OverlayGroup.OVERLAYS, new OverlayGroup());
+            final ThemeContentPagerAdapter adapter
+                    = new ThemeContentPagerAdapter(getSupportFragmentManager(),
+                    mOverlayInfo, null, getBaseContext());
+            mViewPager.setAdapter(adapter);
+            mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
         }
     }
 
