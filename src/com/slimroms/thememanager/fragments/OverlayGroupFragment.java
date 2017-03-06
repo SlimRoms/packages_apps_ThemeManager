@@ -9,6 +9,7 @@ import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -47,6 +48,13 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (!mIsThemeGroup) {
+            final TextView emptyViewTitle = (TextView) view.findViewById(R.id.empty_view_title);
+            emptyViewTitle.setText(R.string.no_installed_overlays_title);
+            final TextView emptyViewDescription = (TextView) view.findViewById(R.id.empty_view_description);
+            emptyViewDescription.setText(R.string.no_installed_overlays_description);
+        }
 
         if (mOverlayGroup != null && mOverlayGroup.styles.size() > 0) {
             final Spinner stylesSpinner = (Spinner) view.findViewById(R.id.spinner);

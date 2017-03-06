@@ -3,6 +3,8 @@
 
     <string name="no_themes_title">No themes found.</string>
     <string name="no_themes_description">Why don\'t you download a new theme?</string>
+    <string name="no_installed_overlays_title">No installed overlays.</string>
+    <string name="no_installed_overlays_description">You should install something first.</string>
     <string name="loading">Loading, please wait…</string>
     <string name="loading_short">Loading…</string>
     <string name="no_overlays_selected">No overlays selected</string>
