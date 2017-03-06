@@ -9,6 +9,6 @@
         android:id="@+id/list"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <include layout="@layout/list_no_themes" android:id="@+id/list_no_themes" android:visibility="gone" />
+    <include layout="@layout/empty_view" android:id="@+id/empty_view" android:visibility="gone" />
 
 </RelativeLayout>

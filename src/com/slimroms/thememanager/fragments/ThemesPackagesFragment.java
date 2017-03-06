@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Theme;
@@ -32,7 +31,7 @@ public class ThemesPackagesFragment extends Fragment {
         return new ThemesPackagesFragment();
     }
 
-    private LinearLayout mListNoThemes;
+    private ViewGroup mEmptyView;
     private ThemesPackagesAdapter mAdapter;
 
     @Nullable
@@ -45,8 +44,8 @@ public class ThemesPackagesFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.nav_themes);
-        mListNoThemes = (LinearLayout) view.findViewById(R.id.list_no_themes);
-        mListNoThemes.setVisibility(View.VISIBLE);
+        mEmptyView = (ViewGroup) view.findViewById(R.id.empty_view);
+        mEmptyView.setVisibility(View.VISIBLE);
 
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -86,13 +85,13 @@ public class ThemesPackagesFragment extends Fragment {
                             if (themes != null) {
                                 mAdapter.addThemes(themes);
                             }
-                            mListNoThemes.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                            mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                         }
                     }.execute(backendName);
                     break;
                 case Broadcast.ACTION_BACKEND_DISCONNECTED:
                     mAdapter.removeThemes(backendName);
-                    mListNoThemes.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
+                    mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
                     break;
             }
         }
