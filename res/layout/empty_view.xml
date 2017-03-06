@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:contentDescription="@string/list_empty"
+        android:contentDescription="@string/no_themes_title"
         android:paddingTop="8dp"
         app:srcCompat="?attr/noThemesDrawable" />
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingBottom="8dp"
-            android:text="@string/list_empty"
+            android:text="@string/no_themes_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         <TextView
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingBottom="8dp"
-            android:text="@string/list_empty_description"
+            android:text="@string/no_themes_description"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </LinearLayout>

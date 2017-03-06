@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Slim Theme Manager</string>
 
-    <string name="list_empty">No themes found.</string>
-    <string name="list_empty_description">Why don\'t you download a new theme?</string>
+    <string name="no_themes_title">No themes found.</string>
+    <string name="no_themes_description">Why don\'t you download a new theme?</string>
     <string name="loading">Loading, please wait…</string>
     <string name="loading_short">Loading…</string>
     <string name="no_overlays_selected">No overlays selected</string>

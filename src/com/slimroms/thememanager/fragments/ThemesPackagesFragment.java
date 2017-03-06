@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Theme;
@@ -45,6 +46,10 @@ public class ThemesPackagesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.nav_themes);
         mEmptyView = (ViewGroup) view.findViewById(R.id.empty_view);
+        final TextView emptyViewTitle = (TextView) view.findViewById(R.id.empty_view_title);
+        emptyViewTitle.setText(R.string.no_themes_title);
+        final TextView emptyViewDescription = (TextView) view.findViewById(R.id.empty_view_description);
+        emptyViewDescription.setText(R.string.no_themes_description);
         mEmptyView.setVisibility(View.VISIBLE);
 
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
