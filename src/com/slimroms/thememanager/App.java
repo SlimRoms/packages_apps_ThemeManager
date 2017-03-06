@@ -2,7 +2,6 @@ package com.slimroms.thememanager;
 
 import android.app.Application;
 import android.content.*;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -40,62 +39,59 @@ public class App extends Application {
         for (ResolveInfo ri : services) {
             if (ri.serviceInfo.exported) {
                 Log.i(TAG, "Found backend: " + ri.serviceInfo.name);
-                // perform the signature check
-                final int signatureCheckResult = checkSignature(ri.serviceInfo.packageName);
-                if (signatureCheckResult == PackageManager.SIGNATURE_MATCH) {
-                    final ServiceConnection backendConnection = new ServiceConnection() {
-                        @Override
-                        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                            final IThemeService backend = IThemeService.Stub.asInterface(iBinder);
-                            try {
-                                // if backend is unusable in current ROM setup, drop the connection
-                                if (backend.isAvailable()) {
-                                    synchronized (mBackends) {
-                                        mBackends.put(componentName, backend);
-                                    }
-                                    synchronized (mConnections) {
-                                        mConnections.add(this);
-                                    }
-                                    Log.i(TAG, componentName.getClassName() + " service connected");
-                                    final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_CONNECTED);
-                                    eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
-                                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(eventIntent);
+                final ServiceConnection backendConnection = new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                        final IThemeService backend = IThemeService.Stub.asInterface(iBinder);
+                        try {
+                            // if backend is unusable in current ROM setup, drop the connection
+                            if (backend.isAvailable()) {
+                                synchronized (mBackends) {
+                                    mBackends.put(componentName, backend);
                                 }
-                                else {
-                                    unbindService(this);
+                                synchronized (mConnections) {
+                                    mConnections.add(this);
                                 }
+                                Log.i(TAG, componentName.getClassName() + " service connected");
+                                final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_CONNECTED);
+                                eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
+                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(eventIntent);
                             }
-                            catch (RemoteException ex) {
-                                Log.e(TAG, componentName.getClassName() + " remote exception");
-                                ex.printStackTrace();
+                            else {
                                 unbindService(this);
                             }
                         }
-
-                        @Override
-                        public void onServiceDisconnected(ComponentName componentName) {
-                            synchronized (mBackends) {
-                                if (mBackends.containsKey(componentName))
-                                    mBackends.remove(componentName);
-                            }
-                            synchronized (mConnections) {
-                                if (mConnections.contains(this))
-                                    mConnections.remove(this);
-                            }
-                            Log.i(TAG, componentName.getClassName() + " service disconnected");
-                            final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_DISCONNECTED);
-                            eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(eventIntent);
+                        catch (RemoteException ex) {
+                            Log.e(TAG, componentName.getClassName() + " remote exception");
+                            ex.printStackTrace();
+                            unbindService(this);
                         }
-                    };
+                    }
 
-                    final Intent backendIntent = new Intent(Broadcast.ACTION_BACKEND_QUERY);
-                    backendIntent.setPackage(ri.serviceInfo.packageName);
+                    @Override
+                    public void onServiceDisconnected(ComponentName componentName) {
+                        synchronized (mBackends) {
+                            if (mBackends.containsKey(componentName))
+                                mBackends.remove(componentName);
+                        }
+                        synchronized (mConnections) {
+                            if (mConnections.contains(this))
+                                mConnections.remove(this);
+                        }
+                        Log.i(TAG, componentName.getClassName() + " service disconnected");
+                        final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_DISCONNECTED);
+                        eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(eventIntent);
+                    }
+                };
+
+                final Intent backendIntent = new Intent(Broadcast.ACTION_BACKEND_QUERY);
+                backendIntent.setPackage(ri.serviceInfo.packageName);
+                try {
                     bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
-                } else {
-                    // found security issue
-                    Log.i(TAG, ri.serviceInfo.name + " encountered a signature mismatch: "
-                            + signatureCheckResult + "! Skipping...");
+                }
+                catch (SecurityException ex) {
+                    Log.i(TAG, ri.serviceInfo.name + " encountered a security exception! Skipping...", ex);
                 }
             }
         }
