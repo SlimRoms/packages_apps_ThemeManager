@@ -41,6 +41,7 @@
     <!-- About activity -->
     <string name="versions">Versions</string>
     <string name="the_team">The Team</string>
+    <string name="credits">Credits</string>
     <string name="about_team_victor">Victor Lapin</string>
     <string name="about_team_griffin">Griffin Millender</string>
     <string name="about_team_cristian">Cristian Giordano</string>
@@ -49,6 +50,8 @@
     <string name="about_developer">Developer</string>
     <string name="about_designer">Designer</string>
     <string name="about_coordinator">Development Coordinator</string>
+    <string name="about_credits_austin">Austin Andrews</string>
+    <string name="about_credits_austin_text">Material design icons</string>
 
     <!-- Font preview -->
     <string name="label_latin">Latin:</string>

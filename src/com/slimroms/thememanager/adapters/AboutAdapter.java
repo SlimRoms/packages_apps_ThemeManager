@@ -41,14 +41,17 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     public static final String ITEM_VERSIONS = "ITEM_VERSIONS";
     public static final String ITEM_TEAM = "ITEM_TEAM";
+    public static final String ITEM_CREDITS = "ITEM_CREDITS";
     private static final int ITEM_TYPE_BEAN = 0;
     private static final int ITEM_TYPE_VERSIONS = 1;
     private static final int ITEM_TYPE_TEAM = 2;
+    private static final int ITEM_TYPE_CREDITS = 3;
 
     private final LayoutInflater mInflater;
     private final List<Object> mItems = new ArrayList<>();
     private final String strVersions;
     private final String strTeam;
+    private final String strCredits;
     private final String strSigned;
     private final String strNotSigned;
     private final String strWrongSignature;
@@ -59,6 +62,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         mInflater = LayoutInflater.from(context);
         strVersions = context.getString(R.string.versions);
         strTeam = context.getString(R.string.the_team);
+        strCredits = context.getString(R.string.credits);
         strSigned = context.getString(R.string.signed);
         strNotSigned = context.getString(R.string.not_signed);
         strWrongSignature = context.getString(R.string.wrong_signature);
@@ -73,6 +77,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         switch (viewType) {
             case ITEM_TYPE_VERSIONS:
             case ITEM_TYPE_TEAM:
+            case ITEM_TYPE_CREDITS:
                 view = mInflater.inflate(R.layout.item_about_category, parent, false);
                 break;
             case ITEM_TYPE_BEAN:
@@ -91,6 +96,9 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 break;
             case ITEM_TYPE_TEAM:
                 holder.name.setText(strTeam);
+                break;
+            case ITEM_TYPE_CREDITS:
+                holder.name.setText(strCredits);
                 break;
             case ITEM_TYPE_BEAN:
                 final Bean bean = (Bean) mItems.get(position);
@@ -135,6 +143,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 return ITEM_TYPE_TEAM;
             case ITEM_VERSIONS:
                 return ITEM_TYPE_VERSIONS;
+            case ITEM_CREDITS:
+                return ITEM_TYPE_CREDITS;
             default:
                 return ITEM_TYPE_BEAN;
         }

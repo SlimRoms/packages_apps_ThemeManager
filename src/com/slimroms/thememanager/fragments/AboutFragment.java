@@ -102,6 +102,13 @@ public class AboutFragment extends Fragment {
         bean.description = getString(R.string.about_designer);
         result.add(bean);
 
+        // show credits
+        result.add(AboutAdapter.ITEM_CREDITS);
+        bean = new AboutAdapter.Bean();
+        bean.name = getString(R.string.about_credits_austin);
+        bean.description = getString(R.string.about_credits_austin_text);
+        result.add(bean);
+
         return result;
     }
 }
