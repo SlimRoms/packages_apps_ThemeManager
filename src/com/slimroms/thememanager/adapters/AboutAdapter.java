@@ -2,8 +2,8 @@ package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +52,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     private final String strSigned;
     private final String strNotSigned;
     private final String strWrongSignature;
+    private final int colorSignatureOk;
+    private final int colorSignatureError;
 
     public AboutAdapter(Context context, List<Object> items) {
         mInflater = LayoutInflater.from(context);
@@ -60,6 +62,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         strSigned = context.getString(R.string.signed);
         strNotSigned = context.getString(R.string.not_signed);
         strWrongSignature = context.getString(R.string.wrong_signature);
+        colorSignatureOk = ContextCompat.getColor(context, R.color.signature_ok);
+        colorSignatureError = ContextCompat.getColor(context, R.color.signature_error);
         mItems.addAll(items);
     }
 
@@ -96,18 +100,18 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 switch (bean.signatureCheckResult) {
                     case PackageManager.SIGNATURE_MATCH:
                         holder.signature.setText(strSigned);
-                        holder.signature.setTextColor(Color.GREEN);
+                        holder.signature.setTextColor(colorSignatureOk);
                         holder.signature.setVisibility(View.VISIBLE);
                         break;
                     case PackageManager.SIGNATURE_FIRST_NOT_SIGNED:
                     case PackageManager.SIGNATURE_NEITHER_SIGNED:
                         holder.signature.setText(strNotSigned);
-                        holder.signature.setTextColor(Color.RED);
+                        holder.signature.setTextColor(colorSignatureError);
                         holder.signature.setVisibility(View.VISIBLE);
                         break;
                     case PackageManager.SIGNATURE_NO_MATCH:
                         holder.signature.setText(strWrongSignature);
-                        holder.signature.setTextColor(Color.RED);
+                        holder.signature.setTextColor(colorSignatureError);
                         holder.signature.setVisibility(View.VISIBLE);
                         break;
                     default:
