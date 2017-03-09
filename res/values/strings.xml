@@ -48,7 +48,7 @@
     <string name="about_architect">Architect and Developer</string>
     <string name="about_developer">Developer</string>
     <string name="about_designer">Designer</string>
-    <string name="about_tester">Tireless Bug Hunter</string>
+    <string name="about_coordinator">Development Coordinator</string>
 
     <!-- Font preview -->
     <string name="label_latin">Latin:</string>
