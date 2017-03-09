@@ -26,7 +26,7 @@ android {
         applicationId "com.slimroms.thememanager"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 1
+        versionCode 10000
         versionName "1.0"
         archivesBaseName = "ThemeManager"
     }
