@@ -34,7 +34,7 @@ LOCAL_RESOURCE_DIR := \
     frameworks/support/v7/appcompat/res \
     frameworks/support/v7/recyclerview/res \
     frameworks/support/design/res \
-    frameworks/opt/theme-core/res
+    frameworks/theme-core/res
 
 LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_CERTIFICATE := platform
