@@ -138,13 +138,14 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     protected Boolean doInBackground(Void... voids) {
                         boolean result = false;
+                        boolean rebootRequired = false;
                         try {
                             for (String key : mOverlayInfo.groups.keySet()) {
                                 final ComponentName backendName = mBackendsToUninstallFrom.get(key);
                                 if (backendName != null) {
                                     final IThemeService backend = App.getInstance().getBackend(backendName);
-                                    backend.uninstallOverlays(mOverlayInfo.groups.get(key));
-                                    result = result | backend.isRebootRequired();
+                                    result = result | backend.uninstallOverlays(mOverlayInfo.groups.get(key));
+                                    rebootRequired = rebootRequired | backend.isRebootRequired();
                                 }
                             }
                         }
@@ -152,7 +153,7 @@ public class UninstallActivity extends AppCompatActivity {
                             ex.printStackTrace();
                             return false;
                         }
-                        return result;
+                        return result && rebootRequired;
                     }
 
                     @Override
