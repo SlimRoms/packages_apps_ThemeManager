@@ -89,14 +89,17 @@ public class BootAnimationImageView extends ImageView {
             return false;
         }
 
-        final AnimationPart part = mAnimationParts.get(0);
-        mCurrentPart = 0;
-        mCurrentPartPlayCount = part.playCount;
-        mFrameDuration = part.frameRateMillis;
+        if (mAnimationParts != null) {
+            final AnimationPart part = mAnimationParts.get(0);
+            mCurrentPart = 0;
+            mCurrentPartPlayCount = part.playCount;
+            mFrameDuration = part.frameRateMillis;
+            getNextFrame();
 
-        getNextFrame();
-
-        return true;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static int calculateInSampleSize(
