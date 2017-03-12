@@ -195,4 +195,15 @@ public class App extends Application {
             return fallback;
         }
     }
+
+    @Override
+    public File getFilesDir() {
+        final File cache = getCacheDir();
+        if (cache.getAbsolutePath().endsWith("/cache")) {
+            // fallback
+            return super.getFilesDir();
+        } else {
+            return cache;
+        }
+    }
 }

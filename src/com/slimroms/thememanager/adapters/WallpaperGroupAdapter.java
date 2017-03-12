@@ -17,13 +17,16 @@
  */
 package com.slimroms.thememanager.adapters;
 
-import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +40,10 @@ import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAdapter.ViewHolder>{
 
@@ -90,40 +96,38 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
                             .setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    final ProgressDialog progress = new ProgressDialog(mContext);
-                                    progress.setIndeterminate(true);
-                                    progress.setCancelable(false);
-                                    progress.setMessage(mContext.getString(R.string.applying));
-                                    progress.show();
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                final WallpaperManager wpmgr = WallpaperManager.getInstance(mContext);
-                                                final Drawable wallpaper = holder.overlayImage.getDrawable();
-                                                Bitmap bitmap = null;
-                                                if (wallpaper instanceof GlideBitmapDrawable) {
-                                                    bitmap = ((GlideBitmapDrawable) wallpaper).getBitmap();
-                                                } else if (wallpaper instanceof BitmapDrawable) {
-                                                    bitmap = ((BitmapDrawable) wallpaper).getBitmap();
-                                                }
+                                    final WallpaperManager wpmgr = WallpaperManager.getInstance(mContext);
+                                    final Drawable wallpaper = holder.overlayImage.getDrawable();
+                                    Bitmap bitmap = null;
+                                    if (wallpaper instanceof GlideBitmapDrawable) {
+                                        bitmap = ((GlideBitmapDrawable) wallpaper).getBitmap();
+                                    } else if (wallpaper instanceof BitmapDrawable) {
+                                        bitmap = ((BitmapDrawable) wallpaper).getBitmap();
+                                    }
 
-                                                if (bitmap != null) {
-                                                    final int width = wpmgr.getDesiredMinimumWidth();
-                                                    final int height = wpmgr.getDesiredMinimumHeight();
-                                                    final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,
-                                                            width, height, false);
-                                                    wpmgr.setBitmap(scaledBitmap);
-                                                }
-                                            }
-                                            catch (IOException ex) {
-                                                ex.printStackTrace();
+                                    if (bitmap != null) {
+                                        final File bmpFile = new File(
+                                                mContext.getApplicationContext().getFilesDir(),
+                                                UUID.randomUUID().toString() + ".jpg");
+                                        try {
+                                            final FileOutputStream fos = new FileOutputStream(bmpFile);
+                                            try {
+                                                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
                                             }
                                             finally {
-                                                progress.dismiss();
+                                                fos.close();
                                             }
+                                            Uri uri = FileProvider.getUriForFile(
+                                                    mContext.getApplicationContext(),
+                                                    mContext.getPackageName(), bmpFile);
+                                            final Intent intent = wpmgr.getCropAndSetWallpaperIntent(uri);
+                                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                            ActivityCompat.startActivity(mContext, intent, null);
                                         }
-                                    }).start();
+                                        catch (IOException ex) {
+                                            ex.printStackTrace();
+                                        }
+                                    }
                                 }
                             })
                             .show();
