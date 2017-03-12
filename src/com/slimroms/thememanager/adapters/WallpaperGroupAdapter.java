@@ -77,7 +77,8 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
         if (overlay.overlayImage != null) {
             holder.overlayImage.setImageBitmap(overlay.overlayImage);
         } else if (overlay.tag != null) {
-            Glide.with(mContext).load(overlay.tag).into(holder.overlayImage);
+            Glide.with(mContext.getApplicationContext())
+                    .load(overlay.tag).into(holder.overlayImage);
         }
         holder.clickContainer.setOnClickListener(new View.OnClickListener() {
             @Override

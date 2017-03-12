@@ -23,10 +23,12 @@ import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
+import android.system.Os;
 import android.util.Log;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -163,5 +165,34 @@ public class App extends Application {
 
     public int checkSignature(String packageName) {
         return getPackageManager().checkSignatures(packageName, "android");
+    }
+
+    @Override
+    public File getCacheDir() {
+        boolean error = false;
+        final File appCache = new File("/data/system/theme/cache/", this.getPackageName());
+
+        if (!appCache.exists()) {
+            if (appCache.mkdir()) {
+                try {
+                    Os.chmod(appCache.getAbsolutePath(), 644);
+                }
+                catch (Exception ex1) {
+                    ex1.printStackTrace();
+                    error = true;
+                }
+            } else {
+                error = true;
+            }
+        }
+
+        if (!error) {
+            Log.i(App.TAG, "Using cache dir: " + appCache.getAbsolutePath());
+            return appCache;
+        } else {
+            final File fallback = super.getCacheDir();
+            Log.i(App.TAG, "Using fallback cache dir: " + fallback.getAbsolutePath());
+            return fallback;
+        }
     }
 }
