@@ -179,6 +179,8 @@ public class UninstallActivity extends AppCompatActivity {
                             });
                             snackbar.show();
                         }
+                        final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
+                        LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         mFab.setVisibility(View.VISIBLE);
                     }
                 }.execute();

@@ -17,15 +17,19 @@
  */
 package com.slimroms.thememanager.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.*;
+import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.views.LineDividerItemDecoration;
@@ -72,6 +76,28 @@ public abstract class AbstractGroupFragment extends Fragment {
         final ViewGroup emptyView = (ViewGroup) view.findViewById(R.id.empty_view);
         emptyView.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRedrawReceiver,
+                Broadcast.getRedrawFilter());
+    }
+
+    @Override
+    public void onDetach() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRedrawReceiver);
+        super.onDetach();
+    }
+
+    private BroadcastReceiver mRedrawReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    };
 
     private class ExpandedLinearLayoutManager extends LinearLayoutManager {
         private WindowManager mWindowManager;
