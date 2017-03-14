@@ -25,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.text.TextUtils;
 import android.widget.*;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayFlavor;
@@ -95,9 +96,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         holder.overlayName.setText(overlay.overlayName);
         holder.overlayTargetPackage.setText(overlay.targetPackage);
         if (!mIsThemeGroup) {
-            holder.overlayTheme.setText((overlay.overlayVersion > 0f)
+            holder.overlayTheme.setText((!TextUtils.isEmpty(overlay.overlayVersion))
                     ? getAppName(overlay.themePackage)
-                    + " (" + String.valueOf(overlay.overlayVersion) + ")"
+                    + " (" + overlay.overlayVersion + ")"
                     : getAppName(overlay.themePackage)
             );
             holder.overlayTheme.setVisibility(View.VISIBLE);
