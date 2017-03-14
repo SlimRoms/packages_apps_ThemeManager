@@ -139,14 +139,12 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     protected Boolean doInBackground(Void... voids) {
                         boolean result = false;
-                        boolean rebootRequired = false;
                         try {
                             for (String key : mOverlayInfo.groups.keySet()) {
                                 final ComponentName backendName = mBackendsToUninstallFrom.get(key);
                                 if (backendName != null) {
                                     final IThemeService backend = App.getInstance().getBackend(backendName);
-                                    result = result | backend.uninstallOverlays(mOverlayInfo.groups.get(key));
-                                    rebootRequired = rebootRequired | backend.isRebootRequired();
+                                    result |=  backend.uninstallOverlays(mOverlayInfo.groups.get(key));
                                 }
                             }
                         }
@@ -154,35 +152,16 @@ public class UninstallActivity extends AppCompatActivity {
                             ex.printStackTrace();
                             return false;
                         }
-                        return result && rebootRequired;
+                        return result;
                     }
 
                     @Override
                     protected void onPostExecute(Boolean aBoolean) {
                         if (aBoolean) {
-                            final Snackbar snackbar = Snackbar.make(mCoordinator, R.string.reboot_required,
-                                    Snackbar.LENGTH_INDEFINITE);
-                            snackbar.setAction(R.string.action_reboot, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    try {
-                                        for (ComponentName backendName : App.getInstance().getBackendNames()) {
-                                            final IThemeService backend = App.getInstance().getBackend(backendName);
-                                            if (backend != null) {
-                                                backend.reboot();
-                                            }
-                                        }
-                                    }
-                                    catch (RemoteException ex) {
-                                        ex.printStackTrace();
-                                    }
-                                }
-                            });
-                            snackbar.show();
-                        }
-                        final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
-                        if (!handleReboot()) {
-                            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
+                            if (!handleReboot()) {
+                                final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
+                                LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
+                            }
                         }
                         mFab.setVisibility(View.VISIBLE);
                     }
@@ -307,6 +286,7 @@ public class UninstallActivity extends AppCompatActivity {
                 snackbar.show();
             }
         } catch (RemoteException exc) {
+            exc.printStackTrace();
         }
         return reboot;
     }
