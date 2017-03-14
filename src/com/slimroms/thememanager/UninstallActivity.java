@@ -42,6 +42,7 @@ import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UninstallActivity extends AppCompatActivity {
@@ -180,7 +181,9 @@ public class UninstallActivity extends AppCompatActivity {
                             snackbar.show();
                         }
                         final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
-                        LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
+                        if (!handleReboot()) {
+                            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
+                        }
                         mFab.setVisibility(View.VISIBLE);
                     }
                 }.execute();
@@ -230,6 +233,7 @@ public class UninstallActivity extends AppCompatActivity {
                         UninstallActivity.this.finish();
                         Intent intent = UninstallActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("reboot", 1);
                         startActivity(intent);
                     } else {
                         if (info != null && !info.groups.isEmpty()) {
@@ -252,6 +256,9 @@ public class UninstallActivity extends AppCompatActivity {
                         mViewPager.setAdapter(adapter);
                         mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
                         mLoadingSnackbar.dismiss();
+                        if (getIntent().getIntExtra("reboot", 0) == 1) {
+                            handleReboot();
+                        }
                     }
                 }
             }.execute();
@@ -268,6 +275,40 @@ public class UninstallActivity extends AppCompatActivity {
             mViewPager.setAdapter(adapter);
             mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private boolean handleReboot() {
+        boolean reboot = false;
+        try {
+            ArrayList<ComponentName> backends = new ArrayList<>();
+            for (ComponentName cmp : mBackendsToUninstallFrom.values()) {
+                final IThemeService backend = App.getInstance().getBackend(cmp);
+                if (backend != null) {
+                    reboot |= backend.isRebootRequired();
+                    backends.add(cmp);
+                }
+            }
+            if (reboot) {
+                final Snackbar snackbar = Snackbar.make(mCoordinator, R.string.reboot_required,
+                        Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction(R.string.action_reboot, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            for (ComponentName cmpn : backends) {
+                                IThemeService backend = App.getInstance().getBackend(cmpn);
+                                backend.reboot();
+                            }
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                snackbar.show();
+            }
+        } catch (RemoteException exc) {
+        }
+        return reboot;
     }
 
     @Override

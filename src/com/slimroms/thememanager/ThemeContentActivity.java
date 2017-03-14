@@ -104,6 +104,27 @@ public class ThemeContentActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+
+        try {
+            final IThemeService backend = App.getInstance().getBackend(mBackendComponent);
+            if (backend != null && backend.isRebootRequired()
+                    && (getIntent().getIntExtra("reboot", 0) == 1)) {
+                final Snackbar snackbar = Snackbar.make(mCoordinator, R.string.reboot_required,
+                        Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction(R.string.action_reboot, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            App.getInstance().getBackend(mBackendComponent).reboot();
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                snackbar.show();
+            }
+        } catch (RemoteException exc) {
+        }
         mFab.setVisibility(App.getInstance().isBackendBusy(mBackendComponent) ? View.GONE : View.VISIBLE);
     }
 
@@ -194,6 +215,14 @@ public class ThemeContentActivity extends AppCompatActivity {
                         ThemeContentActivity.this.finish();
                         Intent intent = ThemeContentActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        try {
+                            final IThemeService backend =
+                                 App.getInstance().getBackend(mTheme.backendName);
+                            if (backend != null && backend.isRebootRequired()) {
+                                intent.putExtra("reboot", 1);
+                            }
+                        } catch (Exception e) {
+                        }
                         startActivity(intent);
                     }
                 }
