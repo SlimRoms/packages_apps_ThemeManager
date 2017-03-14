@@ -280,7 +280,7 @@ public class UninstallActivity extends AppCompatActivity {
     private boolean handleReboot() {
         boolean reboot = false;
         try {
-            ArrayList<ComponentName> backends = new ArrayList<>();
+            final ArrayList<ComponentName> backends = new ArrayList<>();
             for (ComponentName cmp : mBackendsToUninstallFrom.values()) {
                 final IThemeService backend = App.getInstance().getBackend(cmp);
                 if (backend != null) {
