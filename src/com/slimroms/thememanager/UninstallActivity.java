@@ -43,6 +43,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayGroup;
@@ -60,6 +61,7 @@ public class UninstallActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private FloatingActionButton mFab;
     private TabLayout mTabLayout;
+    private ViewGroup mOngoingView;
 
     private static boolean sFrozen = false;
 
@@ -83,6 +85,7 @@ public class UninstallActivity extends AppCompatActivity {
         mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
+        mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -116,6 +119,13 @@ public class UninstallActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!sFrozen) {
+            super.onBackPressed();
+        }
+    }
+
     private final BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -130,8 +140,8 @@ public class UninstallActivity extends AppCompatActivity {
                 new AsyncTask<Void, Void, Boolean>() {
                     @Override
                     protected void onPreExecute() {
-                        mFab.setVisibility(View.GONE);
                         sFrozen = true;
+                        mOngoingView.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -160,7 +170,7 @@ public class UninstallActivity extends AppCompatActivity {
                             final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         }
-                        mFab.setVisibility(View.VISIBLE);
+                        mOngoingView.setVisibility(View.GONE);
                     }
                 }.execute();
             } else {

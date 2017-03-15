@@ -19,4 +19,5 @@
 <resources>
     <attr name="colorDivider" format="reference" />
     <attr name="noThemesDrawable" format="reference" />
+    <attr name="ongoingDrawable" format="reference" />
 </resources>

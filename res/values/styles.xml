@@ -28,10 +28,12 @@
     <style name="SlimThemeEngine.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorDivider">@color/divider_dark</item>
         <item name="noThemesDrawable">@drawable/img_no_themes_dark</item>
+        <item name="ongoingDrawable">@drawable/img_no_themes_dark</item>
     </style>
     <style name="SlimThemeEngine.Light" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorDivider">@color/divider</item>
         <item name="noThemesDrawable">@drawable/img_no_themes_light</item>
+        <item name="ongoingDrawable">@drawable/img_no_themes_light</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

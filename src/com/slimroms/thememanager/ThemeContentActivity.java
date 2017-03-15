@@ -45,6 +45,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import com.slimroms.themecore.*;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
@@ -56,11 +57,13 @@ public class ThemeContentActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private CoordinatorLayout mCoordinator;
     private TabLayout mTabLayout;
+    private ViewGroup mOngoingView;
 
     private Theme mTheme;
     private OverlayThemeInfo mOverlayInfo;
     private String mThemePackageName;
     private ComponentName mBackendComponent;
+    private boolean mIsBusy = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class ThemeContentActivity extends AppCompatActivity {
         mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
+        mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -164,6 +168,13 @@ public class ThemeContentActivity extends AppCompatActivity {
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mConnectReceiver);
         super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mIsBusy) {
+            super.onBackPressed();
+        }
     }
 
     private final BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
@@ -276,7 +287,8 @@ public class ThemeContentActivity extends AppCompatActivity {
                 new AsyncTask<Void, Void, Boolean>() {
                     @Override
                     protected void onPreExecute() {
-                        mFab.setVisibility(View.GONE);
+                        mIsBusy = true;
+                        mOngoingView.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -329,7 +341,9 @@ public class ThemeContentActivity extends AppCompatActivity {
                         mOverlayInfo.clearSelection();
                         final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                         LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
-                        mFab.setVisibility(View.VISIBLE);
+
+                        mOngoingView.setVisibility(View.GONE);
+                        mIsBusy = false;
                     }
                 }.execute();
             } else {
