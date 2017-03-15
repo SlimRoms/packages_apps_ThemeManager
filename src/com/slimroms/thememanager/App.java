@@ -44,7 +44,6 @@ public class App extends Application {
     private static App mInstance;
     private final HashMap<ComponentName, IThemeService> mBackends = new HashMap<>();
     private final List<ServiceConnection> mConnections = new ArrayList<>();
-    private final List<ComponentName> mBusyBackends = new ArrayList<>();
 
     public static App getInstance() {
         return mInstance;
@@ -54,7 +53,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-        registerReceiver(mBusyReceiver, Broadcast.getBackendBusyFilter());
     }
 
     public void bindBackends() {
@@ -140,33 +138,6 @@ public class App extends Application {
     public Set<ComponentName> getBackendNames() {
         return mBackends.keySet();
     }
-
-    public boolean isBackendBusy(ComponentName backendName) {
-        return backendName != null && mBusyBackends.contains(backendName);
-    }
-
-    public boolean isAnyBackendBusy() {
-        return !mBusyBackends.isEmpty();
-    }
-
-    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final ComponentName backendName = intent.getParcelableExtra(Broadcast.EXTRA_BACKEND_NAME);
-            if (backendName != null) {
-                if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY) && !mBusyBackends.contains(backendName)) {
-                    synchronized (mBusyBackends) {
-                        mBusyBackends.add(backendName);
-                    }
-                }
-                else if (intent.getAction().equals(Broadcast.ACTION_BACKEND_NOT_BUSY)) {
-                    synchronized (mBusyBackends) {
-                        mBusyBackends.remove(backendName);
-                    }
-                }
-            }
-        }
-    };
 
     public int checkSignature(String packageName) {
         return getPackageManager().checkSignatures(packageName, "android");

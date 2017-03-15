@@ -83,7 +83,6 @@ public class UninstallActivity extends AppCompatActivity {
         mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
-        mFab.setVisibility(App.getInstance().isAnyBackendBusy() ? View.GONE : View.VISIBLE);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -109,13 +108,11 @@ public class UninstallActivity extends AppCompatActivity {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver(mConnectReceiver,
                 Broadcast.getBackendConnectFilter());
-        registerReceiver(mBusyReceiver, Broadcast.getBackendBusyFilter());
     }
 
     @Override
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mConnectReceiver);
-        unregisterReceiver(mBusyReceiver);
         super.onStop();
     }
 
@@ -123,17 +120,6 @@ public class UninstallActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             setupTabLayout();
-        }
-    };
-
-    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
-                mFab.setVisibility(View.GONE);
-            } else {
-                mFab.setVisibility(View.VISIBLE);
-            }
         }
     };
 

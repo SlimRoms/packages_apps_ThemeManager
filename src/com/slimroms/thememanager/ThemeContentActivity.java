@@ -151,8 +151,6 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         } catch (RemoteException exc) {
         }
-        mFab.setVisibility(App.getInstance().isBackendBusy(mBackendComponent)
-                ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -160,13 +158,11 @@ public class ThemeContentActivity extends AppCompatActivity {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver(mConnectReceiver,
                 Broadcast.getBackendConnectFilter());
-        registerReceiver(mBusyReceiver, Broadcast.getBackendBusyFilter());
     }
 
     @Override
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mConnectReceiver);
-        unregisterReceiver(mBusyReceiver);
         super.onStop();
     }
 
@@ -188,17 +184,6 @@ public class ThemeContentActivity extends AppCompatActivity {
                     mTheme = null;
                     mLoadingSnackbar.show();
                 }
-            }
-        }
-    };
-
-    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
-                mFab.setVisibility(View.GONE);
-            } else {
-                mFab.setVisibility(View.VISIBLE);
             }
         }
     };
