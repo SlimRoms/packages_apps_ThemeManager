@@ -46,6 +46,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.slimroms.themecore.*;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
@@ -58,6 +59,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     private CoordinatorLayout mCoordinator;
     private TabLayout mTabLayout;
     private ViewGroup mOngoingView;
+    private TextView mOngoingMessageView;
 
     private Theme mTheme;
     private OverlayThemeInfo mOverlayInfo;
@@ -83,6 +85,7 @@ public class ThemeContentActivity extends AppCompatActivity {
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
         mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
+        mOngoingMessageView = (TextView) findViewById(R.id.ongoing_message);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -162,11 +165,13 @@ public class ThemeContentActivity extends AppCompatActivity {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver(mConnectReceiver,
                 Broadcast.getBackendConnectFilter());
+        registerReceiver(mBusyReceiver, Broadcast.getBackendBusyFilter());
     }
 
     @Override
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mConnectReceiver);
+        unregisterReceiver(mBusyReceiver);
         super.onStop();
     }
 
@@ -195,6 +200,18 @@ public class ThemeContentActivity extends AppCompatActivity {
                     mTheme = null;
                     mLoadingSnackbar.show();
                 }
+            }
+        }
+    };
+
+    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
+                final String message = intent.getStringExtra(Broadcast.EXTRA_MESSAGE);
+                mOngoingMessageView.setText(message);
+            } else {
+                mOngoingMessageView.setText(null);
             }
         }
     };

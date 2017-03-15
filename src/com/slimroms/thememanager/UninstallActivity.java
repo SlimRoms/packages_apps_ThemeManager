@@ -44,6 +44,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayGroup;
@@ -62,6 +63,7 @@ public class UninstallActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private TabLayout mTabLayout;
     private ViewGroup mOngoingView;
+    private TextView mOngoingMessageView;
 
     private static boolean sFrozen = false;
 
@@ -86,6 +88,7 @@ public class UninstallActivity extends AppCompatActivity {
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
         mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
+        mOngoingMessageView = (TextView) findViewById(R.id.ongoing_message);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -111,11 +114,13 @@ public class UninstallActivity extends AppCompatActivity {
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver(mConnectReceiver,
                 Broadcast.getBackendConnectFilter());
+        registerReceiver(mBusyReceiver, Broadcast.getBackendBusyFilter());
     }
 
     @Override
     protected void onStop() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mConnectReceiver);
+        unregisterReceiver(mBusyReceiver);
         super.onStop();
     }
 
@@ -175,6 +180,18 @@ public class UninstallActivity extends AppCompatActivity {
                 }.execute();
             } else {
                 Snackbar.make(mCoordinator, R.string.no_overlays_selected, Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    };
+
+    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
+                final String message = intent.getStringExtra(Broadcast.EXTRA_MESSAGE);
+                mOngoingMessageView.setText(message);
+            } else {
+                mOngoingMessageView.setText(null);
             }
         }
     };
