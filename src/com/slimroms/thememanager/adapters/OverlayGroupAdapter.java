@@ -110,7 +110,6 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             holder.overlayFlavors.setVisibility(View.VISIBLE);
             for (final OverlayFlavor flavor : overlay.flavors.values()) {
                 Spinner spinner = (Spinner) View.inflate(mContext, R.layout.flavor_spinner, null);
-                spinner.setTag(flavor);
                 spinner.setPadding(0, mSpinnerPadding, 0, mSpinnerPadding);
                 final ArrayList<String> array = new ArrayList<>();
                 array.addAll(flavor.flavors.values());
@@ -123,9 +122,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        overlay.clearSelectedFlavors();
-                        OverlayFlavor flavor1 = (OverlayFlavor) adapterView.getTag();
-                        flavor1.selected = array.get(i);
+                        flavor.selected = array.get(i);
                     }
 
                     @Override
