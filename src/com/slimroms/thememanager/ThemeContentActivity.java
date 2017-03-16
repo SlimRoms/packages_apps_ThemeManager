@@ -25,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,10 +38,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import com.slimroms.themecore.Broadcast;
-import com.slimroms.themecore.IThemeService;
-import com.slimroms.themecore.OverlayThemeInfo;
-import com.slimroms.themecore.Theme;
+import com.slimroms.themecore.*;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
 import java.util.ArrayList;
@@ -243,9 +241,24 @@ public class ThemeContentActivity extends AppCompatActivity {
     }
 
     private View.OnClickListener mFabListener = new View.OnClickListener() {
+        @StringRes int messageId;
+
         @Override
         public void onClick(View view) {
-            if (mOverlayInfo.getSelectedCount() > 0) {
+            messageId = -1;
+
+            if (mOverlayInfo.getSelectedCount() == 0) {
+                messageId = R.string.no_overlays_selected;
+            } else {
+                // see if there is any uncompilable style selected
+                for (OverlayGroup group : mOverlayInfo.groups.values()) {
+                    if (!group.styles.isEmpty() && group.selectedStyle.isEmpty()) {
+                        messageId = R.string.no_style_selected;
+                    }
+                }
+            }
+
+            if (messageId == -1) {
                 new AsyncTask<Void, Void, Boolean>() {
                     @Override
                     protected void onPreExecute() {
@@ -297,7 +310,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                     }
                 }.execute();
             } else {
-                Snackbar.make(mCoordinator, R.string.no_overlays_selected, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mCoordinator, messageId, Snackbar.LENGTH_SHORT).show();
             }
         }
     };
