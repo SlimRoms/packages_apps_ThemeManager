@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 LOCAL_PATH := $(call my-dir)
+LOCAL_ASSETS_TEMP_PATH := $(call intermediates-dir-for,APPS,ThemeManager,,COMMON)/assets
 
 include $(CLEAR_VARS)
 LOCAL_MODULE_TAGS := optional
@@ -26,7 +27,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-design \
     android-support-v7-recyclerview \
     glide \
-    theme-core
+    theme-core \
+    lottie
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
@@ -37,6 +39,7 @@ LOCAL_RESOURCE_DIR := \
     frameworks/support/design/res \
     frameworks/theme-core/res
 
+LOCAL_ASSET_DIR := $(LOCAL_ASSETS_TEMP_PATH)
 LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_CERTIFICATE := platform
 LOCAL_PACKAGE_NAME := ThemeManager

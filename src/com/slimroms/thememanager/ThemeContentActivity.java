@@ -47,6 +47,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.airbnb.lottie.LottieAnimationView;
 import com.slimroms.themecore.*;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
@@ -60,6 +61,7 @@ public class ThemeContentActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewGroup mOngoingView;
     private TextView mOngoingMessageView;
+    private LottieAnimationView mOngoingAnimationView;
 
     private Theme mTheme;
     private OverlayThemeInfo mOverlayInfo;
@@ -86,6 +88,7 @@ public class ThemeContentActivity extends AppCompatActivity {
         mFab.setOnClickListener(mFabListener);
         mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
         mOngoingMessageView = (TextView) findViewById(R.id.ongoing_message);
+        mOngoingAnimationView = (LottieAnimationView) findViewById(R.id.ongoing_image);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -306,6 +309,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                     protected void onPreExecute() {
                         mIsBusy = true;
                         mOngoingView.setVisibility(View.VISIBLE);
+                        mOngoingAnimationView.playAnimation();
                     }
 
                     @Override
@@ -359,6 +363,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                         final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                         LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
 
+                        mOngoingAnimationView.pauseAnimation();
                         mOngoingView.setVisibility(View.GONE);
                         mIsBusy = false;
                     }

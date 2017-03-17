@@ -45,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.airbnb.lottie.LottieAnimationView;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayGroup;
@@ -64,6 +65,7 @@ public class UninstallActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewGroup mOngoingView;
     private TextView mOngoingMessageView;
+    private LottieAnimationView mOngoingAnimationView;
 
     private static boolean sFrozen = false;
 
@@ -89,6 +91,7 @@ public class UninstallActivity extends AppCompatActivity {
         mFab.setOnClickListener(mFabListener);
         mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
         mOngoingMessageView = (TextView) findViewById(R.id.ongoing_message);
+        mOngoingAnimationView = (LottieAnimationView) findViewById(R.id.ongoing_image);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -147,6 +150,7 @@ public class UninstallActivity extends AppCompatActivity {
                     protected void onPreExecute() {
                         sFrozen = true;
                         mOngoingView.setVisibility(View.VISIBLE);
+                        mOngoingAnimationView.playAnimation();
                     }
 
                     @Override
@@ -175,6 +179,7 @@ public class UninstallActivity extends AppCompatActivity {
                             final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         }
+                        mOngoingAnimationView.pauseAnimation();
                         mOngoingView.setVisibility(View.GONE);
                     }
                 }.execute();
