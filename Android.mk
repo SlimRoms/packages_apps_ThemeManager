@@ -16,9 +16,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 LOCAL_PATH := $(call my-dir)
-LOCAL_ASSETS_TEMP_PATH := $(call intermediates-dir-for,APPS,ThemeManager,,COMMON)/assets
-
 include $(CLEAR_VARS)
+
+LOCAL_STATIC_JAVA_AAR_LIBRARIES := \
+    lottie
+
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
@@ -27,8 +29,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-design \
     android-support-v7-recyclerview \
     glide \
-    theme-core \
-    lottie
+    theme-core
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
@@ -39,11 +40,23 @@ LOCAL_RESOURCE_DIR := \
     frameworks/support/design/res \
     frameworks/theme-core/res
 
-LOCAL_ASSET_DIR := $(LOCAL_ASSETS_TEMP_PATH)
+LOCAL_ASSET_FILES += $(call find-subdir-assets)
 LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_CERTIFICATE := platform
 LOCAL_PACKAGE_NAME := ThemeManager
+
 LOCAL_AAPT_FLAGS := --auto-add-overlay \
-    --extra-packages android.support.v7.appcompat:android.support.v7.recyclerview:android.support.design:com.slimroms.themecore
+    --extra-packages android.support.v7.appcompat \
+    --extra-packages android.support.v7.recyclerview \
+    --extra-packages android.support.design \
+    --extra-packages com.slimroms.themecore \
+    --extra-packages com.airbnb.lottie
 
 include $(BUILD_PACKAGE)
+
+include $(CLEAR_VARS)
+
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
+    lottie:libs/lottie-1.5.3.aar
+
+include $(BUILD_MULTI_PREBUILT)
