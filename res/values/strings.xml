@@ -41,6 +41,7 @@
     <string name="action_select_all">Select all</string>
     <string name="action_reboot">Restart</string>
     <string name="action_select_none">Clear selection</string>
+    <string name="action_dismiss">Dismiss</string>
 
     <!-- NavDrawer -->
     <string name="nav_themes">Themes</string>

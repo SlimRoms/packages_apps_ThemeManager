@@ -17,9 +17,11 @@
  */
 package com.slimroms.thememanager;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -120,10 +122,32 @@ public class ThemeContentActivity extends AppCompatActivity {
                     }
                 });
                 snackbar.show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.reboot_required);
+                builder.setPositiveButton(R.string.action_reboot,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            App.getInstance().getBackend(mBackendComponent).reboot();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                builder.setNegativeButton(R.string.action_dismiss,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         } catch (RemoteException exc) {
         }
-        mFab.setVisibility(App.getInstance().isBackendBusy(mBackendComponent) ? View.GONE : View.VISIBLE);
+        mFab.setVisibility(App.getInstance().isBackendBusy(mBackendComponent)
+                ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -281,22 +305,31 @@ public class ThemeContentActivity extends AppCompatActivity {
                     protected void onPostExecute(Boolean aBoolean) {
                         if (aBoolean) {
                             try {
-                                final IThemeService backend = App.getInstance().getBackend(mTheme.backendName);
+                                final IThemeService backend =
+                                        App.getInstance().getBackend(mTheme.backendName);
                                 if (backend != null && backend.isRebootRequired()) {
-                                    final Snackbar snackbar = Snackbar.make(mCoordinator, R.string.reboot_required,
-                                            Snackbar.LENGTH_INDEFINITE);
-                                    snackbar.setAction(R.string.action_reboot, new View.OnClickListener() {
+                                    AlertDialog.Builder builder =
+                                            new AlertDialog.Builder(ThemeContentActivity.this);
+                                    builder.setMessage(R.string.reboot_required);
+                                    builder.setPositiveButton(R.string.action_reboot,
+                                            new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(View view) {
+                                        public void onClick(DialogInterface dialog, int which) {
                                             try {
-                                                App.getInstance().getBackend(mTheme.backendName).reboot();
-                                            }
-                                            catch (RemoteException ex) {
-                                                ex.printStackTrace();
+                                                backend.reboot();
+                                            } catch (RemoteException e) {
+                                                e.printStackTrace();
                                             }
                                         }
                                     });
-                                    snackbar.show();
+                                    builder.setNegativeButton(R.string.action_dismiss,
+                                            new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
                                 }
                             }
                             catch (RemoteException ex) {

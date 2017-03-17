@@ -17,9 +17,11 @@
  */
 package com.slimroms.thememanager;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +44,8 @@ import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -51,6 +55,8 @@ public class UninstallActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private FloatingActionButton mFab;
     private TabLayout mTabLayout;
+
+    private static boolean sFrozen = false;
 
     private OverlayThemeInfo mOverlayInfo;
     private final HashMap<String, ComponentName> mBackendsToUninstallFrom = new HashMap<>();
@@ -134,6 +140,7 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     protected void onPreExecute() {
                         mFab.setVisibility(View.GONE);
+                        sFrozen = true;
                     }
 
                     @Override
@@ -158,10 +165,9 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(Boolean aBoolean) {
                         if (aBoolean) {
-                            if (!handleReboot()) {
-                                final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
-                                LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
-                            }
+                            handleReboot();
+                            final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
+                            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         }
                         mFab.setVisibility(View.VISIBLE);
                     }
@@ -173,6 +179,7 @@ public class UninstallActivity extends AppCompatActivity {
     };
 
     private void setupTabLayout() {
+        if (sFrozen) return;
         if (!App.getInstance().getBackendNames().isEmpty()) {
             new AsyncTask<Void, Void, OverlayThemeInfo>() {
                 @Override
@@ -212,7 +219,6 @@ public class UninstallActivity extends AppCompatActivity {
                         UninstallActivity.this.finish();
                         Intent intent = UninstallActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("reboot", 1);
                         startActivity(intent);
                     } else {
                         if (info != null && !info.groups.isEmpty()) {
@@ -235,9 +241,6 @@ public class UninstallActivity extends AppCompatActivity {
                         mViewPager.setAdapter(adapter);
                         mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
                         mLoadingSnackbar.dismiss();
-                        if (getIntent().getIntExtra("reboot", 0) == 1) {
-                            handleReboot();
-                        }
                     }
                 }
             }.execute();
@@ -268,22 +271,33 @@ public class UninstallActivity extends AppCompatActivity {
                 }
             }
             if (reboot) {
-                final Snackbar snackbar = Snackbar.make(mCoordinator, R.string.reboot_required,
-                        Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction(R.string.action_reboot, new View.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.reboot_required);
+                builder.setPositiveButton(R.string.action_reboot,
+                        new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onClick(DialogInterface dialog, int which) {
                         try {
                             for (ComponentName cmpn : backends) {
                                 IThemeService backend = App.getInstance().getBackend(cmpn);
                                 backend.reboot();
                             }
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
-                snackbar.show();
+                builder.setNegativeButton(R.string.action_dismiss,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sFrozen = false;
+                        setupTabLayout();
+                    }
+                });
+                builder.show();
+            } else {
+                sFrozen = false;
             }
         } catch (RemoteException exc) {
             exc.printStackTrace();
