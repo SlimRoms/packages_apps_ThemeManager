@@ -19,6 +19,7 @@ package com.slimroms.thememanager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -44,6 +45,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
 
+    private static final Boolean ENABLE_BLACKLISTED_APPLICATIONS = false;
+    private static final String[] BLACKLISTED_APPLICATIONS = new String[]{
+            "com.android.vending.billing.InAppBillingService.LOCK",
+            "com.android.vending.billing.InAppBillingService.LACK",
+            "uret.jasi2169.patcher",
+            "com.dimonvideo.luckypatcher",
+            "com.chelpus.lackypatch",
+            "com.forpda.lp",
+            "com.android.vending.billing.InAppBillingService.LUCK",
+            "com.android.protips",
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
             builder.create().show();
-        } else {
+            
+        } else if (checkBlacklistedApps()) {
             App.getInstance().bindBackends();
         }
 
@@ -88,6 +102,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.commit();
         }
+    }
+
+    private ApplicationInfo getPackageInfo(String packageName) {
+        try {
+            return getPackageManager().getApplicationInfo(packageName, 0);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private boolean checkBlacklistedApps() {
+        ApplicationInfo info = null;
+        for (String app : BLACKLISTED_APPLICATIONS) {
+            info = getPackageInfo(app);
+            if (info != null) {
+                break;
+            }
+        }
+        if (info != null) {
+             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+             builder.setMessage(getString(R.string.blacklisted_app_message) + info.loadLabel(getPackageManager()))
+                     .setTitle(R.string.blacklisted_app_title)
+                     .setCancelable(false)
+                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                         @Override
+                         public void onClick(DialogInterface dialog, int i) {
+                            MainActivity.this.finishAffinity();
+                        }
+                     });
+            builder.show();
+        }
+        return info == null;
     }
 
     @Override
