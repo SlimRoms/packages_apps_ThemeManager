@@ -1,0 +1,27 @@
+  This is list of people who have contributed to Slim ThemeEngine,
+  listed in alphabetical order.
+
+  It is formatted as follows :
+
+  N: name
+  E: email
+  W: web-address
+  D: description
+
+----------
+
+N: LineageOS Project
+E: legal@lineageos.org
+W: http://lineageos.org
+D: intial impletentation of CMTE
+
+N: SONY Mobile
+E: developer.world@sonymobile.com
+W: https://developer.sonymobile.com
+D: Runtime Resource Overlay framework contribution to Android
+D: Overlay manager service contribution to Android
+
+N: Substratum Team
+E: projekt.developers@gmail.com
+W: https://github.com/substratum/substratum
+D: Developing substratum theme method and template
