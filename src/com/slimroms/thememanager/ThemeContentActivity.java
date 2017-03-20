@@ -1,4 +1,8 @@
 /*
+ * Copyright (C) 2016-2017 Projekt Substratum
+ *
+ * Modified/reimplemented for use by SlimRoms :
+ *
  * Copyright (C) 2017 SlimRoms Project
  * Copyright (C) 2017 Victor Lapin
  * Copyright (C) 2017 Griffin Millender
