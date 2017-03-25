@@ -50,7 +50,6 @@
             android:paddingBottom="@dimen/margin_medium"
             android:paddingStart="@dimen/margin_large"
             android:paddingEnd="@dimen/margin_large"
-            android:text="Overlay is being installed: Chrome"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
