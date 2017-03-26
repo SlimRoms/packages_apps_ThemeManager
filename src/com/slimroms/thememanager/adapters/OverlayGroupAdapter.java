@@ -123,7 +123,12 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        flavor.selected = array.get(i);
+                        for (int pos=0; pos<flavor.flavors.size(); pos++) {
+                            if (flavor.flavors.valueAt(pos) == array.get(i)) {
+                                flavor.selected = flavor.flavors.keyAt(pos);
+                                break;
+                            }
+                        }
                     }
 
                     @Override
