@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.*;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayFlavor;
@@ -39,6 +40,8 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapter.ViewHolder> {
+
+    private static final String TAG = "SlimTM-OverlayGroupAdapter";
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox checked;
@@ -123,7 +126,14 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        flavor.selected = array.get(i);
+                        for (int pos=0; pos<flavor.flavors.size(); pos++) {
+                            if (flavor.flavors.valueAt(pos) == array.get(i)) {
+                                flavor.selected = flavor.flavors.keyAt(pos);
+                                Log.e(TAG, "flavor.selected key=" + flavor.selected +
+                                        ", value=" + flavor.flavors.valueAt(pos));
+                                break;
+                            }
+                        }
                     }
 
                     @Override
