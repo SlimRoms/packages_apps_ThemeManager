@@ -116,6 +116,10 @@ public class AboutFragment extends Fragment {
         bean.description = getString(R.string.about_developer);
         result.add(bean);
         bean = new AboutAdapter.Bean();
+        bean.name = getString(R.string.about_team_yank);
+        bean.description = getString(R.string.about_developer);
+        result.add(bean);
+        bean = new AboutAdapter.Bean();
         bean.name = getString(R.string.about_team_cristian);
         bean.description = getString(R.string.about_designer);
         result.add(bean);
