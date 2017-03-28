@@ -23,11 +23,7 @@
 package com.slimroms.thememanager;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -51,8 +47,6 @@ import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
-
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -318,6 +312,7 @@ public class UninstallActivity extends AppCompatActivity {
                         setupTabLayout();
                     }
                 });
+                builder.setCancelable(false);
                 builder.show();
             } else {
                 sFrozen = false;

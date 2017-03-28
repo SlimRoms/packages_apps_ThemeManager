@@ -124,19 +124,6 @@ public class ThemeContentActivity extends AppCompatActivity {
             final IThemeService backend = App.getInstance().getBackend(mBackendComponent);
             if (backend != null && backend.isRebootRequired()
                     && (getIntent().getIntExtra("reboot", 0) == 1)) {
-                final Snackbar snackbar = Snackbar.make(mCoordinator, R.string.reboot_required,
-                        Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction(R.string.action_reboot, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            App.getInstance().getBackend(mBackendComponent).reboot();
-                        } catch (RemoteException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
-                snackbar.show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(R.string.reboot_required);
                 builder.setPositiveButton(R.string.action_reboot,
@@ -157,6 +144,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
+                builder.setCancelable(false);
                 builder.show();
             }
         } catch (RemoteException exc) {
@@ -352,6 +340,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                                             dialog.dismiss();
                                         }
                                     });
+                                    builder.setCancelable(false);
                                     builder.show();
                                 }
                             }
