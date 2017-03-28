@@ -143,6 +143,7 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     protected void onPreExecute() {
                         sFrozen = true;
+                        mFab.setVisibility(View.GONE);
                         mOngoingView.setVisibility(View.VISIBLE);
                         mOngoingAnimationView.playAnimation();
                     }
@@ -175,6 +176,7 @@ public class UninstallActivity extends AppCompatActivity {
                         }
                         mOngoingAnimationView.pauseAnimation();
                         mOngoingView.setVisibility(View.GONE);
+                        mFab.setVisibility(View.VISIBLE);
                     }
                 }.execute();
             } else {

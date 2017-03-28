@@ -296,6 +296,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                     @Override
                     protected void onPreExecute() {
                         mIsBusy = true;
+                        mFab.setVisibility(View.GONE);
                         mOngoingView.setVisibility(View.VISIBLE);
                         mOngoingAnimationView.playAnimation();
                     }
@@ -354,6 +355,7 @@ public class ThemeContentActivity extends AppCompatActivity {
 
                         mOngoingAnimationView.pauseAnimation();
                         mOngoingView.setVisibility(View.GONE);
+                        mFab.setVisibility(View.VISIBLE);
                         mIsBusy = false;
                     }
                 }.execute();
