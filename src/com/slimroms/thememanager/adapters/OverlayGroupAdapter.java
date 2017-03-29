@@ -98,8 +98,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Overlay overlay = mOverlayGroup.overlays.get(position);
         holder.overlayName.setText(overlay.overlayName);
-        holder.overlayTargetPackage.setText(overlay.targetPackage);
         if (!mIsThemeGroup) {
+            // installed overlays
+            holder.overlayTargetPackage.setText(overlay.overlayPackage);
             holder.overlayTheme.setText((!TextUtils.isEmpty(overlay.overlayVersion))
                     ? getAppName(overlay.themePackage)
                     + " (" + overlay.overlayVersion + ")"
@@ -107,6 +108,8 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             );
             holder.overlayTheme.setVisibility(View.VISIBLE);
         } else {
+            // available overlays
+            holder.overlayTargetPackage.setText(overlay.targetPackage);
             holder.overlayTheme.setVisibility(View.GONE);
         }
         if (overlay.flavors.size() > 0) {
