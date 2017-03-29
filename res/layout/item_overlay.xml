@@ -34,28 +34,23 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:layout_centerVertical="true" android:orientation="vertical"
         android:layout_toEndOf="@id/overlay_image" android:layout_toStartOf="@id/checkbox"
+        android:layout_marginEnd="@dimen/list_item_icon_margin"
         android:layout_marginTop="@dimen/margin_tiny" android:layout_marginBottom="@dimen/margin_tiny">
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:id="@+id/overlay_name"
             android:layout_marginBottom="@dimen/margin_tiny"
             style="@style/TextAppearance.AppCompat.Subhead"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="marquee" />
+            android:textStyle="bold" />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:id="@+id/overlay_package"
             android:layout_marginBottom="@dimen/margin_tiny"
-            android:maxLines="1"
-            android:ellipsize="marquee"
             style="@style/TextAppearance.AppCompat" />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:id="@+id/overlay_theme"
             android:layout_marginBottom="@dimen/margin_tiny"
-            android:maxLines="1"
-            android:ellipsize="marquee"
             style="@style/TextAppearance.AppCompat" />
 
         <LinearLayout

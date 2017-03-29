@@ -153,6 +153,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
 
         if (overlay.isOverlayInstalled) {
             holder.overlayName.setTextColor(overlay.isOverlayEnabled ? mEnabledTextColor : mDisabledTextColor);
+            holder.overlayName.setEnabled(true);
+            holder.overlayTargetPackage.setEnabled(true);
+            holder.overlayTheme.setEnabled(true);
         }
         else {
             holder.overlayName.setTextColor(mDefaultTextColors);
