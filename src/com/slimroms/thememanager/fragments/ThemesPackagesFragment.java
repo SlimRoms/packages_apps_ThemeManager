@@ -25,6 +25,7 @@ package com.slimroms.thememanager.fragments;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -72,7 +73,6 @@ public class ThemesPackagesFragment extends Fragment {
         emptyViewTitle.setText(R.string.no_themes_title);
         final TextView emptyViewDescription = (TextView) view.findViewById(R.id.empty_view_description);
         emptyViewDescription.setText(R.string.no_themes_description);
-        mEmptyView.setVisibility(View.VISIBLE);
 
         final RecyclerView recycler = (RecyclerView) view.findViewById(R.id.list);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -80,6 +80,13 @@ public class ThemesPackagesFragment extends Fragment {
         recycler.setItemAnimator(new DefaultItemAnimator());
         mAdapter = new ThemesPackagesAdapter(getContext());
         recycler.setAdapter(mAdapter);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mEmptyView.setVisibility(View.VISIBLE);
+            }
+        }, 1000);
     }
 
     private BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
