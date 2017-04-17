@@ -23,13 +23,16 @@
 package com.slimroms.thememanager.fragments;
 
 import android.content.*;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,8 +51,10 @@ import com.slimroms.thememanager.views.LineDividerItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThemesPackagesFragment extends Fragment {
+public class ThemesPackagesFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Theme>>,
+        SwipeRefreshLayout.OnRefreshListener {
     public static final String TAG = ThemesPackagesFragment.class.getSimpleName();
+    private static final int LOADER_ID = 0;
 
     public static ThemesPackagesFragment newInstance() {
         return new ThemesPackagesFragment();
@@ -57,11 +62,12 @@ public class ThemesPackagesFragment extends Fragment {
 
     private ViewGroup mEmptyView;
     private ThemesPackagesAdapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        return inflater.inflate(R.layout.fragment_list_refresh, container, false);
     }
 
     @Override
@@ -81,6 +87,11 @@ public class ThemesPackagesFragment extends Fragment {
         mAdapter = new ThemesPackagesAdapter(getContext());
         recycler.setAdapter(mAdapter);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        onRefresh();
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -89,58 +100,77 @@ public class ThemesPackagesFragment extends Fragment {
         }, 1000);
     }
 
-    private BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final ComponentName backendName = intent.getParcelableExtra(Broadcast.EXTRA_BACKEND_NAME);
-            switch (intent.getAction()) {
-                case Broadcast.ACTION_BACKEND_CONNECTED:
-                    new AsyncTask<ComponentName, Void, List<Theme>>() {
-                        @Override
-                        protected List<Theme> doInBackground(ComponentName... componentNames) {
-                            if (componentNames[0] != null) {
-                                final IThemeService backend = App.getInstance().getBackend(componentNames[0]);
-                                try {
-                                    final List<Theme> result = new ArrayList<>();
-                                    final int count = backend.getThemePackages(result);
-                                    return (count > 0) ? result : null;
-                                }
-                                catch (RemoteException ex) {
-                                    ex.printStackTrace();
-                                    return null;
-                                }
-                            }
-                            else
-                                return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(List<Theme> themes) {
-                            if (themes != null) {
-                                mAdapter.addThemes(themes);
-                            }
-                            mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-                        }
-                    }.execute(backendName);
-                    break;
-                case Broadcast.ACTION_BACKEND_DISCONNECTED:
-                    mAdapter.removeThemes(backendName);
-                    mEmptyView.setVisibility(mAdapter.getItemCount() > 0 ? View.GONE : View.VISIBLE);
-                    break;
-            }
-        }
-    };
-
     @Override
-    public void onStart() {
-        super.onStart();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mConnectReceiver,
-                Broadcast.getBackendConnectFilter());
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(true);
+        getLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
     @Override
-    public void onStop() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mConnectReceiver);
-        super.onStop();
+    public Loader<List<Theme>> onCreateLoader(int id, Bundle args) {
+        return new ThemePackagesLoader(getContext());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Theme>> loader, List<Theme> data) {
+        mAdapter.setData(data);
+        mSwipeRefreshLayout.setRefreshing(false);
+        mEmptyView.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Theme>> loader) {
+
+    }
+
+    private static class ThemePackagesLoader extends AsyncTaskLoader<List<Theme>> {
+        private BroadcastReceiver mReceiver;
+
+        ThemePackagesLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onStartLoading() {
+            if (mReceiver == null) {
+                mReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        // loader should reload its data on backend connect/disconnect
+                        onContentChanged();
+                    }
+                };
+                LocalBroadcastManager.getInstance(getContext()).registerReceiver(mReceiver,
+                        Broadcast.getBackendConnectFilter());
+            }
+
+            forceLoad();
+        }
+
+        @Override
+        public List<Theme> loadInBackground() {
+            final List<Theme> result = new ArrayList<>();
+
+            for (ComponentName backendName : App.getInstance().getBackendNames()) {
+                final IThemeService backend = App.getInstance().getBackend(backendName);
+                try {
+                    backend.getThemePackages(result);
+                }
+                catch (RemoteException ex) {
+                    ex.printStackTrace();
+                    return null;
+                }
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onReset() {
+            if (mReceiver != null) {
+                LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mReceiver);
+                mReceiver = null;
+            }
+        }
     }
 }

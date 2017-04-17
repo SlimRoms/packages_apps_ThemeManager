@@ -18,10 +18,8 @@
  */
 package com.slimroms.thememanager.adapters;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -108,21 +106,10 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         return mItems.size();
     }
 
-    public void addThemes(List<Theme> themes) {
+    public void setData(List<Theme> themes) {
         synchronized (mItems) {
+            mItems.clear();
             mItems.addAll(themes);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void removeThemes(@NonNull ComponentName backend) {
-        final List<Theme> themesToDelete = new ArrayList<>();
-        synchronized (mItems) {
-            for (Theme t : mItems) {
-                if (t.backendName.equals(backend))
-                    themesToDelete.add(t);
-            }
-            mItems.removeAll(themesToDelete);
             notifyDataSetChanged();
         }
     }
