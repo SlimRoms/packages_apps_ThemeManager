@@ -63,6 +63,7 @@ public class ThemesPackagesFragment extends Fragment implements LoaderManager.Lo
     private ViewGroup mEmptyView;
     private ThemesPackagesAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Handler mHandler;
 
     @Nullable
     @Override
@@ -74,6 +75,8 @@ public class ThemesPackagesFragment extends Fragment implements LoaderManager.Lo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle(R.string.nav_themes);
+        mHandler = new Handler();
+
         mEmptyView = (ViewGroup) view.findViewById(R.id.empty_view);
         final TextView emptyViewTitle = (TextView) view.findViewById(R.id.empty_view_title);
         emptyViewTitle.setText(R.string.no_themes_title);
@@ -91,13 +94,6 @@ public class ThemesPackagesFragment extends Fragment implements LoaderManager.Lo
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         onRefresh();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mEmptyView.setVisibility(View.VISIBLE);
-            }
-        }, 1000);
     }
 
     @Override
@@ -115,13 +111,20 @@ public class ThemesPackagesFragment extends Fragment implements LoaderManager.Lo
     public void onLoadFinished(Loader<List<Theme>> loader, List<Theme> data) {
         mAdapter.setData(data);
         mSwipeRefreshLayout.setRefreshing(false);
-        mEmptyView.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
+        mHandler.postDelayed(mEmptyViewRunnable, 1000);
     }
 
     @Override
     public void onLoaderReset(Loader<List<Theme>> loader) {
 
     }
+
+    private Runnable mEmptyViewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mEmptyView.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        }
+    };
 
     private static class ThemePackagesLoader extends AsyncTaskLoader<List<Theme>> {
         private BroadcastReceiver mReceiver;
