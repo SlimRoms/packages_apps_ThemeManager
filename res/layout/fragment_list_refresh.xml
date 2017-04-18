@@ -19,6 +19,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <include layout="@layout/empty_view" android:id="@+id/empty_view" android:visibility="gone" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,8 +32,6 @@
             android:scrollbars="vertical|none"
             android:id="@+id/list"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <include layout="@layout/empty_view" android:id="@+id/empty_view" android:visibility="gone" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
