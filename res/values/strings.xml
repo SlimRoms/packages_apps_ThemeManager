@@ -38,6 +38,7 @@
     <string name="apply_wallpaper">Apply this wallpaper?</string>
     <string name="applying">Applying…</string>
     <string name="select">Select</string>
+    <string name="overlay_update">Update: %1$s -> %2$s</string>
 
     <!-- Actions -->
     <string name="action_select_all">Select all</string>

@@ -21,6 +21,7 @@ package com.slimroms.thememanager.adapters;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -51,6 +52,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
         LinearLayout overlayFlavors;
         ViewGroup clickContainer;
         TextView overlayTheme;
+        TextView overlayUpdate;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +63,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             overlayFlavors = (LinearLayout) itemView.findViewById(R.id.spinner_layout);
             clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
             overlayTheme = (TextView) itemView.findViewById(R.id.overlay_theme);
+            overlayUpdate = (TextView) itemView.findViewById(R.id.overlay_update);
         }
     }
 
@@ -72,14 +75,17 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     private final int mDisabledTextColor;
     private final int mSpinnerPadding;
     private boolean mIsThemeGroup;
+    private String mThemeVersion;
 
     private HashMap<String, String> mThemeNames = new HashMap<>();
 
-    public OverlayGroupAdapter(Context context, OverlayGroup proxy, boolean isThemeGroup) {
+    public OverlayGroupAdapter(Context context, OverlayGroup proxy, boolean isThemeGroup,
+                               @Nullable String themeVersion) {
         mInflater = LayoutInflater.from(context);
         mOverlayGroup = proxy;
         mContext = context;
         mIsThemeGroup = isThemeGroup;
+        mThemeVersion = themeVersion;
 
         mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);
         mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
@@ -156,12 +162,23 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             holder.overlayName.setEnabled(true);
             holder.overlayTargetPackage.setEnabled(true);
             holder.overlayTheme.setEnabled(true);
+
+            if (mThemeVersion != null && !mThemeVersion.equals(overlay.overlayVersion)) {
+                holder.overlayUpdate.setVisibility(View.VISIBLE);
+                holder.overlayUpdate.setText(String.format(
+                        mContext.getString(R.string.overlay_update),
+                        overlay.overlayVersion,
+                        mThemeVersion));
+            } else {
+                holder.overlayUpdate.setVisibility(View.GONE);
+            }
         }
         else {
             holder.overlayName.setTextColor(mDefaultTextColors);
             holder.overlayName.setEnabled(overlay.isTargetPackageInstalled);
             holder.overlayTargetPackage.setEnabled(overlay.isTargetPackageInstalled);
             holder.overlayTheme.setEnabled(overlay.isTargetPackageInstalled);
+            holder.overlayUpdate.setVisibility(View.GONE);
         }
 
         if (overlay.overlayImage != null) {

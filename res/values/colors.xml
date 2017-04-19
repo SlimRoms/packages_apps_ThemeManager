@@ -27,6 +27,7 @@
     <color name="divider_dark">#10ffffff</color>
     <color name="overlay_enabled">#2ca253</color>
     <color name="overlay_disabled">#d7083d</color>
+    <color name="overlay_update">#ffb900</color>
     <color name="signature_ok">#00ff00</color>
     <color name="signature_error">#ff0000</color>
 </resources>

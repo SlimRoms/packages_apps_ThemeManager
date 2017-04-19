@@ -96,7 +96,8 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
                 return FontGroupFragment.newInstance(group);
             default:
                 // page with overlays
-                return OverlayGroupFragment.newInstance(group, mTheme != null);
+                return OverlayGroupFragment.newInstance(group, mTheme != null,
+                        (mTheme != null) ? mTheme.themeVersion : null);
         }
     }
 

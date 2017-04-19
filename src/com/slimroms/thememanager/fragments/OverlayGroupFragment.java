@@ -38,17 +38,20 @@ import java.util.ArrayList;
 
 public class OverlayGroupFragment extends AbstractGroupFragment {
     private boolean mIsThemeGroup;
+    private String mThemeVersion;
 
-    public static OverlayGroupFragment newInstance(OverlayGroup group, boolean isThemeGroup) {
+    public static OverlayGroupFragment newInstance(OverlayGroup group, boolean isThemeGroup,
+                                                   @Nullable String themeVersion) {
         final OverlayGroupFragment fragment = new OverlayGroupFragment();
         fragment.mOverlayGroup = group;
         fragment.mIsThemeGroup = isThemeGroup;
+        fragment.mThemeVersion = themeVersion;
         return fragment;
     }
 
     @Override
     public RecyclerView.Adapter getAdapter() {
-        return new OverlayGroupAdapter(getContext(), mOverlayGroup, mIsThemeGroup);
+        return new OverlayGroupAdapter(getContext(), mOverlayGroup, mIsThemeGroup, mThemeVersion);
     }
 
     @Override
