@@ -36,4 +36,5 @@
     <dimen name="wallpaper_height">180dp</dimen>
     <dimen name="preview_font_size">24sp</dimen>
     <dimen name="include_ongoing_elevation">9dp</dimen>
+    <dimen name="ongoing_text_size">16sp</dimen>
 </resources>

@@ -51,7 +51,8 @@
             android:paddingStart="@dimen/margin_large"
             android:paddingEnd="@dimen/margin_large"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textSize="@dimen/ongoing_text_size"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button" />
 
     </LinearLayout>
 
