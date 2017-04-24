@@ -53,6 +53,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        getCacheDir();
     }
 
     public void bindBackends() {
@@ -151,7 +152,7 @@ public class App extends Application {
         if (!appCache.exists()) {
             if (appCache.mkdir()) {
                 try {
-                    Os.chmod(appCache.getAbsolutePath(), 644);
+                    Os.chmod(appCache.getAbsolutePath(), 666);
                 }
                 catch (Exception ex1) {
                     ex1.printStackTrace();
