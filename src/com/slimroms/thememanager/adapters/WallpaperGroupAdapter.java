@@ -108,9 +108,10 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
 
                                     if (bitmap != null) {
                                         final File bmpFile = new File(
-                                                mContext.getApplicationContext().getFilesDir(),
+                                                mContext.getApplicationContext().getCacheDir(),
                                                 UUID.randomUUID().toString() + ".jpg");
                                         try {
+                                            bmpFile.createNewFile();
                                             final FileOutputStream fos = new FileOutputStream(bmpFile);
                                             try {
                                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
@@ -118,14 +119,13 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
                                             finally {
                                                 fos.close();
                                             }
-                                            Uri uri = FileProvider.getUriForFile(
+                                            final Uri uri = FileProvider.getUriForFile(
                                                     mContext.getApplicationContext(),
-                                                    mContext.getPackageName(), bmpFile);
+                                                    mContext.getPackageName() + ".fileprovider", bmpFile);
                                             final Intent intent = wpmgr.getCropAndSetWallpaperIntent(uri);
-                                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                             ActivityCompat.startActivity(mContext, intent, null);
                                         }
-                                        catch (IOException ex) {
+                                        catch (Exception ex) {
                                             ex.printStackTrace();
                                         }
                                     }

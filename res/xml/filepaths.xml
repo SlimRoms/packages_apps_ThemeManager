@@ -17,5 +17,5 @@
      along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <paths>
-    <files-path path="" name="wallpapers" />
+    <cache-path path="/" name="cache" />
 </paths>
