@@ -24,6 +24,7 @@ package com.slimroms.thememanager;
 
 import android.app.Application;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
