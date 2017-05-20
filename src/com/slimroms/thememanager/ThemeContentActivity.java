@@ -43,12 +43,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import com.slimroms.themecore.*;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ThemeContentActivity extends AppCompatActivity {
     private ViewPager mViewPager;
@@ -96,6 +98,12 @@ public class ThemeContentActivity extends AppCompatActivity {
             }
         });
 
+        byte[] decKey = getIntent().getByteArrayExtra("encryption_key");
+        byte[] ivKey = getIntent().getByteArrayExtra("iv_encrypt_key");
+
+        Log.d("TEST", "decKey - " + Arrays.toString(decKey));
+        Log.d("TEST", "ivKey - " + Arrays.toString(ivKey));
+
         mThemePackageName = getIntent().getStringExtra(Broadcast.EXTRA_THEME_PACKAGE);
         mBackendComponent = getIntent().getParcelableExtra(Broadcast.EXTRA_BACKEND_NAME);
         if (!TextUtils.isEmpty(mThemePackageName) && mBackendComponent != null) {
@@ -103,6 +111,8 @@ public class ThemeContentActivity extends AppCompatActivity {
                 if (App.getInstance().getBackend(mBackendComponent) != null) {
                     mTheme = App.getInstance().getBackend(mBackendComponent)
                             .getThemeByPackage(mThemePackageName);
+                    mTheme.decryptionKey = decKey;
+                    mTheme.ivKey = ivKey;
                 }
                 setupTabLayout();
             } catch (RemoteException e) {
@@ -149,7 +159,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                 });
                 builder.show();
             }
-        } catch (RemoteException exc) {
+        } catch (RemoteException ignored) {
         }
         mFab.setVisibility(App.getInstance().isBackendBusy(mBackendComponent)
                 ? View.GONE : View.VISIBLE);
@@ -248,7 +258,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                             if (backend != null && backend.isRebootRequired()) {
                                 intent.putExtra("reboot", 1);
                             }
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
                         }
                         startActivity(intent);
                     }

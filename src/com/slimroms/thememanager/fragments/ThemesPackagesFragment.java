@@ -22,16 +22,19 @@
  */
 package com.slimroms.thememanager.fragments;
 
+import android.app.Activity;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +44,7 @@ import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
+import com.slimroms.thememanager.ThemeContentActivity;
 import com.slimroms.thememanager.adapters.ThemesPackagesAdapter;
 import com.slimroms.thememanager.views.LineDividerItemDecoration;
 
@@ -56,6 +60,8 @@ public class ThemesPackagesFragment extends Fragment {
 
     private ViewGroup mEmptyView;
     private ThemesPackagesAdapter mAdapter;
+
+    private Theme mPendingTheme;
 
     @Nullable
     @Override
@@ -78,8 +84,39 @@ public class ThemesPackagesFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         recycler.addItemDecoration(new LineDividerItemDecoration(getContext()));
         recycler.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new ThemesPackagesAdapter(getContext());
+        mAdapter = new ThemesPackagesAdapter(getContext(), new ThemesPackagesAdapter.ThemeClickListener() {
+            @Override
+            public void onThemeClick(Theme theme) {
+                Intent intent1 = new Intent();
+                intent1.putExtra("certified", true);
+                intent1.putExtra("hash_passthrough", "");
+                intent1.putExtra("theme_legacy", false);
+                intent1.putExtra("theme_mode", "");
+                intent1.setClassName(theme.packageName, theme.packageName + ".SubstratumLauncher");
+                mPendingTheme = theme;
+                startActivityForResult(intent1, 101);
+            }
+        });
         recycler.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 101) {
+
+            byte[] decKey = data.getByteArrayExtra("encryption_key");
+            byte[] ivKey = data.getByteArrayExtra("iv_encrypt_key");
+
+            final Intent intent = new Intent(App.getInstance().getApplicationContext(),
+                    ThemeContentActivity.class);
+            Log.d("TEST", "enc key - " + String.valueOf(decKey));
+            Log.d("TEST", "iv key - " + String.valueOf(ivKey));
+            intent.putExtra("encryption_key", decKey);
+            intent.putExtra("iv_encrypt_key", ivKey);
+            intent.putExtra(Broadcast.EXTRA_THEME_PACKAGE, mPendingTheme.packageName);
+            intent.putExtra(Broadcast.EXTRA_BACKEND_NAME, mPendingTheme.backendName);
+            ActivityCompat.startActivity(App.getInstance().getApplicationContext(), intent, null);
+        }
     }
 
     private BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
