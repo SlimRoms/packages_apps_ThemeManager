@@ -39,6 +39,12 @@ import java.util.List;
 
 public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAdapter.ViewHolder> {
 
+    private ThemeClickListener mClickListener;
+
+    public interface ThemeClickListener {
+        void onThemeClick(Theme theme);
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView themeName;
         TextView themeDeveloper;
@@ -62,8 +68,9 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
     private final LayoutInflater mInflater;
     private final List<Theme> mItems;
 
-    public ThemesPackagesAdapter(Context context) {
+    public ThemesPackagesAdapter(Context context, ThemeClickListener clickListener) {
         mContext = context;
+        mClickListener = clickListener;
         mInflater = LayoutInflater.from(context);
         mItems = new ArrayList<>();
     }
@@ -85,12 +92,7 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         holder.clickContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Theme theme = mItems.get(adapterPosition);
-                final Intent intent = new Intent(App.getInstance().getApplicationContext(),
-                        ThemeContentActivity.class);
-                intent.putExtra(Broadcast.EXTRA_THEME_PACKAGE, theme.packageName);
-                intent.putExtra(Broadcast.EXTRA_BACKEND_NAME, theme.backendName);
-                ActivityCompat.startActivity(App.getInstance().getApplicationContext(), intent, null);
+                mClickListener.onThemeClick(theme);
             }
         });
         if (theme.themeLogo != null) {

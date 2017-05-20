@@ -3,7 +3,11 @@ buildscript {
         jcenter()
     }
     dependencies {
+<<<<<<< HEAD
         classpath 'com.android.tools.build:gradle:2.3.1'
+=======
+        classpath 'com.android.tools.build:gradle:2.3.2'
+>>>>>>> b434877... Add support for encrypted assets
     }
 }
 
@@ -20,7 +24,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "com.slimroms.thememanager"
@@ -50,10 +54,17 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+<<<<<<< HEAD
     compile 'com.slimroms.themecore:core-debug:1.0@aar'
+=======
+    compile(name:'theme-core-debug', ext:'aar')
+>>>>>>> b434877... Add support for encrypted assets
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
+<<<<<<< HEAD
     compile 'com.airbnb.android:lottie:1.5.3@aar'
+=======
+>>>>>>> b434877... Add support for encrypted assets
 }
