@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -45,6 +46,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import com.slimroms.thememanager.fragments.ThemesPackagesFragment;
 
+import java.lang.reflect.Array;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
@@ -52,6 +58,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Parcel parcel = Parcel.obtain();
+        byte[] bytes = new byte[16];
+        new Random().nextBytes(bytes);
+        Log.d("TEST", "bytes - " + Arrays.toString(bytes));
+        Log.d("TEST", "bytes length - " + bytes.length);
+        parcel.writeInt(bytes.length);
+        parcel.writeString(Arrays.toString(bytes));
+
+        parcel.setDataPosition(0);
+
+        byte[] test = new byte[parcel.readInt()];
+        Log.d("TEST", "test length - " + test.length);
+        String t = parcel.readString();
+        String[] ts = t.replace("[", "").replace("]", "").split(", ");
+        for (int i = 0; i < test.length; i++) {
+            test[i] = Byte.parseByte(ts[i]);
+        }
+        Log.d("TEST", "test  - " + Arrays.toString(test));
+        parcel.recycle();
+
         // check signatures first, do stuff later
         final int signatureCheckResult = App.getInstance().checkSignature(getPackageName());
         if (signatureCheckResult != PackageManager.SIGNATURE_MATCH) {
