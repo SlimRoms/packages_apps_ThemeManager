@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae19f4b9_73b717a9",
+        "filename": "src/com/slimroms/thememanager/App.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1000097
+      },
+      "writtenOn": "2017-05-22T19:50:31Z",
+      "side": 1,
+      "message": "oops?",
+      "revId": "b434877251d702a678aab4452a4d044606717cbc",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6abfce7e_6198fcb5",
+        "filename": "src/com/slimroms/thememanager/MainActivity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1000097
+      },
+      "writtenOn": "2017-05-22T19:50:31Z",
+      "side": 1,
+      "message": "debug code?",
+      "revId": "b434877251d702a678aab4452a4d044606717cbc",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": true
+    }
+  ]
+}
