@@ -1,0 +1,2 @@
+include ':theme-core'
+project(':theme-core').projectDir = new File('../../../frameworks/theme-core')
