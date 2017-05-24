@@ -149,7 +149,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
                     public void onNothingSelected(AdapterView<?> adapterView) {
                     }
                 });
-                spinner.setSelection(array.indexOf(flavor.selected), true);
+                if (flavor.flavors.containsKey(flavor.selected)) {
+                    spinner.setSelection(array.indexOf(flavor.flavors.get(flavor.selected)), true);
+                }
                 holder.overlayFlavors.addView(spinner);
             }
         }
