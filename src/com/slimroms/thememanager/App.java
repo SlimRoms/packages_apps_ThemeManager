@@ -32,6 +32,7 @@ import android.system.Os;
 import android.util.Log;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
+import com.slimroms.themecore.Shell;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -152,7 +153,7 @@ public class App extends Application {
         if (!appCache.exists()) {
             if (appCache.mkdir()) {
                 try {
-                    Os.chmod(appCache.getAbsolutePath(), 666);
+                    Shell.chmod(appCache.getAbsolutePath(), 666);
                 }
                 catch (Exception ex1) {
                     ex1.printStackTrace();
