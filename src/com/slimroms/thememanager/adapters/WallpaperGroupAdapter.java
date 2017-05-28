@@ -122,7 +122,11 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
                                             final Uri uri = FileProvider.getUriForFile(
                                                     mContext.getApplicationContext(),
                                                     mContext.getPackageName() + ".fileprovider", bmpFile);
-                                            final Intent intent = wpmgr.getCropAndSetWallpaperIntent(uri);
+                                            final Intent intent = new Intent();
+                                            intent.setClassName("com.slimroms.thememanager",
+                                                    "com.android.wallpaperpicker.WallpaperCropActivity");
+                                            intent.setData(uri);
+                                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                             ActivityCompat.startActivity(mContext, intent, null);
                                         }
                                         catch (Exception ex) {

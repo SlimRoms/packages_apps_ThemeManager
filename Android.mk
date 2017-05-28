@@ -29,7 +29,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     android-support-design \
     android-support-v7-recyclerview \
     glide \
-    theme-core
+    theme-core \
+    libWallpaperPicker
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
@@ -38,7 +39,8 @@ LOCAL_RESOURCE_DIR := \
     frameworks/support/v7/appcompat/res \
     frameworks/support/v7/recyclerview/res \
     frameworks/support/design/res \
-    frameworks/theme-core/res
+    frameworks/theme-core/res \
+    packages/apps/WallpaperPicker/res
 
 LOCAL_ASSET_FILES += $(call find-subdir-assets)
 LOCAL_PROGUARD_ENABLED := disabled
@@ -50,7 +52,8 @@ LOCAL_AAPT_FLAGS := --auto-add-overlay \
     --extra-packages android.support.v7.recyclerview \
     --extra-packages android.support.design \
     --extra-packages com.slimroms.themecore \
-    --extra-packages com.airbnb.lottie
+    --extra-packages com.airbnb.lottie \
+    --extra-packages com.android.wallpaperpicker
 
 include $(BUILD_PACKAGE)
 
