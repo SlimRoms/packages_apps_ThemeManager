@@ -18,6 +18,7 @@
  */
 package com.slimroms.thememanager.adapters;
 
+import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +38,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -97,48 +100,55 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
                             .setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    final ProgressDialog dialog = new ProgressDialog(mContext);
+                                    dialog.setMessage("Loading... Please wait.");
+                                    dialog.show();
                                     final WallpaperManager wpmgr = WallpaperManager.getInstance(mContext);
-                                    final Drawable wallpaper = holder.overlayImage.getDrawable();
-                                    Bitmap bitmap = null;
-                                    if (wallpaper instanceof GlideBitmapDrawable) {
-                                        bitmap = ((GlideBitmapDrawable) wallpaper).getBitmap();
-                                    } else if (wallpaper instanceof BitmapDrawable) {
-                                        bitmap = ((BitmapDrawable) wallpaper).getBitmap();
-                                    }
-
-                                    if (bitmap != null) {
-                                        final File bmpFile = new File(
-                                                mContext.getApplicationContext().getCacheDir(),
-                                                UUID.randomUUID().toString() + ".jpg");
-                                        try {
-                                            bmpFile.createNewFile();
-                                            final FileOutputStream fos = new FileOutputStream(bmpFile);
-                                            try {
-                                                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-                                            }
-                                            finally {
-                                                fos.close();
-                                            }
-                                            final Uri uri = FileProvider.getUriForFile(
-                                                    mContext.getApplicationContext(),
-                                                    mContext.getPackageName() + ".fileprovider", bmpFile);
-                                            final Intent intent = new Intent();
-                                            intent.setClassName("com.slimroms.thememanager",
-                                                    "com.android.wallpaperpicker.WallpaperCropActivity");
-                                            intent.setData(uri);
-                                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                            ActivityCompat.startActivity(mContext, intent, null);
-                                        }
-                                        catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
+                                    Glide.with(mContext.getApplicationContext()).load(overlay.tag)
+                                            .asBitmap()
+                                            .into(new SimpleTarget<Bitmap>(wpmgr.getDesiredMinimumWidth(),
+                                                    wpmgr.getDesiredMinimumHeight()) {
+                                                @Override
+                                                public void onResourceReady(Bitmap bitmap,
+                                                        GlideAnimation<? super Bitmap> glideAnimation) {
+                                                    dialog.dismiss();
+                                                    setWallpaper(bitmap);
+                                                }
+                                            });
                                 }
                             })
                             .show();
                 }
             }
         });
+    }
+    
+    private void setWallpaper(Bitmap bitmap) {
+        if (bitmap != null) {
+            final File bmpFile = new File(
+                    mContext.getApplicationContext().getCacheDir(),
+                    UUID.randomUUID().toString() + ".jpg");
+            try {
+                bmpFile.createNewFile();
+                final FileOutputStream fos = new FileOutputStream(bmpFile);
+                try {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                } finally {
+                    fos.close();
+                }
+                final Uri uri = FileProvider.getUriForFile(
+                        mContext.getApplicationContext(),
+                        mContext.getPackageName() + ".fileprovider", bmpFile);
+                final Intent intent = new Intent();
+                intent.setClassName("com.slimroms.thememanager",
+                        "com.android.wallpaperpicker.WallpaperCropActivity");
+                intent.setData(uri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                ActivityCompat.startActivity(mContext, intent, null);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
