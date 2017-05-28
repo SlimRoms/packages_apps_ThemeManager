@@ -153,7 +153,7 @@ public class App extends Application {
         if (!appCache.exists()) {
             if (appCache.mkdir()) {
                 try {
-                    Shell.chmod(appCache.getAbsolutePath(), 666);
+                    Shell.chmod(appCache.getAbsolutePath(), 744);
                 }
                 catch (Exception ex1) {
                     ex1.printStackTrace();
