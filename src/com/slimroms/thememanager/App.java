@@ -54,7 +54,17 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        createThemeDir();
         getCacheDir();
+    }
+
+    private void createThemeDir() {
+        File theme = new File("/data/system/theme");
+        if (!theme.exists()) {
+            if (theme.mkdirs()) {
+                Shell.chmod(theme, 744);
+            }
+        }
     }
 
     public void bindBackends() {
