@@ -33,6 +33,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.util.ArrayMap;
+import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +49,7 @@ import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
+import com.slimroms.thememanager.adapters.UninstallPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +66,7 @@ public class UninstallActivity extends AppCompatActivity {
 
     private static boolean sFrozen = false;
 
-    private OverlayThemeInfo mOverlayInfo;
+    private ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> mThemes = new ArrayMap<>();
     private final HashMap<String, ComponentName> mBackendsToUninstallFrom = new HashMap<>();
 
     @Override
@@ -135,10 +138,18 @@ public class UninstallActivity extends AppCompatActivity {
         }
     };
 
+    private int getSelectedCount() {
+        int count = 0;
+        for (OverlayThemeInfo info : mThemes.values()) {
+            count += info.getSelectedCount();
+        }
+        return count;
+    }
+
     private View.OnClickListener mFabListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (mOverlayInfo != null && mOverlayInfo.getSelectedCount() > 0) {
+            if (mThemes != null && getSelectedCount() > 0) {
                 new AsyncTask<Void, Void, Boolean>() {
                     @Override
                     protected void onPreExecute() {
@@ -152,11 +163,15 @@ public class UninstallActivity extends AppCompatActivity {
                     protected Boolean doInBackground(Void... voids) {
                         boolean result = false;
                         try {
-                            for (String key : mOverlayInfo.groups.keySet()) {
-                                final ComponentName backendName = mBackendsToUninstallFrom.get(key);
+                            for (Pair<String, ComponentName> pair : mThemes.keySet()) {
+                                final ComponentName backendName = pair.second;
                                 if (backendName != null) {
+                                    OverlayGroup overlaysToUninstall = new OverlayGroup();
+                                    for (OverlayGroup group : mThemes.get(pair).groups.values()) {
+                                        overlaysToUninstall.overlays.addAll(group.overlays);
+                                    }
                                     final IThemeService backend = App.getInstance().getBackend(backendName);
-                                    result |=  backend.uninstallOverlays(mOverlayInfo.groups.get(key));
+                                    result |=  backend.uninstallOverlays(overlaysToUninstall);
                                 }
                             }
                         }
@@ -170,7 +185,9 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(Boolean aBoolean) {
                         if (aBoolean) {
-                            handleReboot();
+                            if (!handleReboot()) {
+                                recreate();
+                            }
                             final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         }
@@ -200,27 +217,27 @@ public class UninstallActivity extends AppCompatActivity {
     private void setupTabLayout() {
         if (sFrozen) return;
         if (!App.getInstance().getBackendNames().isEmpty()) {
-            new AsyncTask<Void, Void, OverlayThemeInfo>() {
+            new AsyncTask<Void, Void, ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo>>() {
                 @Override
                 protected void onPreExecute() {
                     mLoadingSnackbar.show();
                 }
 
                 @Override
-                protected OverlayThemeInfo doInBackground(Void... v) {
+                protected ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> doInBackground(Void... v) {
                     synchronized (mBackendsToUninstallFrom) {
                         mBackendsToUninstallFrom.clear();
                     }
-                    final OverlayThemeInfo result = new OverlayThemeInfo();
+                    final ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes = new ArrayMap<>();
 
                     for (ComponentName backendName : App.getInstance().getBackendNames()) {
-                        final OverlayGroup group = new OverlayGroup();
+                        final OverlayThemeInfo themeInfo = new OverlayThemeInfo();
                         final IThemeService backend = App.getInstance().getBackend(backendName);
                         try {
-                            backend.getInstalledOverlays(group);
-                            if (!group.overlays.isEmpty()) {
+                            backend.getInstalledOverlays(themeInfo);
+                            if (!themeInfo.groups.isEmpty()) {
                                 final String title = backend.getBackendTitle();
-                                result.groups.put(title, group);
+                                themes.put(new Pair<>(title, backendName), themeInfo);
                                 synchronized (mBackendsToUninstallFrom) {
                                     mBackendsToUninstallFrom.put(title, backendName);
                                 }
@@ -229,52 +246,42 @@ public class UninstallActivity extends AppCompatActivity {
                             ex.printStackTrace();
                         }
                     }
-                    return result;
+                    return themes;
                 }
 
                 @Override
-                protected void onPostExecute(OverlayThemeInfo info) {
+                protected void onPostExecute(ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes) {
                     if (UninstallActivity.this.isDestroyed()) {
                         UninstallActivity.this.finish();
                         Intent intent = UninstallActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     } else {
-                        if (info != null && !info.groups.isEmpty()) {
-                            mOverlayInfo = info;
+                        if (themes != null && !themes.isEmpty()) {
+                            mThemes.clear();
+                            mThemes = themes;
                         } else {
-                            if (mOverlayInfo == null) {
-                                mOverlayInfo = new OverlayThemeInfo();
-                            } else {
-                                mOverlayInfo.groups.clear();
-                            }
-                            mOverlayInfo.groups.put(OverlayGroup.OVERLAYS, new OverlayGroup());
                             synchronized (mBackendsToUninstallFrom) {
                                 mBackendsToUninstallFrom.clear();
                             }
                         }
 
-                        final ThemeContentPagerAdapter adapter =
-                                new ThemeContentPagerAdapter(getSupportFragmentManager(),
-                                        mOverlayInfo, null, getBaseContext());
+                        final UninstallPagerAdapter adapter =
+                                new UninstallPagerAdapter(getSupportFragmentManager(),
+                                        mThemes, null, getBaseContext());
                         mViewPager.setAdapter(adapter);
-                        mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
+                        mTabLayout.setVisibility(mThemes.size() > 1 ? View.VISIBLE : View.GONE);
                         mLoadingSnackbar.dismiss();
                     }
                 }
             }.execute();
         } else {
-            if (mOverlayInfo == null) {
-                mOverlayInfo = new OverlayThemeInfo();
-            } else {
-                mOverlayInfo.groups.clear();
-            }
-            mOverlayInfo.groups.put(OverlayGroup.OVERLAYS, new OverlayGroup());
-            final ThemeContentPagerAdapter adapter
-                    = new ThemeContentPagerAdapter(getSupportFragmentManager(),
-                    mOverlayInfo, null, getBaseContext());
+            mThemes.clear();
+            final UninstallPagerAdapter adapter
+                    = new UninstallPagerAdapter(getSupportFragmentManager(),
+                    mThemes, null, getBaseContext());
             mViewPager.setAdapter(adapter);
-            mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
+            mTabLayout.setVisibility(mThemes.size() > 1 ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -311,7 +318,7 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sFrozen = false;
-                        setupTabLayout();
+                        recreate();
                     }
                 });
                 builder.setCancelable(false);
