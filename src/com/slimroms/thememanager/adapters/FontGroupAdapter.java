@@ -31,6 +31,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
+import com.slimroms.themecore.fonts.ThemedTypefaceHelper;
+import com.slimroms.themecore.fonts.TypefaceHelperCache;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.helpers.PackageIconLoader;
 
@@ -82,13 +84,6 @@ public class FontGroupAdapter extends RecyclerView.Adapter<FontGroupAdapter.View
         holder.clickContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Typeface typeface = null;
-                try {
-                    typeface = Typeface.createFromFile(overlay.tag);
-                }
-                catch (RuntimeException ex) {
-                    Log.w(TAG, "Unable to load font: " + overlay.tag, ex);
-                }
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                         .setTitle(mContext.getString(R.string.preview));
@@ -102,19 +97,21 @@ public class FontGroupAdapter extends RecyclerView.Adapter<FontGroupAdapter.View
                         notifyDataSetChanged();
                     }
                 });
-                if (typeface != null) {
+                //if (typeface != null) {
                     // show the preview
+                TypefaceHelperCache typefaceCache = TypefaceHelperCache.getInstance();
+                ThemedTypefaceHelper typefaceHelper = typefaceCache.getHelperForFont(mContext, overlay);
                     final View preview = mInflater.inflate(R.layout.preview_font, null);
-                    final TextView txtLatin = (TextView) preview.findViewById(R.id.preview_latin);
-                    txtLatin.setTypeface(typeface);
-                    final TextView txtLatinBold = (TextView) preview.findViewById(R.id.preview_latin_bold);
-                    txtLatinBold.setTypeface(typeface, Typeface.BOLD);
-                    final TextView txtCyrillic = (TextView) preview.findViewById(R.id.preview_cyrillic);
-                    txtCyrillic.setTypeface(typeface);
-                    final TextView txtCyrillicBold = (TextView) preview.findViewById(R.id.preview_cyrillic_bold);
-                    txtCyrillicBold.setTypeface(typeface, Typeface.BOLD);
+                    final TextView txtLatin = (TextView) preview.findViewById(R.id.preview_normal);
+                    txtLatin.setTypeface(typefaceHelper.getTypeface(Typeface.NORMAL));
+                    final TextView txtLatinBold = (TextView) preview.findViewById(R.id.preview_bold);
+                    txtLatinBold.setTypeface(typefaceHelper.getTypeface(Typeface.BOLD), Typeface.BOLD);
+                    final TextView txtCyrillic = (TextView) preview.findViewById(R.id.preview_italic);
+                    txtCyrillic.setTypeface(typefaceHelper.getTypeface(Typeface.ITALIC));
+                    final TextView txtCyrillicBold = (TextView) preview.findViewById(R.id.preview_italic_bold);
+                    txtCyrillicBold.setTypeface(typefaceHelper.getTypeface(Typeface.BOLD_ITALIC), Typeface.BOLD);
                     builder.setView(preview);
-                }
+                //}
                 builder.show();
             }
         });
