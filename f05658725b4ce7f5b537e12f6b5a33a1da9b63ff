@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "643a01b1_033c5fc4",
+        "filename": "src/com/slimroms/thememanager/ThemeContentActivity.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-06-09T14:25:19Z",
+      "side": 1,
+      "message": "Importing stuff and no new code?",
+      "revId": "f05658725b4ce7f5b537e12f6b5a33a1da9b63ff",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8e209793_5fe738c2",
+        "filename": "src/com/slimroms/thememanager/adapters/FontGroupAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-06-09T14:25:19Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 103,
+        "startChar": 17,
+        "endLine": 103,
+        "endChar": 103
+      },
+      "revId": "f05658725b4ce7f5b537e12f6b5a33a1da9b63ff",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4425d99f_a2b1c9ed",
+        "filename": "src/com/slimroms/thememanager/adapters/FontGroupAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-06-09T14:25:19Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 102
+      },
+      "revId": "f05658725b4ce7f5b537e12f6b5a33a1da9b63ff",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ac0d4603_23593d20",
+        "filename": "src/com/slimroms/thememanager/adapters/FontGroupAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-06-09T14:25:19Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 111,
+        "startChar": 0,
+        "endLine": 112,
+        "endChar": 113
+      },
+      "revId": "f05658725b4ce7f5b537e12f6b5a33a1da9b63ff",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    }
+  ]
+}
