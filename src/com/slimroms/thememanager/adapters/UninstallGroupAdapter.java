@@ -149,12 +149,17 @@ public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 mItems.add(header);
                 for (Overlay overlay : info.groups.get(key).overlays) {
                     Item overl = new Item();
-                    Log.d("TEST", "overlay - " + overlay.overlayName);
                     overl.overlay = overlay;
                     mItems.add(overl);
                 }
             }
         }
+
+        mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);
+        mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
+        final TextView dummyTextView = new TextView(context);
+        mDefaultTextColors = dummyTextView.getTextColors();
+        mSpinnerPadding = context.getResources().getDimensionPixelSize(R.dimen.margin_small);
     }
 
     @Override

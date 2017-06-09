@@ -30,28 +30,27 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
+import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.adapters.OverlayGroupAdapter;
+import com.slimroms.thememanager.adapters.UninstallGroupAdapter;
 import com.slimroms.thememanager.helpers.MenuTint;
 
 import java.util.ArrayList;
 
-public class OverlayGroupFragment extends AbstractGroupFragment {
-    private String mThemeVersion;
-    private int mThemeVersionCode;
+public class UninstallFragment extends AbstractGroupFragment {
 
-    public static OverlayGroupFragment newInstance(OverlayGroup group,
-                                                   @Nullable String themeVersion, int themeVersionCode) {
-        final OverlayGroupFragment fragment = new OverlayGroupFragment();
-        fragment.mOverlayGroup = group;
-        fragment.mThemeVersion = themeVersion;
-        fragment.mThemeVersionCode = themeVersionCode;
+    private OverlayThemeInfo mOverlayInfo;
+
+    public static UninstallFragment newInstance(OverlayThemeInfo info) {
+        final UninstallFragment fragment = new UninstallFragment();
+        fragment.mOverlayInfo = info;
         return fragment;
     }
 
     @Override
     public RecyclerView.Adapter getAdapter() {
-        return new OverlayGroupAdapter(getContext(), mOverlayGroup, mThemeVersion, mThemeVersionCode);
+        return new UninstallGroupAdapter(getContext(), mOverlayInfo);
     }
 
     @Override
@@ -70,29 +69,10 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (mOverlayGroup != null && mOverlayGroup.styles.size() > 0) {
-            final Spinner stylesSpinner = (Spinner) view.findViewById(R.id.spinner);
-            ArrayList<String> array = new ArrayList<>();
-            array.addAll(mOverlayGroup.styles.values());
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.item_flavor, array);
-            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            stylesSpinner.setAdapter(arrayAdapter);
-            stylesSpinner.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(mOverlayGroup.selectedStyle)) {
-                stylesSpinner.setSelection(array.indexOf(mOverlayGroup.styles.get(mOverlayGroup.selectedStyle)));
-            }
-            stylesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    mOverlayGroup.selectedStyle =
-                            mOverlayGroup.styles.keySet().toArray(new String[0])[i];
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-                }
-            });
-        }
+        final TextView emptyViewTitle = (TextView) view.findViewById(R.id.empty_view_title);
+        emptyViewTitle.setText(R.string.no_installed_overlays_title);
+        final TextView emptyViewDescription = (TextView) view.findViewById(R.id.empty_view_description);
+        emptyViewDescription.setText(R.string.no_installed_overlays_description);
     }
 
     @Override
@@ -111,10 +91,12 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
         switch (item.getItemId()) {
             case R.id.action_select_all:
                 Boolean newValue = null;
-                for (Overlay overlay : mOverlayGroup.overlays) {
-                    if (newValue == null)
-                        newValue = !overlay.checked;
-                    overlay.checked = newValue;
+                for (OverlayGroup group : mOverlayInfo.groups.values()) {
+                    for (Overlay overlay : group.overlays) {
+                        if (newValue == null)
+                            newValue = !overlay.checked;
+                        overlay.checked = newValue;
+                    }
                 }
                 mAdapter.notifyDataSetChanged();
                 return true;
@@ -123,3 +105,4 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
         }
     }
 }
+

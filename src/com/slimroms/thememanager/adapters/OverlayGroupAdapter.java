@@ -74,18 +74,16 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     private final int mEnabledTextColor;
     private final int mDisabledTextColor;
     private final int mSpinnerPadding;
-    private boolean mIsThemeGroup;
     private String mThemeVersion;
     private int mThemeVersionCode;
 
     private HashMap<String, String> mThemeNames = new HashMap<>();
 
-    public OverlayGroupAdapter(Context context, OverlayGroup proxy, boolean isThemeGroup,
+    public OverlayGroupAdapter(Context context, OverlayGroup proxy,
                                @Nullable String themeVersion, int themeVersionCode) {
         mInflater = LayoutInflater.from(context);
         mOverlayGroup = proxy;
         mContext = context;
-        mIsThemeGroup = isThemeGroup;
         mThemeVersion = themeVersion;
         mThemeVersionCode = themeVersionCode;
 
@@ -106,20 +104,8 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Overlay overlay = mOverlayGroup.overlays.get(position);
         holder.overlayName.setText(overlay.overlayName);
-        if (!mIsThemeGroup) {
-            // installed overlays
-            holder.overlayTargetPackage.setText(overlay.overlayPackage);
-            holder.overlayTheme.setText((!TextUtils.isEmpty(overlay.overlayVersion))
-                    ? getAppName(overlay.themePackage)
-                    + " (" + overlay.overlayVersion + ")"
-                    : getAppName(overlay.themePackage)
-            );
-            holder.overlayTheme.setVisibility(View.VISIBLE);
-        } else {
-            // available overlays
-            holder.overlayTargetPackage.setText(overlay.targetPackage);
-            holder.overlayTheme.setVisibility(View.GONE);
-        }
+        holder.overlayTargetPackage.setText(overlay.targetPackage);
+        holder.overlayTheme.setVisibility(View.GONE);
         if (overlay.flavors.size() > 0) {
             holder.overlayFlavors.removeAllViewsInLayout();
             holder.overlayFlavors.setVisibility(View.VISIBLE);
