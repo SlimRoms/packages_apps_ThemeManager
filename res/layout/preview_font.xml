@@ -23,47 +23,47 @@
     android:padding="@dimen/margin_medium">
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/label_latin"
+        android:text="@string/label_normal"
         android:textColor="@color/primary"
         style="@style/TextAppearance.AppCompat.Widget.Button"
         android:layout_row="0" android:layout_column="0" />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:id="@+id/preview_latin" style="@style/TextAppearance.AppCompat"
-        android:text="@string/preview_latin_text" android:textSize="@dimen/preview_font_size"
+        android:id="@+id/preview_normal" style="@style/TextAppearance.AppCompat"
+        android:text="@string/font_preview_text" android:textSize="@dimen/preview_font_size"
         android:layout_marginStart="@dimen/margin_medium"
         android:layout_row="0" android:layout_column="1" />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/label_latin_bold"
+        android:text="@string/label_bold"
         android:textColor="@color/primary"
         style="@style/TextAppearance.AppCompat.Widget.Button"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_row="1" android:layout_column="0" />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:id="@+id/preview_latin_bold" style="@style/TextAppearance.AppCompat"
-        android:text="@string/preview_latin_text" android:textSize="@dimen/preview_font_size"
+        android:id="@+id/preview_bold" style="@style/TextAppearance.AppCompat"
+        android:text="@string/font_preview_text" android:textSize="@dimen/preview_font_size"
         android:layout_marginStart="@dimen/margin_medium"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_row="1" android:layout_column="1" />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/label_cyrillic"
+        android:text="@string/label_italic"
         android:textColor="@color/primary"
         style="@style/TextAppearance.AppCompat.Widget.Button"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_row="2" android:layout_column="0" />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:id="@+id/preview_cyrillic" style="@style/TextAppearance.AppCompat"
-        android:text="@string/preview_cyrillic_text" android:textSize="@dimen/preview_font_size"
+        android:id="@+id/preview_italic" style="@style/TextAppearance.AppCompat"
+        android:text="@string/font_preview_text" android:textSize="@dimen/preview_font_size"
         android:layout_marginStart="@dimen/margin_medium"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_row="2" android:layout_column="1" />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/label_cyrillic_bold"
+        android:text="@string/label_italic_bold"
         android:textColor="@color/primary"
         style="@style/TextAppearance.AppCompat.Widget.Button"
         android:layout_marginTop="@dimen/margin_small"
@@ -71,8 +71,8 @@
         android:layout_row="3" android:layout_column="0" />
 
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:id="@+id/preview_cyrillic_bold" style="@style/TextAppearance.AppCompat"
-        android:text="@string/preview_cyrillic_text" android:textSize="@dimen/preview_font_size"
+        android:id="@+id/preview_italic_bold" style="@style/TextAppearance.AppCompat"
+        android:text="@string/font_preview_text" android:textSize="@dimen/preview_font_size"
         android:layout_marginStart="@dimen/margin_medium"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_small"
