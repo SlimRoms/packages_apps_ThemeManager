@@ -76,11 +76,10 @@
     <string name="about_credits_austin_text">Material design icons</string>
 
     <!-- Font preview -->
-    <string name="label_latin">Latin:</string>
-    <string name="label_cyrillic">Cyrillic:</string>
-    <string name="label_latin_bold">Latin Bold:</string>
-    <string name="label_cyrillic_bold">Cyrillic Bold:</string>
-    <string name="preview_latin_text" translatable="false">This is a new font</string>
-    <string name="preview_cyrillic_text" translatable="false">Это новый шрифт</string>
+    <string name="label_normal">Normal:</string>
+    <string name="label_bold">Bold:</string>
+    <string name="label_italic">Italics:</string>
+    <string name="label_italic_bold">Italics Bold:</string>
+    <string name="font_preview_text" translatable="false">This is a new font</string>
 
 </resources>
