@@ -31,6 +31,7 @@ import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.fragments.BootAnimationGroupFragment;
 import com.slimroms.thememanager.fragments.FontGroupFragment;
 import com.slimroms.thememanager.fragments.OverlayGroupFragment;
+import com.slimroms.thememanager.fragments.SoundsGroupFragment;
 import com.slimroms.thememanager.fragments.WallpaperGroupFragment;
 
 import java.util.ArrayList;
@@ -94,6 +95,8 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
             case OverlayGroup.FONTS:
                 // page with fonts
                 return FontGroupFragment.newInstance(group);
+            case OverlayGroup.SOUNDS:
+                return SoundsGroupFragment.newInstance(group);
             default:
                 // page with overlays
                 return OverlayGroupFragment.newInstance(group, mTheme != null,

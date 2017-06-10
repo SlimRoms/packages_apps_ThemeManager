@@ -164,7 +164,7 @@ public class UninstallActivity extends AppCompatActivity {
                         boolean result = false;
                         try {
                             for (Pair<String, ComponentName> pair : mThemes.keySet()) {
-                                final ComponentName backendName = mBackendsToUninstallFrom.get(pair.second);
+                                final ComponentName backendName = pair.second;
                                 if (backendName != null) {
                                     OverlayGroup overlaysToUninstall = new OverlayGroup();
                                     for (OverlayGroup group : mThemes.get(pair).groups.values()) {
@@ -185,7 +185,9 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(Boolean aBoolean) {
                         if (aBoolean) {
-                            handleReboot();
+                            if (!handleReboot()) {
+                                recreate();
+                            }
                             final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         }
@@ -316,7 +318,7 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sFrozen = false;
-                        setupTabLayout();
+                        recreate();
                     }
                 });
                 builder.setCancelable(false);
