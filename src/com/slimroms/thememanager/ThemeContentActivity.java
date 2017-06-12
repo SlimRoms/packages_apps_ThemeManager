@@ -23,6 +23,7 @@
 package com.slimroms.thememanager;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -55,6 +56,7 @@ import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
 
 public class ThemeContentActivity extends AppCompatActivity {
     private ViewPager mViewPager;
@@ -141,11 +143,26 @@ public class ThemeContentActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            App.getInstance().getBackend(mBackendComponent).reboot();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        dialog.dismiss();
+                        ProgressDialog.show(ThemeContentActivity.this,
+                                getString(R.string.restarting),
+                                getString(R.string.please_wait), true, false);
+                        Runnable run = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    App.getInstance().getBackend(mBackendComponent).reboot();
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        Executors.newSingleThreadExecutor().execute(run);
                     }
                 });
                 builder.setNegativeButton(R.string.action_dismiss,
@@ -338,11 +355,26 @@ public class ThemeContentActivity extends AppCompatActivity {
                                             new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            try {
-                                                backend.reboot();
-                                            } catch (RemoteException e) {
-                                                e.printStackTrace();
-                                            }
+                                            dialog.dismiss();
+                                            ProgressDialog.show(ThemeContentActivity.this,
+                                                    getString(R.string.restarting),
+                                                    getString(R.string.please_wait), true, false);
+                                            Runnable run = new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    try {
+                                                        Thread.sleep(1000);
+                                                    } catch (InterruptedException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    try {
+                                                        backend.reboot();
+                                                    } catch (RemoteException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            };
+                                            Executors.newSingleThreadExecutor().execute(run);
                                         }
                                     });
                                     builder.setNegativeButton(R.string.action_dismiss,
