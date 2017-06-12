@@ -102,31 +102,34 @@ public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mInflater = LayoutInflater.from(context);
         mContext = context;
 
-        for (String key : info.groups.keySet()) {
-            Item header = new Item();
-            header.isHeader = true;
-            switch (key) {
-                case OverlayGroup.OVERLAYS:
-                    header.title = context.getString(R.string.group_title_overlays);
-                    break;
-                case OverlayGroup.FONTS:
-                    header.title = context.getString(R.string.group_title_fonts);
-                    break;
-                case OverlayGroup.BOOTANIMATIONS:
-                    header.title = context.getString(R.string.group_title_bootanimations);
-                    break;
-                case OverlayGroup.WALLPAPERS:
-                    header.title = context.getString(R.string.group_title_wallpapers);
-                    break;
-                default:
-                    header.title = key;
-                    break;
-            }
-            mItems.add(header);
-            for (Overlay overlay : info.groups.get(key).overlays) {
-                Item overl = new Item();
-                overl.overlay = overlay;
-                mItems.add(overl);
+
+        if (info != null && info.groups != null) {
+            for (String key : info.groups.keySet()) {
+                Item header = new Item();
+                header.isHeader = true;
+                switch (key) {
+                    case OverlayGroup.OVERLAYS:
+                        header.title = context.getString(R.string.group_title_overlays);
+                        break;
+                    case OverlayGroup.FONTS:
+                        header.title = context.getString(R.string.group_title_fonts);
+                        break;
+                    case OverlayGroup.BOOTANIMATIONS:
+                        header.title = context.getString(R.string.group_title_bootanimations);
+                        break;
+                    case OverlayGroup.WALLPAPERS:
+                        header.title = context.getString(R.string.group_title_wallpapers);
+                        break;
+                    default:
+                        header.title = key;
+                        break;
+                }
+                mItems.add(header);
+                for (Overlay overlay : info.groups.get(key).overlays) {
+                    Item overl = new Item();
+                    overl.overlay = overlay;
+                    mItems.add(overl);
+                }
             }
         }
 

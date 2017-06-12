@@ -29,6 +29,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.*;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.OverlayGroup;
@@ -75,6 +76,7 @@ public abstract class AbstractGroupFragment extends Fragment {
         mAdapter = getAdapter();
         recycler.setAdapter(mAdapter);
         final ViewGroup emptyView = (ViewGroup) view.findViewById(R.id.empty_view);
+        Log.d("TEST", "item count - " + mAdapter.getItemCount());
         emptyView.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
     }
 

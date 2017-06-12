@@ -23,6 +23,7 @@
 package com.slimroms.thememanager;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.slimroms.themecore.Broadcast;
@@ -53,6 +55,7 @@ import com.slimroms.thememanager.adapters.UninstallPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
 
 public class UninstallActivity extends AppCompatActivity {
     private CoordinatorLayout mCoordinator;
@@ -63,6 +66,7 @@ public class UninstallActivity extends AppCompatActivity {
     private ViewGroup mOngoingView;
     private TextView mOngoingMessageView;
     private LottieAnimationView mOngoingAnimationView;
+    private View mEmptyView;
 
     private static boolean sFrozen = false;
 
@@ -89,6 +93,13 @@ public class UninstallActivity extends AppCompatActivity {
         mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
         mOngoingMessageView = (TextView) findViewById(R.id.ongoing_message);
         mOngoingAnimationView = (LottieAnimationView) findViewById(R.id.ongoing_image);
+
+        mEmptyView = findViewById(R.id.empty_view);
+        final TextView emptyViewTitle = (TextView) findViewById(R.id.empty_view_title);
+        emptyViewTitle.setText(R.string.no_installed_overlays_title);
+        final TextView emptyViewDescription =
+                (TextView) findViewById(R.id.empty_view_description);
+        emptyViewDescription.setText(R.string.no_installed_overlays_description);
 
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -155,6 +166,7 @@ public class UninstallActivity extends AppCompatActivity {
                     protected void onPreExecute() {
                         sFrozen = true;
                         mFab.setVisibility(View.GONE);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         mOngoingView.setVisibility(View.VISIBLE);
                         mOngoingAnimationView.playAnimation();
                     }
@@ -186,13 +198,14 @@ public class UninstallActivity extends AppCompatActivity {
                     protected void onPostExecute(Boolean aBoolean) {
                         if (aBoolean) {
                             if (!handleReboot()) {
-                                recreate();
+                                setupTabLayout();
                             }
                             final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         }
                         mOngoingAnimationView.pauseAnimation();
                         mOngoingView.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         mFab.setVisibility(View.VISIBLE);
                     }
                 }.execute();
@@ -260,7 +273,9 @@ public class UninstallActivity extends AppCompatActivity {
                         if (themes != null && !themes.isEmpty()) {
                             mThemes.clear();
                             mThemes = themes;
+                            mEmptyView.setVisibility(View.GONE);
                         } else {
+                            mEmptyView.setVisibility(View.VISIBLE);
                             synchronized (mBackendsToUninstallFrom) {
                                 mBackendsToUninstallFrom.clear();
                             }
@@ -303,14 +318,28 @@ public class UninstallActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            for (ComponentName cmpn : backends) {
-                                IThemeService backend = App.getInstance().getBackend(cmpn);
-                                backend.reboot();
+                        dialog.dismiss();
+                        ProgressDialog.show(UninstallActivity.this, getString(R.string.restarting),
+                                getString(R.string.please_wait), true, false);
+                        Runnable run = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    for (ComponentName cmpn : backends) {
+                                        IThemeService backend = App.getInstance().getBackend(cmpn);
+                                        backend.reboot();
+                                    }
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        };
+                        Executors.newSingleThreadExecutor().execute(run);
                     }
                 });
                 builder.setNegativeButton(R.string.action_dismiss,
@@ -318,7 +347,7 @@ public class UninstallActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sFrozen = false;
-                        recreate();
+                        setupTabLayout();
                     }
                 });
                 builder.setCancelable(false);

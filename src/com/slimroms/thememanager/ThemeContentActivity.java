@@ -23,6 +23,7 @@
 package com.slimroms.thememanager;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -48,6 +49,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.slimroms.themecore.*;
@@ -55,6 +57,7 @@ import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
 
 public class ThemeContentActivity extends AppCompatActivity {
     private ViewPager mViewPager;
@@ -141,11 +144,26 @@ public class ThemeContentActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            App.getInstance().getBackend(mBackendComponent).reboot();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        dialog.dismiss();
+                        ProgressDialog.show(ThemeContentActivity.this,
+                                getString(R.string.restarting),
+                                getString(R.string.please_wait), true, false);
+                        Runnable run = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    App.getInstance().getBackend(mBackendComponent).reboot();
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        };
+                        Executors.newSingleThreadExecutor().execute(run);
                     }
                 });
                 builder.setNegativeButton(R.string.action_dismiss,
@@ -308,6 +326,7 @@ public class ThemeContentActivity extends AppCompatActivity {
                     protected void onPreExecute() {
                         mIsBusy = true;
                         mFab.setVisibility(View.GONE);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         mOngoingView.setVisibility(View.VISIBLE);
                         mOngoingAnimationView.playAnimation();
                     }
@@ -338,11 +357,26 @@ public class ThemeContentActivity extends AppCompatActivity {
                                             new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            try {
-                                                backend.reboot();
-                                            } catch (RemoteException e) {
-                                                e.printStackTrace();
-                                            }
+                                            dialog.dismiss();
+                                            ProgressDialog.show(ThemeContentActivity.this,
+                                                    getString(R.string.restarting),
+                                                    getString(R.string.please_wait), true, false);
+                                            Runnable run = new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    try {
+                                                        Thread.sleep(1000);
+                                                    } catch (InterruptedException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    try {
+                                                        backend.reboot();
+                                                    } catch (RemoteException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            };
+                                            Executors.newSingleThreadExecutor().execute(run);
                                         }
                                     });
                                     builder.setNegativeButton(R.string.action_dismiss,
@@ -366,6 +400,7 @@ public class ThemeContentActivity extends AppCompatActivity {
 
                         mOngoingAnimationView.pauseAnimation();
                         mOngoingView.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         mFab.setVisibility(View.VISIBLE);
                         mIsBusy = false;
                     }
