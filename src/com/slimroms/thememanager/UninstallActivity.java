@@ -23,6 +23,7 @@
 package com.slimroms.thememanager;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ import com.slimroms.thememanager.adapters.UninstallPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
 
 public class UninstallActivity extends AppCompatActivity {
     private CoordinatorLayout mCoordinator;
@@ -315,14 +317,28 @@ public class UninstallActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            for (ComponentName cmpn : backends) {
-                                IThemeService backend = App.getInstance().getBackend(cmpn);
-                                backend.reboot();
+                        dialog.dismiss();
+                        ProgressDialog.show(UninstallActivity.this, getString(R.string.restarting),
+                                getString(R.string.please_wait), true, false);
+                        Runnable run = new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    for (ComponentName cmpn : backends) {
+                                        IThemeService backend = App.getInstance().getBackend(cmpn);
+                                        backend.reboot();
+                                    }
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        };
+                        Executors.newSingleThreadExecutor().execute(run);
                     }
                 });
                 builder.setNegativeButton(R.string.action_dismiss,
