@@ -82,4 +82,7 @@
     <string name="label_italic_bold">Italics Bold:</string>
     <string name="font_preview_text" translatable="false">This is a new font</string>
 
+    <string name="restarting">Restarting</string>
+    <string name="please_wait">Please wait…</string>
+
 </resources>
