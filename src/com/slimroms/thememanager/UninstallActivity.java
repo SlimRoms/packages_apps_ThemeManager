@@ -43,6 +43,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.slimroms.themecore.Broadcast;
@@ -165,6 +166,7 @@ public class UninstallActivity extends AppCompatActivity {
                     protected void onPreExecute() {
                         sFrozen = true;
                         mFab.setVisibility(View.GONE);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         mOngoingView.setVisibility(View.VISIBLE);
                         mOngoingAnimationView.playAnimation();
                     }
@@ -201,6 +203,7 @@ public class UninstallActivity extends AppCompatActivity {
                             final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
                             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
                         }
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                         mOngoingAnimationView.pauseAnimation();
                         mOngoingView.setVisibility(View.GONE);
                         mFab.setVisibility(View.VISIBLE);
