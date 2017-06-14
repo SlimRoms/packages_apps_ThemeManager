@@ -60,6 +60,6 @@ include $(BUILD_PACKAGE)
 include $(CLEAR_VARS)
 
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    lottie:libs/lottie-1.5.3.aar
+    lottie:libs/lottie-2.0.0.aar
 
 include $(BUILD_MULTI_PREBUILT)
