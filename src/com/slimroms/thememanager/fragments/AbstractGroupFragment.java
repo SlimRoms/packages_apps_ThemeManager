@@ -36,6 +36,7 @@ import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.views.LineDividerItemDecoration;
 
 public abstract class AbstractGroupFragment extends Fragment {
+    protected View mEmptyView;
     protected OverlayGroup mOverlayGroup;
     protected RecyclerView.Adapter mAdapter;
     private WindowManager mWindowManager;
@@ -74,8 +75,8 @@ public abstract class AbstractGroupFragment extends Fragment {
         recycler.setHasFixedSize(true);
         mAdapter = getAdapter();
         recycler.setAdapter(mAdapter);
-        final ViewGroup emptyView = (ViewGroup) view.findViewById(R.id.empty_view);
-        emptyView.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
+        mEmptyView = view.findViewById(R.id.empty_view);
+        mEmptyView.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
     }
 
     @Override
