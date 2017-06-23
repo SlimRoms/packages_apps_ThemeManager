@@ -102,22 +102,45 @@ public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mInflater = LayoutInflater.from(context);
         mContext = context;
 
+        setOverlays(info);
+
+        mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);
+        mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
+        final TextView dummyTextView = new TextView(context);
+        mDefaultTextColors = dummyTextView.getTextColors();
+        mSpinnerPadding = context.getResources().getDimensionPixelSize(R.dimen.margin_small);
+    }
+
+    public void updateOverlays() {
+        ArrayList<Item> itemToRemove = new ArrayList<>();
+        for (Item item : mItems) {
+            if (item.overlay == null || item.overlay.checked) {
+                if (!item.isHeader) {
+                    itemToRemove.add(item);
+                }
+            }
+        }
+        mItems.removeAll(itemToRemove);
+    }
+
+    public void setOverlays(OverlayThemeInfo info) {
+        mItems.clear();
         if (info != null && info.groups != null) {
             for (String key : info.groups.keySet()) {
                 Item header = new Item();
                 header.isHeader = true;
                 switch (key) {
                     case OverlayGroup.OVERLAYS:
-                        header.title = context.getString(R.string.group_title_overlays);
+                        header.title = mContext.getString(R.string.group_title_overlays);
                         break;
                     case OverlayGroup.FONTS:
-                        header.title = context.getString(R.string.group_title_fonts);
+                        header.title = mContext.getString(R.string.group_title_fonts);
                         break;
                     case OverlayGroup.BOOTANIMATIONS:
-                        header.title = context.getString(R.string.group_title_bootanimations);
+                        header.title = mContext.getString(R.string.group_title_bootanimations);
                         break;
                     case OverlayGroup.WALLPAPERS:
-                        header.title = context.getString(R.string.group_title_wallpapers);
+                        header.title = mContext.getString(R.string.group_title_wallpapers);
                         break;
                     default:
                         header.title = key;
@@ -126,17 +149,12 @@ public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 mItems.add(header);
                 for (Overlay overlay : info.groups.get(key).overlays) {
                     Item overl = new Item();
+                    Log.d("TEST", "overlay - " + overlay.overlayName);
                     overl.overlay = overlay;
                     mItems.add(overl);
                 }
             }
         }
-
-        mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);
-        mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
-        final TextView dummyTextView = new TextView(context);
-        mDefaultTextColors = dummyTextView.getTextColors();
-        mSpinnerPadding = context.getResources().getDimensionPixelSize(R.dimen.margin_small);
     }
 
     @Override

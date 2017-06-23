@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 public class UninstallFragment extends AbstractGroupFragment {
 
     private OverlayThemeInfo mOverlayInfo;
+    private UninstallGroupAdapter mAdapter;
 
     public static UninstallFragment newInstance(OverlayThemeInfo info) {
         final UninstallFragment fragment = new UninstallFragment();
@@ -50,7 +52,25 @@ public class UninstallFragment extends AbstractGroupFragment {
 
     @Override
     public RecyclerView.Adapter getAdapter() {
-        return new UninstallGroupAdapter(getContext(), mOverlayInfo);
+        if (mAdapter == null) {
+            mAdapter = new UninstallGroupAdapter(getContext(), mOverlayInfo);
+        }
+        return mAdapter;
+    }
+
+    public void setOverlays(OverlayThemeInfo info) {
+        mOverlayInfo = info;
+        if (info == null || info.groups.isEmpty()) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
+        Log.d("TEST", "setOverlays");
+        if (mAdapter != null) {
+            mAdapter.setOverlays(info);
+            mAdapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override
