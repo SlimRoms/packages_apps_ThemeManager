@@ -25,7 +25,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.util.Pair;
+import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
 
+import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
@@ -37,51 +40,75 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class UninstallPagerAdapter extends FragmentPagerAdapter {
-    private ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> mThemes;
+    private ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> mThemes = new ArrayMap<>();
     private Theme mTheme;
+    private Context mContext;
 
     private ArrayList<String> mKeys = new ArrayList<>();
-    private ArrayMap<String, String> mTitles = new ArrayMap<>();
+    private ArrayList<UninstallFragment> mFragments = new ArrayList<>();
 
     public UninstallPagerAdapter(FragmentManager fm,
-                                 ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes, Theme theme, Context context) {
+                                 ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes, Context context) {
         super(fm);
-        mThemes = themes;
-        mTheme = theme;
+        mContext = context;
+        setThemes(themes);
+    }
 
+    public void setThemes(ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes) {
+        Log.d("TEST", "setThemes");
+        mThemes.clear();
+        //mThemes.putAll((SimpleArrayMap<Pair<String, ComponentName>, OverlayThemeInfo>) themes);
+
+        //for (Pair<String, ComponentName> pair : themes.keySet()) {
+          //  mKeys.add(pair.first);
+        //}
+        //Collections.sort(mKeys);
+
+        ArrayList<String> keys = new ArrayList<>();
         for (Pair<String, ComponentName> pair : themes.keySet()) {
-            mKeys.add(pair.first);
+            keys.add(pair.first);
         }
-        Collections.sort(mKeys);
-        if (mKeys.contains(OverlayGroup.OVERLAYS)) {
-            Collections.swap(mKeys, mKeys.indexOf(OverlayGroup.OVERLAYS), 0);
+        for (String key : mKeys) {
+            if (!keys.contains(key)) {
+                int index = mKeys.indexOf(key);
+                mKeys.remove(index);
+                mThemes.remove(index);
+            }
+        }
+        for (String key : keys) {
+            int index = keys.indexOf(key);
+            if (!mKeys.contains(key)) {
+                mKeys.add(index, key);
+            }
+            Pair<String, ComponentName> p = themes.keyAt(index);
+            OverlayThemeInfo info = themes.get(p);
+            mThemes.put(p, info);
         }
 
         for (String key : mKeys) {
-            String title;
-            switch (key) {
-                case OverlayGroup.OVERLAYS:
-                    title = context.getString(R.string.group_title_overlays);
-                    break;
-                case OverlayGroup.FONTS:
-                    title = context.getString(R.string.group_title_fonts);
-                    break;
-                case OverlayGroup.BOOTANIMATIONS:
-                    title = context.getString(R.string.group_title_bootanimations);
-                    break;
-                case OverlayGroup.WALLPAPERS:
-                    title = context.getString(R.string.group_title_wallpapers);
-                    break;
-                default:
-                    title = key;
-                    break;
+            OverlayThemeInfo info = getThemeInfoForKey(key);
+            if (info != null && !mFragments.isEmpty()) {
+                UninstallFragment fragment = mFragments.get(mKeys.indexOf(key));
+                if (fragment != null) {
+                    fragment.setOverlays(info);
+                }
             }
-            mTitles.put(key, title);
         }
+        notifyDataSetChanged();
+    }
+
+    private OverlayThemeInfo getThemeInfoForKey(String key) {
+        for (Pair<String, ComponentName> pair : mThemes.keySet()) {
+            if (pair.first.equals(key)) {
+                return mThemes.get(pair);
+            }
+        }
+        return null;
     }
 
     @Override
     public Fragment getItem(int position) {
+        Log.d("TEST", "getItem - " + mKeys.get(position));
         final String key = mKeys.get(position);
         OverlayThemeInfo info = new OverlayThemeInfo();
         for (Pair<String, ComponentName> pair : mThemes.keySet()) {
@@ -90,7 +117,10 @@ public class UninstallPagerAdapter extends FragmentPagerAdapter {
                 break;
             }
         }
-        return UninstallFragment.newInstance(info);
+        if (mFragments.isEmpty() || mFragments.get(position) == null) {
+            mFragments.add(position, UninstallFragment.newInstance(info));
+        }
+        return mFragments.get(position);
     }
 
     @Override
@@ -100,6 +130,6 @@ public class UninstallPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return mTitles.get(mKeys.get(position));
+        return mKeys.get(position);
     }
 }
