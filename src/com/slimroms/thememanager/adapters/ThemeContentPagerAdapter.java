@@ -97,7 +97,8 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
             default:
                 // page with overlays
                 return OverlayGroupFragment.newInstance(group, mTheme != null,
-                        (mTheme != null) ? mTheme.themeVersion : null);
+                        (mTheme != null) ? mTheme.themeVersion : null,
+                        (mTheme != null) ? mTheme.themeVersionCode : 0);
         }
     }
 
