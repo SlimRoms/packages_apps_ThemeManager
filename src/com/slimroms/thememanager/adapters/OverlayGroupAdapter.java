@@ -75,15 +75,17 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
     private final int mDisabledTextColor;
     private final int mSpinnerPadding;
     private String mThemeVersion;
+    private int mThemeVersionCode;
 
     private HashMap<String, String> mThemeNames = new HashMap<>();
 
     public OverlayGroupAdapter(Context context, OverlayGroup proxy,
-                               @Nullable String themeVersion) {
+                               @Nullable String themeVersion, int themeVersionCode) {
         mInflater = LayoutInflater.from(context);
         mOverlayGroup = proxy;
         mContext = context;
         mThemeVersion = themeVersion;
+        mThemeVersionCode = themeVersionCode;
 
         mEnabledTextColor = ContextCompat.getColor(context, R.color.overlay_enabled);
         mDisabledTextColor = ContextCompat.getColor(context, R.color.overlay_disabled);
@@ -151,7 +153,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             holder.overlayTargetPackage.setEnabled(true);
             holder.overlayTheme.setEnabled(true);
 
-            if (mThemeVersion != null && !mThemeVersion.equals(overlay.overlayVersion)) {
+            if (mThemeVersion != null && mThemeVersionCode == overlay.overlayVersion) {
                 holder.overlayUpdate.setVisibility(View.VISIBLE);
                 holder.overlayUpdate.setText(String.format(
                         mContext.getString(R.string.overlay_update),

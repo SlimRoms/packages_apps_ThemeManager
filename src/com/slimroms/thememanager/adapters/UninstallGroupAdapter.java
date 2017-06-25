@@ -187,7 +187,7 @@ public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         // installed overlays
         viewHolder.overlayTargetPackage.setText(overlay.overlayPackage);
-        viewHolder.overlayTheme.setText((!TextUtils.isEmpty(overlay.overlayVersion))
+        viewHolder.overlayTheme.setText((!TextUtils.isEmpty(overlay.themeVersion))
                 ? getAppName(overlay.themePackage)
                 + " (" + overlay.overlayVersion + ")"
                 : getAppName(overlay.themePackage));
