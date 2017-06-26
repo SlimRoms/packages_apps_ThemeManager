@@ -19,19 +19,15 @@
 package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.slimroms.themecore.Broadcast;
+
 import com.slimroms.themecore.Theme;
-import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
-import com.slimroms.thememanager.ThemeContentActivity;
 import com.slimroms.thememanager.helpers.PackageIconLoader;
 
 import java.util.ArrayList;
@@ -39,35 +35,10 @@ import java.util.List;
 
 public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAdapter.ViewHolder> {
 
-    private ThemeClickListener mClickListener;
-
-    public interface ThemeClickListener {
-        void onThemeClick(Theme theme);
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView themeName;
-        TextView themeDeveloper;
-        ImageView logo;
-        ViewGroup clickContainer;
-        TextView themeVersion;
-        TextView themeType;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            themeName = (TextView) itemView.findViewById(R.id.lbl_theme_name);
-            themeDeveloper = (TextView) itemView.findViewById(R.id.lbl_theme_author);
-            themeVersion = (TextView) itemView.findViewById(R.id.lbl_theme_version);
-            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
-            logo = (ImageView) itemView.findViewById(R.id.img_logo);
-            themeType = (TextView) itemView.findViewById(R.id.lbl_theme_type);
-        }
-    }
-
     private final Context mContext;
     private final LayoutInflater mInflater;
     private final List<Theme> mItems;
-
+    private ThemeClickListener mClickListener;
     public ThemesPackagesAdapter(Context context, ThemeClickListener clickListener) {
         mContext = context;
         mClickListener = clickListener;
@@ -113,6 +84,29 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
             mItems.clear();
             mItems.addAll(themes);
             notifyDataSetChanged();
+        }
+    }
+
+    public interface ThemeClickListener {
+        void onThemeClick(Theme theme);
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView themeName;
+        TextView themeDeveloper;
+        ImageView logo;
+        ViewGroup clickContainer;
+        TextView themeVersion;
+        TextView themeType;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            themeName = (TextView) itemView.findViewById(R.id.lbl_theme_name);
+            themeDeveloper = (TextView) itemView.findViewById(R.id.lbl_theme_author);
+            themeVersion = (TextView) itemView.findViewById(R.id.lbl_theme_version);
+            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
+            logo = (ImageView) itemView.findViewById(R.id.img_logo);
+            themeType = (TextView) itemView.findViewById(R.id.lbl_theme_type);
         }
     }
 }

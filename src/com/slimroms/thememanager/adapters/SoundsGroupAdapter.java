@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,13 @@ import android.widget.TextView;
 
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
+import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.helpers.PackageIconLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import com.slimroms.thememanager.R;
 
 /**
  * Created by gmillz on 6/9/17.
@@ -119,32 +117,17 @@ public class SoundsGroupAdapter extends RecyclerView.Adapter<SoundsGroupAdapter.
                 });
                 builder.setNegativeButton(android.R.string.cancel,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        overlay.checked = false;
-                        dialog.dismiss();
-                        notifyDataSetChanged();
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                overlay.checked = false;
+                                dialog.dismiss();
+                                notifyDataSetChanged();
+                            }
+                        });
                 builder.show();
             }
         });
         holder.check.setVisibility(overlay.checked ? View.VISIBLE : View.GONE);
-    }
-
-    private class Sound {
-        String name;
-        String path;
-
-        Sound(String name, String path) {
-            this.name = name;
-            this.path = path;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
     }
 
     private void listSounds(File folder, ArrayList<Sound> sounds) {
@@ -161,6 +144,21 @@ public class SoundsGroupAdapter extends RecyclerView.Adapter<SoundsGroupAdapter.
     @Override
     public int getItemCount() {
         return mGroup.overlays.size();
+    }
+
+    private class Sound {
+        String name;
+        String path;
+
+        Sound(String name, String path) {
+            this.name = name;
+            this.path = path;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

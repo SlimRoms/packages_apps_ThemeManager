@@ -21,24 +21,24 @@ package com.slimroms.thememanager.adapters;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.ColorStateList;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.*;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.slimroms.themecore.Overlay;
-import com.slimroms.themecore.OverlayFlavor;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.helpers.PackageIconLoader;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -47,57 +47,14 @@ public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox checked;
-        TextView overlayName;
-        TextView overlayTargetPackage;
-        ImageView overlayImage;
-        LinearLayout overlayFlavors;
-        ViewGroup clickContainer;
-        TextView overlayTheme;
-        TextView overlayUpdate;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            checked = (CheckBox) itemView.findViewById(R.id.checkbox);
-            overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
-            overlayTargetPackage = (TextView) itemView.findViewById(R.id.overlay_package);
-            overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
-            overlayFlavors = (LinearLayout) itemView.findViewById(R.id.spinner_layout);
-            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
-            overlayTheme = (TextView) itemView.findViewById(R.id.overlay_theme);
-            overlayUpdate = (TextView) itemView.findViewById(R.id.overlay_update);
-        }
-    }
-
-    static class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        TextView title;
-
-        public HeaderViewHolder(View itemView) {
-            super(itemView);
-            title = (TextView) itemView.findViewById(R.id.title);
-        }
-    }
-
-    private class Item {
-        boolean isHeader = false;
-        Overlay overlay;
-        String title;
-    }
-
-    private LayoutInflater mInflater;
-    private Context mContext;
     private final ColorStateList mDefaultTextColors;
     private final int mEnabledTextColor;
     private final int mDisabledTextColor;
     private final int mSpinnerPadding;
-
+    private LayoutInflater mInflater;
+    private Context mContext;
     private ArrayList<Item> mItems = new ArrayList<>();
-
     private HashMap<String, String> mThemeNames = new HashMap<>();
-
     public UninstallGroupAdapter(Context context, OverlayThemeInfo info) {
         mInflater = LayoutInflater.from(context);
         mContext = context;
@@ -249,5 +206,44 @@ public class UninstallGroupAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } catch (Exception e) {
             return packageName;
         }
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        CheckBox checked;
+        TextView overlayName;
+        TextView overlayTargetPackage;
+        ImageView overlayImage;
+        LinearLayout overlayFlavors;
+        ViewGroup clickContainer;
+        TextView overlayTheme;
+        TextView overlayUpdate;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            checked = (CheckBox) itemView.findViewById(R.id.checkbox);
+            overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
+            overlayTargetPackage = (TextView) itemView.findViewById(R.id.overlay_package);
+            overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
+            overlayFlavors = (LinearLayout) itemView.findViewById(R.id.spinner_layout);
+            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
+            overlayTheme = (TextView) itemView.findViewById(R.id.overlay_theme);
+            overlayUpdate = (TextView) itemView.findViewById(R.id.overlay_update);
+        }
+    }
+
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        TextView title;
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.title);
+        }
+    }
+
+    private class Item {
+        boolean isHeader = false;
+        Overlay overlay;
+        String title;
     }
 }

@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -44,12 +43,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import com.slimroms.thememanager.fragments.ThemesPackagesFragment;
 
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Random;
+import com.slimroms.thememanager.fragments.ThemesPackagesFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String TAG = MainActivity.class.getSimpleName();
@@ -135,11 +130,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(tag);
             ft.commit();
-        }
-        else if (intent != null) {
+        } else if (intent != null) {
             ActivityCompat.startActivity(this, intent, null);
-        }
-        else
+        } else
             return false;
 
         mDrawerLayout.closeDrawers();

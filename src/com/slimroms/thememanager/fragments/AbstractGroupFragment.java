@@ -29,7 +29,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.*;
+import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -40,6 +45,14 @@ public abstract class AbstractGroupFragment extends Fragment {
     protected OverlayGroup mOverlayGroup;
     protected RecyclerView.Adapter mAdapter;
     private WindowManager mWindowManager;
+    private BroadcastReceiver mRedrawReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    };
 
     public abstract RecyclerView.Adapter getAdapter();
 
@@ -91,15 +104,6 @@ public abstract class AbstractGroupFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRedrawReceiver);
         super.onDetach();
     }
-
-    private BroadcastReceiver mRedrawReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (mAdapter != null) {
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-    };
 
     private class ExpandedLinearLayoutManager extends LinearLayoutManager {
         private WindowManager mWindowManager;

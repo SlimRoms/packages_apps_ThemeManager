@@ -23,14 +23,15 @@
 package com.slimroms.thememanager;
 
 import android.app.Application;
-import android.content.*;
-import android.content.pm.PackageManager;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
-import android.system.Os;
 import android.util.Log;
+
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Shell;
@@ -81,12 +82,10 @@ public class App extends Application {
                                 final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_CONNECTED);
                                 eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
                                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(eventIntent);
-                            }
-                            else {
+                            } else {
                                 unbindService(this);
                             }
-                        }
-                        catch (RemoteException ex) {
+                        } catch (RemoteException ex) {
                             Log.e(TAG, componentName.getClassName() + " remote exception");
                             ex.printStackTrace();
                             unbindService(this);
@@ -114,8 +113,7 @@ public class App extends Application {
                 backendIntent.setPackage(ri.serviceInfo.packageName);
                 try {
                     bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
-                }
-                catch (SecurityException ex) {
+                } catch (SecurityException ex) {
                     Log.i(TAG, ri.serviceInfo.name + " encountered a security exception! Skipping...", ex);
                 }
             }
@@ -155,8 +153,7 @@ public class App extends Application {
             if (appCache.mkdir()) {
                 try {
                     Shell.chmod(appCache.getAbsolutePath(), 700);
-                }
-                catch (Exception ex1) {
+                } catch (Exception ex1) {
                     ex1.printStackTrace();
                     error = true;
                 }

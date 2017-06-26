@@ -22,8 +22,10 @@
  */
 package com.slimroms.thememanager.fragments;
 
-import android.app.Activity;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -38,11 +40,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Theme;
@@ -59,17 +61,21 @@ public class ThemesPackagesFragment extends Fragment implements LoaderManager.Lo
         SwipeRefreshLayout.OnRefreshListener {
     public static final String TAG = ThemesPackagesFragment.class.getSimpleName();
     private static final int LOADER_ID = 0;
-
-    public static ThemesPackagesFragment newInstance() {
-        return new ThemesPackagesFragment();
-    }
-
     private ViewGroup mEmptyView;
     private ThemesPackagesAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Handler mHandler;
-
     private Theme mPendingTheme;
+    private Runnable mEmptyViewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mEmptyView.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        }
+    };
+
+    public static ThemesPackagesFragment newInstance() {
+        return new ThemesPackagesFragment();
+    }
 
     @Nullable
     @Override
@@ -154,13 +160,6 @@ public class ThemesPackagesFragment extends Fragment implements LoaderManager.Lo
 
     }
 
-    private Runnable mEmptyViewRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mEmptyView.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-        }
-    };
-
     private static class ThemePackagesLoader extends AsyncTaskLoader<List<Theme>> {
         private BroadcastReceiver mReceiver;
 
@@ -193,8 +192,7 @@ public class ThemesPackagesFragment extends Fragment implements LoaderManager.Lo
                 final IThemeService backend = App.getInstance().getBackend(backendName);
                 try {
                     backend.getThemePackages(result);
-                }
-                catch (RemoteException ex) {
+                } catch (RemoteException ex) {
                     ex.printStackTrace();
                     return null;
                 }

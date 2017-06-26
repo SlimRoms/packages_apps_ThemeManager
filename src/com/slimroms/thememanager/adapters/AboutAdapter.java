@@ -28,34 +28,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.slimroms.thememanager.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> {
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
-        TextView description;
-        ImageView picture;
-        TextView signature;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            name = (TextView) itemView.findViewById(R.id.lbl_name);
-            description = (TextView) itemView.findViewById(R.id.lbl_description);
-            picture = (ImageView) itemView.findViewById(R.id.img_picture);
-            signature = (TextView) itemView.findViewById(R.id.lbl_signature);
-        }
-    }
-
-    public static class Bean {
-        public CharSequence name;
-        public CharSequence description;
-        public Drawable image;
-        public int signatureCheckResult = -1000;
-    }
 
     public static final String ITEM_VERSIONS = "ITEM_VERSIONS";
     public static final String ITEM_TEAM = "ITEM_TEAM";
@@ -64,7 +43,6 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     private static final int ITEM_TYPE_VERSIONS = 1;
     private static final int ITEM_TYPE_TEAM = 2;
     private static final int ITEM_TYPE_CREDITS = 3;
-
     private final LayoutInflater mInflater;
     private final List<Object> mItems = new ArrayList<>();
     private final String strVersions;
@@ -75,7 +53,6 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     private final String strWrongSignature;
     private final int colorSignatureOk;
     private final int colorSignatureError;
-
     public AboutAdapter(Context context, List<Object> items) {
         mInflater = LayoutInflater.from(context);
         strVersions = context.getString(R.string.versions);
@@ -166,5 +143,27 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
             default:
                 return ITEM_TYPE_BEAN;
         }
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView name;
+        TextView description;
+        ImageView picture;
+        TextView signature;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            name = (TextView) itemView.findViewById(R.id.lbl_name);
+            description = (TextView) itemView.findViewById(R.id.lbl_description);
+            picture = (ImageView) itemView.findViewById(R.id.img_picture);
+            signature = (TextView) itemView.findViewById(R.id.lbl_signature);
+        }
+    }
+
+    public static class Bean {
+        public CharSequence name;
+        public CharSequence description;
+        public Drawable image;
+        public int signatureCheckResult = -1000;
     }
 }

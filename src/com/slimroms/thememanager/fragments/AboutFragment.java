@@ -30,6 +30,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.adapters.AboutAdapter;
@@ -81,8 +82,7 @@ public class AboutFragment extends Fragment {
                     "%s (%d)", packageInfo.versionName, packageInfo.versionCode);
             bean.signatureCheckResult = App.getInstance().checkSignature(packageInfo.packageName);
             result.add(bean);
-        }
-        catch (PackageManager.NameNotFoundException ex) {
+        } catch (PackageManager.NameNotFoundException ex) {
             ex.printStackTrace();
         }
         for (ComponentName backendName : App.getInstance().getBackendNames()) {
@@ -95,8 +95,7 @@ public class AboutFragment extends Fragment {
                         "%s (%d)", packageInfo.versionName, packageInfo.versionCode);
                 bean.signatureCheckResult = App.getInstance().checkSignature(packageInfo.packageName);
                 result.add(bean);
-            }
-            catch (PackageManager.NameNotFoundException ex) {
+            } catch (PackageManager.NameNotFoundException ex) {
                 ex.printStackTrace();
             }
         }

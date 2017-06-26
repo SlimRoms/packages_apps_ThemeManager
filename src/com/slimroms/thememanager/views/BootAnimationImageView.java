@@ -53,6 +53,22 @@ public class BootAnimationImageView extends ImageView {
     private int mFrameDuration;
 
     private boolean mActive = false;
+    private Runnable mUpdateImageRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setImageBitmap(mBuffers[mReadBufferIndex]);
+        }
+    };
+    private Runnable mUpdateAnimationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!mActive) return;
+            BootAnimationImageView.this.postDelayed(mUpdateAnimationRunnable, mFrameDuration);
+            BootAnimationImageView.this.post(mUpdateImageRunnable);
+            mReadBufferIndex = (mReadBufferIndex + 1) % MAX_BUFFERS;
+            getNextFrame();
+        }
+    };
 
     public BootAnimationImageView(Context context) {
         this(context, null);
@@ -64,6 +80,29 @@ public class BootAnimationImageView extends ImageView {
 
     public BootAnimationImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 
     @Override
@@ -103,29 +142,6 @@ public class BootAnimationImageView extends ImageView {
         }
     }
 
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
     private void getNextFrame() {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inBitmap = mBuffers[mWriteBufferIndex];
@@ -158,70 +174,6 @@ public class BootAnimationImageView extends ImageView {
         post(mUpdateAnimationRunnable);
     }
 
-    private Runnable mUpdateAnimationRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (!mActive) return;
-            BootAnimationImageView.this.postDelayed(mUpdateAnimationRunnable, mFrameDuration);
-            BootAnimationImageView.this.post(mUpdateImageRunnable);
-            mReadBufferIndex = (mReadBufferIndex + 1) % MAX_BUFFERS;
-            getNextFrame();
-        }
-    };
-
-    private Runnable mUpdateImageRunnable = new Runnable() {
-        @Override
-        public void run() {
-            setImageBitmap(mBuffers[mReadBufferIndex]);
-        }
-    };
-
-    private static class AnimationPart {
-        /**
-         * Number of times to play this part
-         */
-        int playCount;
-        /**
-         * If non-zero, pause for the given # of seconds before moving on to next part.
-         */
-        int pause;
-        /**
-         * The name of this part
-         */
-        String partName;
-        /**
-         * Time each frame is displayed
-         */
-        int frameRateMillis;
-        /**
-         * List of file names for the given frames in this part
-         */
-        List<String> frames;
-        /**
-         * width of the animation
-         */
-        int width;
-        /**
-         * height of the animation
-         */
-        public int height;
-
-        AnimationPart(int playCount, int pause, String partName, int frameRateMillis,
-                             int width, int height) {
-            this.playCount = playCount;
-            this.pause = pause;
-            this.partName = partName;
-            this.frameRateMillis = frameRateMillis;
-            this.width = width;
-            this.height = height;
-            frames = new ArrayList<>();
-        }
-
-        void addFrame(String frame) {
-            frames.add(frame);
-        }
-    }
-
     private List<AnimationPart> parseAnimation(ZipFile zip) throws IOException {
         List<AnimationPart> animationParts = null;
 
@@ -234,7 +186,7 @@ public class BootAnimationImageView extends ImageView {
         if (animationParts == null) return null;
 
         for (AnimationPart a : animationParts) {
-            for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
+            for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements(); ) {
                 ze = e.nextElement();
                 if (!ze.isDirectory() && ze.getName().contains(a.partName)) {
                     a.addFrame(ze.getName());
@@ -248,6 +200,7 @@ public class BootAnimationImageView extends ImageView {
 
     /**
      * Parses the desc.txt of the boot animation
+     *
      * @param in InputStream to the desc.txt
      * @return A list of the parts as given in desc.txt
      * @throws IOException
@@ -288,5 +241,51 @@ public class BootAnimationImageView extends ImageView {
         }
 
         return animationParts;
+    }
+
+    private static class AnimationPart {
+        /**
+         * height of the animation
+         */
+        public int height;
+        /**
+         * Number of times to play this part
+         */
+        int playCount;
+        /**
+         * If non-zero, pause for the given # of seconds before moving on to next part.
+         */
+        int pause;
+        /**
+         * The name of this part
+         */
+        String partName;
+        /**
+         * Time each frame is displayed
+         */
+        int frameRateMillis;
+        /**
+         * List of file names for the given frames in this part
+         */
+        List<String> frames;
+        /**
+         * width of the animation
+         */
+        int width;
+
+        AnimationPart(int playCount, int pause, String partName, int frameRateMillis,
+                      int width, int height) {
+            this.playCount = playCount;
+            this.pause = pause;
+            this.partName = partName;
+            this.frameRateMillis = frameRateMillis;
+            this.width = width;
+            this.height = height;
+            frames = new ArrayList<>();
+        }
+
+        void addFrame(String frame) {
+            frames.add(frame);
+        }
     }
 }

@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -44,26 +45,9 @@ import java.util.zip.ZipFile;
 public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimationGroupAdapter.ViewHolder> {
 
     private static final String TAG = BootAnimationGroupAdapter.class.getSimpleName();
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView icon;
-        TextView name;
-        ViewGroup clickContainer;
-        ImageView check;
-
-        ViewHolder(View view) {
-            super(view);
-            icon = (ImageView) view.findViewById(R.id.overlay_image);
-            name = (TextView) view.findViewById(R.id.overlay_name);
-            clickContainer = (ViewGroup) view.findViewById(R.id.click_container);
-            check = (ImageView) view.findViewById(R.id.image_check);
-        }
-    }
-
     private Context mContext;
     private OverlayGroup mGroup;
     private LayoutInflater mInflater;
-
     public BootAnimationGroupAdapter(Context context, OverlayGroup group) {
         mContext = context;
         mGroup = group;
@@ -98,6 +82,21 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
     @Override
     public int getItemCount() {
         return mGroup.overlays.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView icon;
+        TextView name;
+        ViewGroup clickContainer;
+        ImageView check;
+
+        ViewHolder(View view) {
+            super(view);
+            icon = (ImageView) view.findViewById(R.id.overlay_image);
+            name = (TextView) view.findViewById(R.id.overlay_name);
+            clickContainer = (ViewGroup) view.findViewById(R.id.click_container);
+            check = (ImageView) view.findViewById(R.id.image_check);
+        }
     }
 
     private class PreviewBootanimation extends AsyncTask<Void, Void, ZipFile> {

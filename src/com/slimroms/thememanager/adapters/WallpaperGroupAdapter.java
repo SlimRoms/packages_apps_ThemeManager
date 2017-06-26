@@ -24,8 +24,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
@@ -36,8 +34,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.slimroms.themecore.Overlay;
@@ -46,28 +44,13 @@ import com.slimroms.thememanager.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.UUID;
 
-public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAdapter.ViewHolder>{
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView overlayName;
-        ImageView overlayImage;
-        ViewGroup clickContainer;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
-            overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
-            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
-        }
-    }
+public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAdapter.ViewHolder> {
 
     private Context mContext;
     private LayoutInflater mInflater;
     private OverlayGroup mOverlayGroup;
-
     public WallpaperGroupAdapter(Context context, OverlayGroup proxy) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
@@ -111,7 +94,7 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
                                                     wpmgr.getDesiredMinimumHeight()) {
                                                 @Override
                                                 public void onResourceReady(Bitmap bitmap,
-                                                        GlideAnimation<? super Bitmap> glideAnimation) {
+                                                                            GlideAnimation<? super Bitmap> glideAnimation) {
                                                     dialog.dismiss();
                                                     setWallpaper(bitmap);
                                                 }
@@ -155,5 +138,18 @@ public class WallpaperGroupAdapter extends RecyclerView.Adapter<WallpaperGroupAd
     @Override
     public int getItemCount() {
         return mOverlayGroup.overlays.size();
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView overlayName;
+        ImageView overlayImage;
+        ViewGroup clickContainer;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
+            overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
+            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
+        }
     }
 }
