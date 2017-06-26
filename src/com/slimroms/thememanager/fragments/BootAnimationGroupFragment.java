@@ -25,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.adapters.BootAnimationGroupAdapter;
@@ -43,14 +44,14 @@ public class BootAnimationGroupFragment extends AbstractGroupFragment {
     }
 
     @Override
-    public RecyclerView.Adapter getAdapter() {
-        return new BootAnimationGroupAdapter(getContext(), mOverlayGroup);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public RecyclerView.Adapter getAdapter() {
+        return new BootAnimationGroupAdapter(getContext(), mOverlayGroup);
     }
 
     @Override

@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -41,25 +42,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.zip.ZipFile;
 
-public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimationGroupAdapter.ViewHolder> {
+public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimationGroupAdapter
+        .ViewHolder> {
 
     private static final String TAG = BootAnimationGroupAdapter.class.getSimpleName();
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView icon;
-        TextView name;
-        ViewGroup clickContainer;
-        ImageView check;
-
-        ViewHolder(View view) {
-            super(view);
-            icon = (ImageView) view.findViewById(R.id.overlay_image);
-            name = (TextView) view.findViewById(R.id.overlay_name);
-            clickContainer = (ViewGroup) view.findViewById(R.id.click_container);
-            check = (ImageView) view.findViewById(R.id.image_check);
-        }
-    }
-
     private Context mContext;
     private OverlayGroup mGroup;
     private LayoutInflater mInflater;
@@ -100,6 +86,21 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         return mGroup.overlays.size();
     }
 
+    class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView icon;
+        TextView name;
+        ViewGroup clickContainer;
+        ImageView check;
+
+        ViewHolder(View view) {
+            super(view);
+            icon = (ImageView) view.findViewById(R.id.overlay_image);
+            name = (TextView) view.findViewById(R.id.overlay_name);
+            clickContainer = (ViewGroup) view.findViewById(R.id.click_container);
+            check = (ImageView) view.findViewById(R.id.image_check);
+        }
+    }
+
     private class PreviewBootanimation extends AsyncTask<Void, Void, ZipFile> {
         private ProgressDialog mProgress;
         private Overlay mOverlay;
@@ -107,14 +108,6 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         PreviewBootanimation(@NonNull Overlay overlay) {
             super();
             mOverlay = overlay;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mProgress = new ProgressDialog(mContext);
-            mProgress.setIndeterminate(true);
-            mProgress.setMessage(mContext.getString(R.string.loading_short));
-            mProgress.show();
         }
 
         @Override
@@ -128,12 +121,21 @@ public class BootAnimationGroupAdapter extends RecyclerView.Adapter<BootAnimatio
         }
 
         @Override
+        protected void onPreExecute() {
+            mProgress = new ProgressDialog(mContext);
+            mProgress.setIndeterminate(true);
+            mProgress.setMessage(mContext.getString(R.string.loading_short));
+            mProgress.show();
+        }
+
+        @Override
         protected void onPostExecute(final ZipFile file) {
             mProgress.dismiss();
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
                     .setTitle(mContext.getString(R.string.preview));
             builder.setNegativeButton(android.R.string.cancel, null);
-            builder.setPositiveButton(mContext.getString(R.string.select), new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(mContext.getString(R.string.select), new DialogInterface
+                    .OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();

@@ -30,6 +30,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.slimroms.thememanager.App;
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.adapters.AboutAdapter;
@@ -73,7 +74,8 @@ public class AboutFragment extends Fragment {
         final PackageManager pm = getContext().getPackageManager();
         PackageInfo packageInfo;
         try {
-            packageInfo = pm.getPackageInfo(getContext().getPackageName(), PackageManager.GET_META_DATA);
+            packageInfo = pm.getPackageInfo(getContext().getPackageName(), PackageManager
+                    .GET_META_DATA);
             bean = new AboutAdapter.Bean();
             bean.name = pm.getApplicationLabel(packageInfo.applicationInfo);
             bean.image = packageInfo.applicationInfo.loadIcon(pm);
@@ -81,22 +83,22 @@ public class AboutFragment extends Fragment {
                     "%s (%d)", packageInfo.versionName, packageInfo.versionCode);
             bean.signatureCheckResult = App.getInstance().checkSignature(packageInfo.packageName);
             result.add(bean);
-        }
-        catch (PackageManager.NameNotFoundException ex) {
+        } catch (PackageManager.NameNotFoundException ex) {
             ex.printStackTrace();
         }
         for (ComponentName backendName : App.getInstance().getBackendNames()) {
             try {
-                packageInfo = pm.getPackageInfo(backendName.getPackageName(), PackageManager.GET_META_DATA);
+                packageInfo = pm.getPackageInfo(backendName.getPackageName(), PackageManager
+                        .GET_META_DATA);
                 bean = new AboutAdapter.Bean();
                 bean.name = pm.getApplicationLabel(packageInfo.applicationInfo);
                 bean.image = packageInfo.applicationInfo.loadIcon(pm);
                 bean.description = String.format(Locale.getDefault(),
                         "%s (%d)", packageInfo.versionName, packageInfo.versionCode);
-                bean.signatureCheckResult = App.getInstance().checkSignature(packageInfo.packageName);
+                bean.signatureCheckResult = App.getInstance().checkSignature(packageInfo
+                        .packageName);
                 result.add(bean);
-            }
-            catch (PackageManager.NameNotFoundException ex) {
+            } catch (PackageManager.NameNotFoundException ex) {
                 ex.printStackTrace();
             }
         }

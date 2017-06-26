@@ -23,11 +23,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
+
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -41,17 +46,13 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
     private int mThemeVersionCode;
 
     public static OverlayGroupFragment newInstance(OverlayGroup group,
-                                                   @Nullable String themeVersion, int themeVersionCode) {
+                                                   @Nullable String themeVersion, int
+                                                           themeVersionCode) {
         final OverlayGroupFragment fragment = new OverlayGroupFragment();
         fragment.mOverlayGroup = group;
         fragment.mThemeVersion = themeVersion;
         fragment.mThemeVersionCode = themeVersionCode;
         return fragment;
-    }
-
-    @Override
-    public RecyclerView.Adapter getAdapter() {
-        return new OverlayGroupAdapter(getContext(), mOverlayGroup, mThemeVersion, mThemeVersionCode);
     }
 
     @Override
@@ -62,7 +63,8 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_overlay_group, container, false);
     }
 
@@ -74,12 +76,14 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
             final Spinner stylesSpinner = (Spinner) view.findViewById(R.id.spinner);
             ArrayList<String> array = new ArrayList<>();
             array.addAll(mOverlayGroup.styles.values());
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.item_flavor, array);
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), R.layout
+                    .item_flavor, array);
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             stylesSpinner.setAdapter(arrayAdapter);
             stylesSpinner.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(mOverlayGroup.selectedStyle)) {
-                stylesSpinner.setSelection(array.indexOf(mOverlayGroup.styles.get(mOverlayGroup.selectedStyle)));
+                stylesSpinner.setSelection(array.indexOf(mOverlayGroup.styles.get(mOverlayGroup
+                        .selectedStyle)));
             }
             stylesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -93,6 +97,12 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
                 }
             });
         }
+    }
+
+    @Override
+    public RecyclerView.Adapter getAdapter() {
+        return new OverlayGroupAdapter(getContext(), mOverlayGroup, mThemeVersion,
+                mThemeVersionCode);
     }
 
     @Override
@@ -112,8 +122,9 @@ public class OverlayGroupFragment extends AbstractGroupFragment {
             case R.id.action_select_all:
                 Boolean newValue = null;
                 for (Overlay overlay : mOverlayGroup.overlays) {
-                    if (newValue == null)
+                    if (newValue == null) {
                         newValue = !overlay.checked;
+                    }
                     overlay.checked = newValue;
                 }
                 mAdapter.notifyDataSetChanged();

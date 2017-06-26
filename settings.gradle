@@ -1,2 +1,2 @@
-include ':theme-core'
+include ':theme-core', ':WallpaperPicker-debug'
 project(':theme-core').projectDir = new File('../../../frameworks/theme-core')
