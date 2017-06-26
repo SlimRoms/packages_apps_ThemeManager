@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -44,14 +43,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+
 import com.slimroms.thememanager.fragments.ThemesPackagesFragment;
 
-import java.lang.reflect.Array;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Random;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView
+        .OnNavigationItemSelectedListener {
     private final String TAG = MainActivity.class.getSimpleName();
     private DrawerLayout mDrawerLayout;
 
@@ -63,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final int signatureCheckResult = App.getInstance().checkSignature(getPackageName());
         if (signatureCheckResult != PackageManager.SIGNATURE_MATCH) {
             // found security issue, should finish work
-            Log.i(TAG, App.class.getName() + " encountered a signature mismatch: " + signatureCheckResult);
+            Log.i(TAG, App.class.getName() + " encountered a signature mismatch: " +
+                    signatureCheckResult);
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.signature_mismatch)
                     .setTitle(R.string.signature_mismatch_title)
@@ -90,13 +87,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+        final ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,
+                mDrawerLayout, toolbar,
                 R.string.app_name, R.string.app_name);
         mDrawerToggle.syncState();
 
         if (savedInstanceState == null) {
             final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.fragment_container, ThemesPackagesFragment.newInstance(), ThemesPackagesFragment.TAG);
+            ft.add(R.id.fragment_container, ThemesPackagesFragment.newInstance(),
+                    ThemesPackagesFragment.TAG);
             ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.commit();
         }
@@ -135,11 +134,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(tag);
             ft.commit();
-        }
-        else if (intent != null) {
+        } else if (intent != null) {
             ActivityCompat.startActivity(this, intent, null);
-        }
-        else
+        } else
             return false;
 
         mDrawerLayout.closeDrawers();

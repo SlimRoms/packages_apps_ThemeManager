@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +17,13 @@ import android.widget.TextView;
 
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayGroup;
+import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.helpers.PackageIconLoader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import com.slimroms.thememanager.R;
 
 /**
  * Created by gmillz on 6/9/17.
@@ -64,7 +62,8 @@ public class SoundsGroupAdapter extends RecyclerView.Adapter<SoundsGroupAdapter.
             public void onClick(View v) {
                 ArrayList<Sound> sounds = new ArrayList<>();
                 listSounds(new File(overlay.tag), sounds);
-                final ArrayAdapter<Sound> adapter = new ArrayAdapter<Sound>(mContext, R.layout.item_sound, R.id.title, sounds) {
+                final ArrayAdapter<Sound> adapter = new ArrayAdapter<Sound>(mContext, R.layout
+                        .item_sound, R.id.title, sounds) {
                     @Override
                     public View getView(final int position, @Nullable View convertView,
                                         @NonNull ViewGroup parent) {
@@ -76,7 +75,8 @@ public class SoundsGroupAdapter extends RecyclerView.Adapter<SoundsGroupAdapter.
 
                                 MediaPlayer player = new MediaPlayer();
 
-                                player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                player.setOnCompletionListener(new MediaPlayer
+                                        .OnCompletionListener() {
                                     @Override
                                     public void onCompletion(MediaPlayer mp) {
                                         mp.reset();
@@ -119,17 +119,33 @@ public class SoundsGroupAdapter extends RecyclerView.Adapter<SoundsGroupAdapter.
                 });
                 builder.setNegativeButton(android.R.string.cancel,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        overlay.checked = false;
-                        dialog.dismiss();
-                        notifyDataSetChanged();
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                overlay.checked = false;
+                                dialog.dismiss();
+                                notifyDataSetChanged();
+                            }
+                        });
                 builder.show();
             }
         });
         holder.check.setVisibility(overlay.checked ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mGroup.overlays.size();
+    }
+
+    private void listSounds(File folder, ArrayList<Sound> sounds) {
+        for (File file : folder.listFiles()) {
+            if (file.isDirectory()) {
+                listSounds(file, sounds);
+            } else {
+                sounds.add(new Sound(file.getName().substring(0, file.getName().lastIndexOf(".")),
+                        file.getAbsolutePath()));
+            }
+        }
     }
 
     private class Sound {
@@ -145,22 +161,6 @@ public class SoundsGroupAdapter extends RecyclerView.Adapter<SoundsGroupAdapter.
         public String toString() {
             return name;
         }
-    }
-
-    private void listSounds(File folder, ArrayList<Sound> sounds) {
-        for (File file : folder.listFiles()) {
-            if (file.isDirectory()) {
-                listSounds(file, sounds);
-            } else {
-                sounds.add(new Sound(file.getName().substring(0, file.getName().lastIndexOf(".")),
-                        file.getAbsolutePath()));
-            }
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return mGroup.overlays.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -24,7 +24,11 @@ package com.slimroms.thememanager;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -41,12 +45,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
@@ -59,6 +63,8 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 
 public class UninstallActivity extends AppCompatActivity {
+    private static boolean sFrozen = false;
+    private final HashMap<String, ComponentName> mBackendsToUninstallFrom = new HashMap<>();
     private CoordinatorLayout mCoordinator;
     private Snackbar mLoadingSnackbar;
     private ViewPager mViewPager;
@@ -66,13 +72,85 @@ public class UninstallActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewGroup mOngoingView;
     private TextView mOngoingMessageView;
+    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
+                final String message = intent.getStringExtra(Broadcast.EXTRA_MESSAGE);
+                mOngoingMessageView.setText(message);
+            } else {
+                mOngoingMessageView.setText(null);
+            }
+        }
+    };
     private LottieAnimationView mOngoingAnimationView;
     private View mEmptyView;
-
-    private static boolean sFrozen = false;
-
     private ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> mThemes = new ArrayMap<>();
-    private final HashMap<String, ComponentName> mBackendsToUninstallFrom = new HashMap<>();
+    private final BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setupTabLayout();
+        }
+    };
+    private View.OnClickListener mFabListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (mThemes != null && getSelectedCount() > 0) {
+                new AsyncTask<Void, Void, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(Void... voids) {
+                        boolean result = true;
+                        try {
+                            for (Pair<String, ComponentName> pair : mThemes.keySet()) {
+                                final ComponentName backendName = pair.second;
+                                if (backendName != null) {
+                                    OverlayGroup overlaysToUninstall = new OverlayGroup();
+                                    for (OverlayGroup group : mThemes.get(pair).groups.values()) {
+                                        overlaysToUninstall.overlays.addAll(group.overlays);
+                                    }
+                                    final IThemeService backend = App.getInstance().getBackend
+                                            (backendName);
+                                    result &= backend.uninstallOverlays(overlaysToUninstall);
+                                }
+                            }
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                            return false;
+                        }
+                        return result;
+                    }                    @Override
+                    protected void onPreExecute() {
+                        sFrozen = true;
+                        mFab.setVisibility(View.GONE);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        mOngoingView.setVisibility(View.VISIBLE);
+                        mOngoingAnimationView.playAnimation();
+                    }
+
+
+
+                    @Override
+                    protected void onPostExecute(Boolean aBoolean) {
+                        sFrozen = false;
+                        setupTabLayout();
+                        if (aBoolean) {
+                            handleReboot();
+                            final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
+                            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast
+                                    (intent);
+                        }
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        mOngoingAnimationView.pauseAnimation();
+                        mOngoingView.setVisibility(View.GONE);
+                        mFab.setVisibility(View.VISIBLE);
+                    }
+                }.execute();
+            } else {
+                Snackbar.make(mCoordinator, R.string.no_overlays_selected, Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +166,8 @@ public class UninstallActivity extends AppCompatActivity {
         mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
+        mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar
+                .LENGTH_INDEFINITE);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
         mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
@@ -136,100 +215,9 @@ public class UninstallActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!sFrozen) {
-            super.onBackPressed();
-        }
-    }
-
-    private final BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            setupTabLayout();
-        }
-    };
-
-    private int getSelectedCount() {
-        int count = 0;
-        for (OverlayThemeInfo info : mThemes.values()) {
-            count += info.getSelectedCount();
-        }
-        return count;
-    }
-
-    private View.OnClickListener mFabListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (mThemes != null && getSelectedCount() > 0) {
-                new AsyncTask<Void, Void, Boolean>() {
-                    @Override
-                    protected void onPreExecute() {
-                        sFrozen = true;
-                        mFab.setVisibility(View.GONE);
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                        mOngoingView.setVisibility(View.VISIBLE);
-                        mOngoingAnimationView.playAnimation();
-                    }
-
-                    @Override
-                    protected Boolean doInBackground(Void... voids) {
-                        boolean result = true;
-                        try {
-                            for (Pair<String, ComponentName> pair : mThemes.keySet()) {
-                                final ComponentName backendName = pair.second;
-                                if (backendName != null) {
-                                    OverlayGroup overlaysToUninstall = new OverlayGroup();
-                                    for (OverlayGroup group : mThemes.get(pair).groups.values()) {
-                                        overlaysToUninstall.overlays.addAll(group.overlays);
-                                    }
-                                    final IThemeService backend = App.getInstance().getBackend(backendName);
-                                    result &=  backend.uninstallOverlays(overlaysToUninstall);
-                                }
-                            }
-                        }
-                        catch (RemoteException ex) {
-                            ex.printStackTrace();
-                            return false;
-                        }
-                        return result;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Boolean aBoolean) {
-                        sFrozen = false;
-                        setupTabLayout();
-                        if (aBoolean) {
-                            handleReboot();
-                            final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
-                            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
-                        }
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                        mOngoingAnimationView.pauseAnimation();
-                        mOngoingView.setVisibility(View.GONE);
-                        mFab.setVisibility(View.VISIBLE);
-                    }
-                }.execute();
-            } else {
-                Snackbar.make(mCoordinator, R.string.no_overlays_selected, Snackbar.LENGTH_SHORT).show();
-            }
-        }
-    };
-
-    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
-                final String message = intent.getStringExtra(Broadcast.EXTRA_MESSAGE);
-                mOngoingMessageView.setText(message);
-            } else {
-                mOngoingMessageView.setText(null);
-            }
-        }
-    };
-
     private synchronized void setupTabLayout() {
-        if (sFrozen) return;
+        if (sFrozen)
+            return;
         if (!App.getInstance().getBackendNames().isEmpty()) {
             new AsyncTask<Void, Void, ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo>>() {
                 @Override
@@ -238,11 +226,13 @@ public class UninstallActivity extends AppCompatActivity {
                 }
 
                 @Override
-                protected ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> doInBackground(Void... v) {
+                protected ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> doInBackground
+                        (Void... v) {
                     synchronized (mBackendsToUninstallFrom) {
                         mBackendsToUninstallFrom.clear();
                     }
-                    final ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes = new ArrayMap<>();
+                    final ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes = new
+                            ArrayMap<>();
 
                     for (ComponentName backendName : App.getInstance().getBackendNames()) {
                         final OverlayThemeInfo themeInfo = new OverlayThemeInfo();
@@ -264,37 +254,40 @@ public class UninstallActivity extends AppCompatActivity {
                 }
 
                 @Override
-                protected void onPostExecute(ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes) {
+                protected void onPostExecute(ArrayMap<Pair<String, ComponentName>,
+                        OverlayThemeInfo> themes) {
                     //if (UninstallActivity.this.isDestroyed()) {
                         /*UninstallActivity.this.finish();
                         Intent intent = UninstallActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);*/
-                      //  recreate();
+                    //  recreate();
                     //} else {
-                        if (themes != null && !themes.isEmpty()) {
-                            mThemes.clear();
-                            mThemes.putAll((SimpleArrayMap<Pair<String, ComponentName>, OverlayThemeInfo>) themes);
-                            mEmptyView.setVisibility(View.GONE);
-                        } else {
-                            mEmptyView.setVisibility(View.VISIBLE);
-                            synchronized (mBackendsToUninstallFrom) {
-                                mBackendsToUninstallFrom.clear();
-                            }
+                    if (themes != null && !themes.isEmpty()) {
+                        mThemes.clear();
+                        mThemes.putAll((SimpleArrayMap<Pair<String, ComponentName>,
+                                OverlayThemeInfo>) themes);
+                        mEmptyView.setVisibility(View.GONE);
+                    } else {
+                        mEmptyView.setVisibility(View.VISIBLE);
+                        synchronized (mBackendsToUninstallFrom) {
+                            mBackendsToUninstallFrom.clear();
                         }
+                    }
 
-                        if (mViewPager.getAdapter() == null) {
-                            final UninstallPagerAdapter adapter =
-                                    new UninstallPagerAdapter(getSupportFragmentManager(),
-                                            mThemes, getBaseContext());
-                            mViewPager.setAdapter(adapter);
-                        } else {
-                            UninstallPagerAdapter adapter = (UninstallPagerAdapter) mViewPager.getAdapter();
-                            adapter.setThemes(mThemes);
-                        }
-                        mTabLayout.setVisibility(mThemes.size() > 1 ? View.VISIBLE : View.GONE);
-                        mLoadingSnackbar.dismiss();
-                   // }
+                    if (mViewPager.getAdapter() == null) {
+                        final UninstallPagerAdapter adapter =
+                                new UninstallPagerAdapter(getSupportFragmentManager(),
+                                        mThemes, getBaseContext());
+                        mViewPager.setAdapter(adapter);
+                    } else {
+                        UninstallPagerAdapter adapter = (UninstallPagerAdapter) mViewPager
+                                .getAdapter();
+                        adapter.setThemes(mThemes);
+                    }
+                    mTabLayout.setVisibility(mThemes.size() > 1 ? View.VISIBLE : View.GONE);
+                    mLoadingSnackbar.dismiss();
+                    // }
                 }
             }.execute();
         } else {
@@ -305,6 +298,14 @@ public class UninstallActivity extends AppCompatActivity {
             mViewPager.setAdapter(adapter);
             mTabLayout.setVisibility(mThemes.size() > 1 ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private int getSelectedCount() {
+        int count = 0;
+        for (OverlayThemeInfo info : mThemes.values()) {
+            count += info.getSelectedCount();
+        }
+        return count;
     }
 
     private boolean handleReboot() {
@@ -323,40 +324,42 @@ public class UninstallActivity extends AppCompatActivity {
                 builder.setMessage(R.string.reboot_required);
                 builder.setPositiveButton(R.string.action_reboot,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        ProgressDialog.show(UninstallActivity.this, getString(R.string.restarting),
-                                getString(R.string.please_wait), true, false);
-                        Runnable run = new Runnable() {
                             @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                try {
-                                    for (ComponentName cmpn : backends) {
-                                        IThemeService backend = App.getInstance().getBackend(cmpn);
-                                        backend.reboot();
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                ProgressDialog.show(UninstallActivity.this, getString(R.string
+                                                .restarting),
+                                        getString(R.string.please_wait), true, false);
+                                Runnable run = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Thread.sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            for (ComponentName cmpn : backends) {
+                                                IThemeService backend = App.getInstance()
+                                                        .getBackend(cmpn);
+                                                backend.reboot();
+                                            }
+                                        } catch (RemoteException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                } catch (RemoteException e) {
-                                    e.printStackTrace();
-                                }
+                                };
+                                Executors.newSingleThreadExecutor().execute(run);
                             }
-                        };
-                        Executors.newSingleThreadExecutor().execute(run);
-                    }
-                });
+                        });
                 builder.setNegativeButton(R.string.action_dismiss,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        sFrozen = false;
-                        setupTabLayout();
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sFrozen = false;
+                                setupTabLayout();
+                            }
+                        });
                 builder.setCancelable(false);
                 builder.show();
             } else {
@@ -378,5 +381,12 @@ public class UninstallActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!sFrozen) {
+            super.onBackPressed();
+        }
     }
 }

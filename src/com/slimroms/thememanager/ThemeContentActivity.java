@@ -49,12 +49,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
+
 import com.airbnb.lottie.LottieAnimationView;
-import com.slimroms.themecore.*;
+import com.slimroms.themecore.Broadcast;
+import com.slimroms.themecore.IThemeService;
+import com.slimroms.themecore.OverlayGroup;
+import com.slimroms.themecore.OverlayThemeInfo;
+import com.slimroms.themecore.R;
+import com.slimroms.themecore.Theme;
 import com.slimroms.thememanager.adapters.ThemeContentPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 
 public class ThemeContentActivity extends AppCompatActivity {
@@ -65,13 +70,157 @@ public class ThemeContentActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewGroup mOngoingView;
     private TextView mOngoingMessageView;
+    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
+                final String message = intent.getStringExtra(Broadcast.EXTRA_MESSAGE);
+                mOngoingMessageView.setText(message);
+            } else {
+                mOngoingMessageView.setText(null);
+            }
+        }
+    };
     private LottieAnimationView mOngoingAnimationView;
-
     private Theme mTheme;
     private OverlayThemeInfo mOverlayInfo;
     private String mThemePackageName;
     private ComponentName mBackendComponent;
+    private final BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_CONNECTED)) {
+                if (App.getInstance().getBackend(mBackendComponent) != null) {
+                    try {
+                        App.getInstance().getBackend(mBackendComponent).getThemePackages(new
+                                ArrayList<Theme>());
+                        mTheme = App.getInstance().getBackend(mBackendComponent)
+                                .getThemeByPackage(mThemePackageName);
+                        setupTabLayout();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                if (App.getInstance().getBackend(mBackendComponent) == null) {
+                    mTheme = null;
+                    mLoadingSnackbar.show();
+                }
+            }
+        }
+    };
     private boolean mIsBusy = false;
+    private View.OnClickListener mFabListener = new View.OnClickListener() {
+        @StringRes
+        int messageId;
+
+        @Override
+        public void onClick(View view) {
+            messageId = -1;
+
+            if (mOverlayInfo.getSelectedCount() == 0) {
+                messageId = R.string.no_overlays_selected;
+            } else {
+                // see if there is any uncompilable style selected
+                for (OverlayGroup group : mOverlayInfo.groups.values()) {
+                    if (!group.styles.isEmpty() && group.selectedStyle.isEmpty()) {
+                        messageId = R.string.no_style_selected;
+                    }
+                }
+            }
+
+            if (messageId == -1) {
+                new AsyncTask<Void, Void, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(Void... voids) {
+                        try {
+                            return App.getInstance().getBackend(mTheme.backendName)
+                                    .installOverlaysFromTheme(mTheme, mOverlayInfo);
+                        } catch (RemoteException ex) {
+                            ex.printStackTrace();
+                            return false;
+                        }
+                    }                    @Override
+                    protected void onPreExecute() {
+                        mIsBusy = true;
+                        mFab.setVisibility(View.GONE);
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        mOngoingView.setVisibility(View.VISIBLE);
+                        mOngoingAnimationView.playAnimation();
+                    }
+
+
+
+                    @Override
+                    protected void onPostExecute(Boolean aBoolean) {
+                        if (aBoolean) {
+                            try {
+                                final IThemeService backend =
+                                        App.getInstance().getBackend(mTheme.backendName);
+                                if (backend != null && backend.isRebootRequired()) {
+                                    AlertDialog.Builder builder =
+                                            new AlertDialog.Builder(ThemeContentActivity.this);
+                                    builder.setMessage(R.string.reboot_required);
+                                    builder.setPositiveButton(R.string.action_reboot,
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int
+                                                        which) {
+                                                    dialog.dismiss();
+                                                    ProgressDialog.show(ThemeContentActivity.this,
+                                                            getString(R.string.restarting),
+                                                            getString(R.string.please_wait),
+                                                            true, false);
+                                                    Runnable run = new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            try {
+                                                                Thread.sleep(1000);
+                                                            } catch (InterruptedException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                            try {
+                                                                backend.reboot();
+                                                            } catch (RemoteException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+                                                    };
+                                                    Executors.newSingleThreadExecutor().execute
+                                                            (run);
+                                                }
+                                            });
+                                    builder.setNegativeButton(R.string.action_dismiss,
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int
+                                                        which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    builder.setCancelable(false);
+                                    builder.show();
+                                }
+                            } catch (RemoteException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                        mOverlayInfo.clearSelection();
+                        final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
+                        LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
+
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                        mOngoingAnimationView.pauseAnimation();
+                        mOngoingView.setVisibility(View.GONE);
+                        mFab.setVisibility(View.VISIBLE);
+                        mIsBusy = false;
+                    }
+                }.execute();
+            } else {
+                Snackbar.make(mCoordinator, messageId, Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +236,8 @@ public class ThemeContentActivity extends AppCompatActivity {
         mCoordinator = (CoordinatorLayout) findViewById(R.id.coordinator);
         mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar.LENGTH_INDEFINITE);
+        mLoadingSnackbar = Snackbar.make(mCoordinator, R.string.loading, Snackbar
+                .LENGTH_INDEFINITE);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setOnClickListener(mFabListener);
         mOngoingView = (ViewGroup) findViewById(R.id.ongoing_view);
@@ -137,37 +287,38 @@ public class ThemeContentActivity extends AppCompatActivity {
                 builder.setMessage(R.string.reboot_required);
                 builder.setPositiveButton(R.string.action_reboot,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        ProgressDialog.show(ThemeContentActivity.this,
-                                getString(R.string.restarting),
-                                getString(R.string.please_wait), true, false);
-                        Runnable run = new Runnable() {
                             @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                try {
-                                    App.getInstance().getBackend(mBackendComponent).reboot();
-                                } catch (RemoteException e) {
-                                    e.printStackTrace();
-                                }
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                ProgressDialog.show(ThemeContentActivity.this,
+                                        getString(R.string.restarting),
+                                        getString(R.string.please_wait), true, false);
+                                Runnable run = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Thread.sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            App.getInstance().getBackend(mBackendComponent)
+                                                    .reboot();
+                                        } catch (RemoteException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                };
+                                Executors.newSingleThreadExecutor().execute(run);
                             }
-                        };
-                        Executors.newSingleThreadExecutor().execute(run);
-                    }
-                });
+                        });
                 builder.setNegativeButton(R.string.action_dismiss,
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                 builder.setCancelable(false);
                 builder.show();
             }
@@ -190,49 +341,9 @@ public class ThemeContentActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (!mIsBusy) {
-            super.onBackPressed();
-        }
-    }
-
-    private final BroadcastReceiver mConnectReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_CONNECTED)) {
-                if (App.getInstance().getBackend(mBackendComponent) != null) {
-                    try {
-                        App.getInstance().getBackend(mBackendComponent).getThemePackages(new ArrayList<Theme>());
-                        mTheme = App.getInstance().getBackend(mBackendComponent).getThemeByPackage(mThemePackageName);
-                        setupTabLayout();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                if (App.getInstance().getBackend(mBackendComponent) == null) {
-                    mTheme = null;
-                    mLoadingSnackbar.show();
-                }
-            }
-        }
-    };
-
-    private final BroadcastReceiver mBusyReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Broadcast.ACTION_BACKEND_BUSY)) {
-                final String message = intent.getStringExtra(Broadcast.EXTRA_MESSAGE);
-                mOngoingMessageView.setText(message);
-            } else {
-                mOngoingMessageView.setText(null);
-            }
-        }
-    };
-
     private void setupTabLayout() {
-        if (mTheme == null) return;
+        if (mTheme == null)
+            return;
         setTitle(mTheme.name);
         new AsyncTask<Theme, Void, OverlayThemeInfo>() {
             @Override
@@ -245,12 +356,12 @@ public class ThemeContentActivity extends AppCompatActivity {
                 try {
                     final OverlayThemeInfo result = new OverlayThemeInfo();
                     if (App.getInstance().getBackend(themes[0].backendName) != null) {
-                        App.getInstance().getBackend(themes[0].backendName).getThemeContent(themes[0], result);
+                        App.getInstance().getBackend(themes[0].backendName).getThemeContent
+                                (themes[0], result);
                         return result;
                     }
                     return null;
-                }
-                catch (RemoteException ex) {
+                } catch (RemoteException ex) {
                     ex.printStackTrace();
                     return null;
                 }
@@ -265,14 +376,15 @@ public class ThemeContentActivity extends AppCompatActivity {
                                 = new ThemeContentPagerAdapter(getSupportFragmentManager(),
                                 mOverlayInfo, mTheme, getBaseContext());
                         mViewPager.setAdapter(adapter);
-                        mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE : View.GONE);
+                        mTabLayout.setVisibility(mOverlayInfo.groups.size() > 1 ? View.VISIBLE :
+                                View.GONE);
                     } else {
                         ThemeContentActivity.this.finish();
                         Intent intent = ThemeContentActivity.this.getIntent();
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         try {
                             final IThemeService backend =
-                                 App.getInstance().getBackend(mTheme.backendName);
+                                    App.getInstance().getBackend(mTheme.backendName);
                             if (backend != null && backend.isRebootRequired()) {
                                 intent.putExtra("reboot", 1);
                             }
@@ -297,112 +409,10 @@ public class ThemeContentActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private View.OnClickListener mFabListener = new View.OnClickListener() {
-        @StringRes int messageId;
-
-        @Override
-        public void onClick(View view) {
-            messageId = -1;
-
-            if (mOverlayInfo.getSelectedCount() == 0) {
-                messageId = R.string.no_overlays_selected;
-            } else {
-                // see if there is any uncompilable style selected
-                for (OverlayGroup group : mOverlayInfo.groups.values()) {
-                    if (!group.styles.isEmpty() && group.selectedStyle.isEmpty()) {
-                        messageId = R.string.no_style_selected;
-                    }
-                }
-            }
-
-            if (messageId == -1) {
-                new AsyncTask<Void, Void, Boolean>() {
-                    @Override
-                    protected void onPreExecute() {
-                        mIsBusy = true;
-                        mFab.setVisibility(View.GONE);
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                        mOngoingView.setVisibility(View.VISIBLE);
-                        mOngoingAnimationView.playAnimation();
-                    }
-
-                    @Override
-                    protected Boolean doInBackground(Void... voids) {
-                        try {
-                            return App.getInstance().getBackend(mTheme.backendName)
-                                    .installOverlaysFromTheme(mTheme, mOverlayInfo);
-                        }
-                        catch (RemoteException ex) {
-                            ex.printStackTrace();
-                            return false;
-                        }
-                    }
-
-                    @Override
-                    protected void onPostExecute(Boolean aBoolean) {
-                        if (aBoolean) {
-                            try {
-                                final IThemeService backend =
-                                        App.getInstance().getBackend(mTheme.backendName);
-                                if (backend != null && backend.isRebootRequired()) {
-                                    AlertDialog.Builder builder =
-                                            new AlertDialog.Builder(ThemeContentActivity.this);
-                                    builder.setMessage(R.string.reboot_required);
-                                    builder.setPositiveButton(R.string.action_reboot,
-                                            new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                            ProgressDialog.show(ThemeContentActivity.this,
-                                                    getString(R.string.restarting),
-                                                    getString(R.string.please_wait), true, false);
-                                            Runnable run = new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    try {
-                                                        Thread.sleep(1000);
-                                                    } catch (InterruptedException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    try {
-                                                        backend.reboot();
-                                                    } catch (RemoteException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            };
-                                            Executors.newSingleThreadExecutor().execute(run);
-                                        }
-                                    });
-                                    builder.setNegativeButton(R.string.action_dismiss,
-                                            new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                                    builder.setCancelable(false);
-                                    builder.show();
-                                }
-                            }
-                            catch (RemoteException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                        mOverlayInfo.clearSelection();
-                        final Intent intent = new Intent(Broadcast.ACTION_REDRAW);
-                        LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
-
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                        mOngoingAnimationView.pauseAnimation();
-                        mOngoingView.setVisibility(View.GONE);
-                        mFab.setVisibility(View.VISIBLE);
-                        mIsBusy = false;
-                    }
-                }.execute();
-            } else {
-                Snackbar.make(mCoordinator, messageId, Snackbar.LENGTH_SHORT).show();
-            }
+    @Override
+    public void onBackPressed() {
+        if (!mIsBusy) {
+            super.onBackPressed();
         }
-    };
+    }
 }
