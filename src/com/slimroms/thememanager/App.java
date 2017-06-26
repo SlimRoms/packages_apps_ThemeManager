@@ -23,14 +23,15 @@
 package com.slimroms.thememanager;
 
 import android.app.Application;
-import android.content.*;
-import android.content.pm.PackageManager;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
-import android.system.Os;
 import android.util.Log;
+
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.IThemeService;
 import com.slimroms.themecore.Shell;
@@ -58,6 +59,34 @@ public class App extends Application {
         getCacheDir();
     }
 
+    @Override
+    public File getCacheDir() {
+        boolean error = false;
+        final File appCache = new File("/data/system/theme/cache/", this.getPackageName());
+
+        if (!appCache.exists()) {
+            if (appCache.mkdir()) {
+                try {
+                    Shell.chmod(appCache.getAbsolutePath(), 700);
+                } catch (Exception ex1) {
+                    ex1.printStackTrace();
+                    error = true;
+                }
+            } else {
+                error = true;
+            }
+        }
+
+        if (!error) {
+            Log.i(App.TAG, "Using cache dir: " + appCache.getAbsolutePath());
+            return appCache;
+        } else {
+            final File fallback = super.getCacheDir();
+            Log.i(App.TAG, "Using fallback cache dir: " + fallback.getAbsolutePath());
+            return fallback;
+        }
+    }
+
     public void bindBackends() {
         final Intent filterIntent = new Intent(Broadcast.ACTION_BACKEND_QUERY);
         final List<ResolveInfo> services = getPackageManager().queryIntentServices(filterIntent, 0);
@@ -78,15 +107,15 @@ public class App extends Application {
                                     mConnections.add(this);
                                 }
                                 Log.i(TAG, componentName.getClassName() + " service connected");
-                                final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_CONNECTED);
+                                final Intent eventIntent = new Intent(
+                                        Broadcast.ACTION_BACKEND_CONNECTED);
                                 eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
-                                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(eventIntent);
-                            }
-                            else {
+                                LocalBroadcastManager.getInstance(getApplicationContext())
+                                        .sendBroadcast(eventIntent);
+                            } else {
                                 unbindService(this);
                             }
-                        }
-                        catch (RemoteException ex) {
+                        } catch (RemoteException ex) {
                             Log.e(TAG, componentName.getClassName() + " remote exception");
                             ex.printStackTrace();
                             unbindService(this);
@@ -96,17 +125,21 @@ public class App extends Application {
                     @Override
                     public void onServiceDisconnected(ComponentName componentName) {
                         synchronized (mBackends) {
-                            if (mBackends.containsKey(componentName))
+                            if (mBackends.containsKey(componentName)) {
                                 mBackends.remove(componentName);
+                            }
                         }
                         synchronized (mConnections) {
-                            if (mConnections.contains(this))
+                            if (mConnections.contains(this)) {
                                 mConnections.remove(this);
+                            }
                         }
                         Log.i(TAG, componentName.getClassName() + " service disconnected");
-                        final Intent eventIntent = new Intent(Broadcast.ACTION_BACKEND_DISCONNECTED);
+                        final Intent eventIntent = new Intent(
+                                Broadcast.ACTION_BACKEND_DISCONNECTED);
                         eventIntent.putExtra(Broadcast.EXTRA_BACKEND_NAME, componentName);
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(eventIntent);
+                        LocalBroadcastManager.getInstance(getApplicationContext())
+                                .sendBroadcast(eventIntent);
                     }
                 };
 
@@ -114,9 +147,9 @@ public class App extends Application {
                 backendIntent.setPackage(ri.serviceInfo.packageName);
                 try {
                     bindService(backendIntent, backendConnection, BIND_AUTO_CREATE);
-                }
-                catch (SecurityException ex) {
-                    Log.i(TAG, ri.serviceInfo.name + " encountered a security exception! Skipping...", ex);
+                } catch (SecurityException ex) {
+                    Log.i(TAG, ri.serviceInfo.name + " encountered a security exception! " +
+                            "Skipping...", ex);
                 }
             }
         }
@@ -144,34 +177,5 @@ public class App extends Application {
 
     public int checkSignature(String packageName) {
         return getPackageManager().checkSignatures(packageName, "android");
-    }
-
-    @Override
-    public File getCacheDir() {
-        boolean error = false;
-        final File appCache = new File("/data/system/theme/cache/", this.getPackageName());
-
-        if (!appCache.exists()) {
-            if (appCache.mkdir()) {
-                try {
-                    Shell.chmod(appCache.getAbsolutePath(), 700);
-                }
-                catch (Exception ex1) {
-                    ex1.printStackTrace();
-                    error = true;
-                }
-            } else {
-                error = true;
-            }
-        }
-
-        if (!error) {
-            Log.i(App.TAG, "Using cache dir: " + appCache.getAbsolutePath());
-            return appCache;
-        } else {
-            final File fallback = super.getCacheDir();
-            Log.i(App.TAG, "Using fallback cache dir: " + fallback.getAbsolutePath());
-            return fallback;
-        }
     }
 }

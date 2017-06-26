@@ -19,6 +19,7 @@
 package com.slimroms.thememanager.fragments;
 
 import android.support.v7.widget.RecyclerView;
+
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.adapters.WallpaperGroupAdapter;
 

@@ -23,10 +23,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.ArrayMap;
+
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
-
 import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.fragments.BootAnimationGroupFragment;
 import com.slimroms.thememanager.fragments.FontGroupFragment;

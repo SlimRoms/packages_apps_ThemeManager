@@ -29,7 +29,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.*;
+import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+
 import com.slimroms.themecore.Broadcast;
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.thememanager.R;
@@ -40,8 +45,21 @@ public abstract class AbstractGroupFragment extends Fragment {
     protected OverlayGroup mOverlayGroup;
     protected RecyclerView.Adapter mAdapter;
     private WindowManager mWindowManager;
+    private BroadcastReceiver mRedrawReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    };
 
-    public abstract RecyclerView.Adapter getAdapter();
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRedrawReceiver,
+                Broadcast.getRedrawFilter());
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,17 +69,12 @@ public abstract class AbstractGroupFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
         if (savedInstanceState != null && savedInstanceState.containsKey("group")) {
             mOverlayGroup = savedInstanceState.getParcelable("group");
         }
         return inflater.inflate(R.layout.fragment_list, container, false);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle out) {
-        super.onSaveInstanceState(out);
-        out.putParcelable("group", mOverlayGroup);
     }
 
     @Override
@@ -79,11 +92,12 @@ public abstract class AbstractGroupFragment extends Fragment {
         mEmptyView.setVisibility((mAdapter.getItemCount() == 0) ? View.VISIBLE : View.GONE);
     }
 
+    public abstract RecyclerView.Adapter getAdapter();
+
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mRedrawReceiver,
-                Broadcast.getRedrawFilter());
+    public void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putParcelable("group", mOverlayGroup);
     }
 
     @Override
@@ -91,15 +105,6 @@ public abstract class AbstractGroupFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mRedrawReceiver);
         super.onDetach();
     }
-
-    private BroadcastReceiver mRedrawReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (mAdapter != null) {
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-    };
 
     private class ExpandedLinearLayoutManager extends LinearLayoutManager {
         private WindowManager mWindowManager;

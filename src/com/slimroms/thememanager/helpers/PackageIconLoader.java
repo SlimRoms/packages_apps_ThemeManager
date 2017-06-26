@@ -42,8 +42,7 @@ public class PackageIconLoader {
                 target.setImageDrawable(d);
                 mCache.put(packageName, d);
             }
-        }
-        catch (PackageManager.NameNotFoundException ex) {
+        } catch (PackageManager.NameNotFoundException ex) {
             ex.printStackTrace();
             target.setImageBitmap(null);
         }
