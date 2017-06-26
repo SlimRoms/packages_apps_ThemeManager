@@ -36,7 +36,6 @@
     <string name="not_signed">Not signed</string>
     <string name="wrong_signature">Wrong signature</string>
     <string name="apply_wallpaper">Apply this wallpaper?</string>
-    <string name="applying">Applying…</string>
     <string name="select">Select</string>
     <string name="overlay_update">Update: %1$s -> %2$s</string>
 

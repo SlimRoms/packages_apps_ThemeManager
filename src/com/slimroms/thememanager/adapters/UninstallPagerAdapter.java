@@ -25,19 +25,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.util.Pair;
-import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 
-import com.slimroms.themecore.Overlay;
-import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
-
-import com.slimroms.thememanager.R;
 import com.slimroms.thememanager.fragments.UninstallFragment;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class UninstallPagerAdapter extends FragmentPagerAdapter {
     private ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> mThemes = new ArrayMap<>();
@@ -48,7 +42,8 @@ public class UninstallPagerAdapter extends FragmentPagerAdapter {
     private ArrayList<UninstallFragment> mFragments = new ArrayList<>();
 
     public UninstallPagerAdapter(FragmentManager fm,
-                                 ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes, Context context) {
+                                 ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes,
+                                 Context context) {
         super(fm);
         mContext = context;
         setThemes(themes);

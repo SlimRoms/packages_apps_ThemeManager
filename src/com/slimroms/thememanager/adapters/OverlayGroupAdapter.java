@@ -24,12 +24,18 @@ import android.content.res.ColorStateList;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+
 import com.slimroms.themecore.Overlay;
 import com.slimroms.themecore.OverlayFlavor;
 import com.slimroms.themecore.OverlayGroup;
@@ -43,40 +49,15 @@ import java.util.HashMap;
 public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapter.ViewHolder> {
 
     private static final String TAG = "SlimTM-OverlayGroupAdapter";
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox checked;
-        TextView overlayName;
-        TextView overlayTargetPackage;
-        ImageView overlayImage;
-        LinearLayout overlayFlavors;
-        ViewGroup clickContainer;
-        TextView overlayTheme;
-        TextView overlayUpdate;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            checked = (CheckBox) itemView.findViewById(R.id.checkbox);
-            overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
-            overlayTargetPackage = (TextView) itemView.findViewById(R.id.overlay_package);
-            overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
-            overlayFlavors = (LinearLayout) itemView.findViewById(R.id.spinner_layout);
-            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
-            overlayTheme = (TextView) itemView.findViewById(R.id.overlay_theme);
-            overlayUpdate = (TextView) itemView.findViewById(R.id.overlay_update);
-        }
-    }
-
-    private LayoutInflater mInflater;
-    private OverlayGroup mOverlayGroup;
-    private Context mContext;
     private final ColorStateList mDefaultTextColors;
     private final int mEnabledTextColor;
     private final int mDisabledTextColor;
     private final int mSpinnerPadding;
+    private LayoutInflater mInflater;
+    private OverlayGroup mOverlayGroup;
+    private Context mContext;
     private String mThemeVersion;
     private int mThemeVersionCode;
-
     private HashMap<String, String> mThemeNames = new HashMap<>();
 
     public OverlayGroupAdapter(Context context, OverlayGroup proxy,
@@ -122,8 +103,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
                 spinner.setAdapter(adapter);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        for (int pos=0; pos<flavor.flavors.size(); pos++) {
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long
+                            l) {
+                        for (int pos = 0; pos < flavor.flavors.size(); pos++) {
                             if (flavor.flavors.valueAt(pos) == array.get(i)) {
                                 flavor.selected = flavor.flavors.keyAt(pos);
                                 Log.e(TAG, "flavor.selected key=" + flavor.selected +
@@ -142,13 +124,13 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
                 }
                 holder.overlayFlavors.addView(spinner);
             }
-        }
-        else {
+        } else {
             holder.overlayFlavors.setVisibility(View.GONE);
         }
 
         if (overlay.isOverlayInstalled) {
-            holder.overlayName.setTextColor(overlay.isOverlayEnabled ? mEnabledTextColor : mDisabledTextColor);
+            holder.overlayName.setTextColor(overlay.isOverlayEnabled ? mEnabledTextColor :
+                    mDisabledTextColor);
             holder.overlayName.setEnabled(true);
             holder.overlayTargetPackage.setEnabled(true);
             holder.overlayTheme.setEnabled(true);
@@ -162,8 +144,7 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             } else {
                 holder.overlayUpdate.setVisibility(View.GONE);
             }
-        }
-        else {
+        } else {
             holder.overlayName.setTextColor(mDefaultTextColors);
             holder.overlayName.setEnabled(overlay.isTargetPackageInstalled);
             holder.overlayTargetPackage.setEnabled(overlay.isTargetPackageInstalled);
@@ -196,8 +177,9 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
 
     @Override
     public int getItemCount() {
-        if (mOverlayGroup == null)
+        if (mOverlayGroup == null) {
             return 0;
+        }
         return mOverlayGroup.overlays.size();
     }
 
@@ -213,6 +195,29 @@ public class OverlayGroupAdapter extends RecyclerView.Adapter<OverlayGroupAdapte
             return appName;
         } catch (Exception e) {
             return packageName;
+        }
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        CheckBox checked;
+        TextView overlayName;
+        TextView overlayTargetPackage;
+        ImageView overlayImage;
+        LinearLayout overlayFlavors;
+        ViewGroup clickContainer;
+        TextView overlayTheme;
+        TextView overlayUpdate;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            checked = (CheckBox) itemView.findViewById(R.id.checkbox);
+            overlayName = (TextView) itemView.findViewById(R.id.overlay_name);
+            overlayTargetPackage = (TextView) itemView.findViewById(R.id.overlay_package);
+            overlayImage = (ImageView) itemView.findViewById(R.id.overlay_image);
+            overlayFlavors = (LinearLayout) itemView.findViewById(R.id.spinner_layout);
+            clickContainer = (ViewGroup) itemView.findViewById(R.id.click_container);
+            overlayTheme = (TextView) itemView.findViewById(R.id.overlay_theme);
+            overlayUpdate = (TextView) itemView.findViewById(R.id.overlay_update);
         }
     }
 }
