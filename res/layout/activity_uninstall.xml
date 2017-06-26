@@ -41,4 +41,9 @@
 
     <include layout="@layout/include_ongoing" android:visibility="gone" />
 
+    <include layout="@layout/empty_view"
+        android:id="@+id/empty_view"
+        android:visibility="gone"
+        android:paddingTop="?android:attr/actionBarSize" />
+
 </android.support.design.widget.CoordinatorLayout>

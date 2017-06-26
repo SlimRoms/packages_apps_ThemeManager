@@ -18,38 +18,40 @@
  */
 package com.slimroms.thememanager.adapters;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.ArrayMap;
+import android.support.v4.util.Pair;
+
 import com.slimroms.themecore.OverlayGroup;
 import com.slimroms.themecore.OverlayThemeInfo;
 import com.slimroms.themecore.Theme;
 
 import com.slimroms.thememanager.R;
-import com.slimroms.thememanager.fragments.BootAnimationGroupFragment;
-import com.slimroms.thememanager.fragments.FontGroupFragment;
-import com.slimroms.thememanager.fragments.OverlayGroupFragment;
-import com.slimroms.thememanager.fragments.WallpaperGroupFragment;
+import com.slimroms.thememanager.fragments.UninstallFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
-    private OverlayThemeInfo mOverlayInfo;
+public class UninstallPagerAdapter extends FragmentPagerAdapter {
+    private ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> mThemes;
     private Theme mTheme;
 
     private ArrayList<String> mKeys = new ArrayList<>();
     private ArrayMap<String, String> mTitles = new ArrayMap<>();
 
-    public ThemeContentPagerAdapter(FragmentManager fm,
-                                    OverlayThemeInfo overlayInfo, Theme theme, Context context) {
+    public UninstallPagerAdapter(FragmentManager fm,
+                                 ArrayMap<Pair<String, ComponentName>, OverlayThemeInfo> themes, Theme theme, Context context) {
         super(fm);
-        mOverlayInfo = overlayInfo;
+        mThemes = themes;
         mTheme = theme;
 
-        mKeys.addAll(mOverlayInfo.groups.keySet());
+        for (Pair<String, ComponentName> pair : themes.keySet()) {
+            mKeys.add(pair.first);
+        }
         Collections.sort(mKeys);
         if (mKeys.contains(OverlayGroup.OVERLAYS)) {
             Collections.swap(mKeys, mKeys.indexOf(OverlayGroup.OVERLAYS), 0);
@@ -76,30 +78,19 @@ public class ThemeContentPagerAdapter extends FragmentPagerAdapter {
             }
             mTitles.put(key, title);
         }
-
-
     }
 
     @Override
     public Fragment getItem(int position) {
         final String key = mKeys.get(position);
-        final OverlayGroup group = mOverlayInfo.groups.get(key);
-        switch (key) {
-            case OverlayGroup.WALLPAPERS:
-                //page with wallpapers
-                return WallpaperGroupFragment.newInstance(group);
-            case OverlayGroup.BOOTANIMATIONS:
-                // page with boot animations
-                return BootAnimationGroupFragment.newInstance(group);
-            case OverlayGroup.FONTS:
-                // page with fonts
-                return FontGroupFragment.newInstance(group);
-            default:
-                // page with overlays
-                return OverlayGroupFragment.newInstance(group,
-                        (mTheme != null) ? mTheme.themeVersion : null,
-                        (mTheme != null) ? mTheme.themeVersionCode : 0);
+        OverlayThemeInfo info = new OverlayThemeInfo();
+        for (Pair<String, ComponentName> pair : mThemes.keySet()) {
+            if (pair.first.equals(key)) {
+                info = mThemes.get(pair);
+                break;
+            }
         }
+        return UninstallFragment.newInstance(info);
     }
 
     @Override
