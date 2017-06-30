@@ -20,6 +20,8 @@ package com.slimroms.thememanager.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -86,13 +88,24 @@ public class ThemesPackagesAdapter extends RecyclerView.Adapter<ThemesPackagesAd
         final int adapterPosition = holder.getAdapterPosition();
         final Theme theme = mItems.get(adapterPosition);
         holder.themeName.setText(theme.name);
+        holder.themeName.setEnabled(theme.supported);
         holder.themeDeveloper.setText(theme.themeAuthor);
         holder.themeVersion.setText(theme.themeVersion);
         holder.themeType.setText(theme.themeType);
         holder.clickContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mClickListener.onThemeClick(theme);
+                if (theme.supported) {
+                    mClickListener.onThemeClick(theme);
+                } else {
+                    Intent intent = new Intent("com.slimroms.UNSUPPORTED_THEME");
+                    intent.setPackage(theme.backendName.getPackageName());
+                    intent.putExtra("package_name", theme.packageName);
+                    intent.putExtra("theme_name", theme.name);
+                    try {
+                        mContext.startActivity(intent);
+                    } catch (Exception ignored) {}
+                }
             }
         });
         if (theme.themeLogo != null) {
