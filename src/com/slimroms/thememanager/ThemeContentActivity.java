@@ -113,18 +113,36 @@ public class ThemeContentActivity extends AppCompatActivity {
         byte[] decKey = getIntent().getByteArrayExtra("encryption_key");
         byte[] ivKey = getIntent().getByteArrayExtra("iv_encrypt_key");
 
-        mThemePackageName = getIntent().getStringExtra(Broadcast.EXTRA_THEME_PACKAGE);
-        mBackendComponent = getIntent().getParcelableExtra(Broadcast.EXTRA_BACKEND_NAME);
-        if (!TextUtils.isEmpty(mThemePackageName) && mBackendComponent != null) {
+        if (savedInstanceState == null) {
+            mThemePackageName = getIntent().getStringExtra(Broadcast.EXTRA_THEME_PACKAGE);
+            mBackendComponent = getIntent().getParcelableExtra(Broadcast.EXTRA_BACKEND_NAME);
+            if (!TextUtils.isEmpty(mThemePackageName) && mBackendComponent != null) {
+                try {
+                    if (App.getInstance().getBackend(mBackendComponent) != null) {
+                        mTheme = App.getInstance().getBackend(mBackendComponent)
+                                .getThemeByPackage(mThemePackageName);
+                        mTheme.decryptionKey = decKey;
+                        mTheme.ivKey = ivKey;
+                    }
+                    setupTabLayout();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            mBackendComponent = savedInstanceState.getParcelable("backend");
+            mThemePackageName = savedInstanceState.getString("theme_package");
+            Theme theme = savedInstanceState.getParcelable("theme");
             try {
                 if (App.getInstance().getBackend(mBackendComponent) != null) {
                     mTheme = App.getInstance().getBackend(mBackendComponent)
                             .getThemeByPackage(mThemePackageName);
-                    mTheme.decryptionKey = decKey;
-                    mTheme.ivKey = ivKey;
+                    if (theme != null) {
+                        mTheme.decryptionKey = theme.decryptionKey;
+                        mTheme.ivKey = theme.ivKey;
+                    }
                 }
-                setupTabLayout();
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -295,6 +313,14 @@ public class ThemeContentActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("backend", mBackendComponent);
+        outState.putString("theme_package", mThemePackageName);
+        outState.putParcelable("theme", mTheme);
     }
 
     private View.OnClickListener mFabListener = new View.OnClickListener() {
