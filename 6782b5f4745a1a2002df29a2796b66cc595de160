@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88926761_f647c214",
+        "filename": "src/com/slimroms/thememanager/adapters/FontGroupAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:51:06Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 103,
+        "startChar": 16,
+        "endLine": 112,
+        "endChar": 113
+      },
+      "revId": "6782b5f4745a1a2002df29a2796b66cc595de160",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    }
+  ]
+}
