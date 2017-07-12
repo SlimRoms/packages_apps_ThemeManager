@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d848aeb_b7aabf50",
+        "filename": "res/layout/item_header.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "licensing",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 38
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eac44956_dc8f337a",
+        "filename": "src/com/slimroms/thememanager/UninstallActivity.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 239,
+        "startChar": 20,
+        "endLine": 239,
+        "endChar": 108
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d68bebd5_300977ea",
+        "filename": "src/com/slimroms/thememanager/UninstallActivity.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 261,
+        "startChar": 16,
+        "endLine": 261,
+        "endChar": 110
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ec0e6a3_ee4ee9ff",
+        "filename": "src/com/slimroms/thememanager/adapters/UninstallGroupAdapter.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 198,
+        "startChar": 12,
+        "endLine": 198,
+        "endChar": 115
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fab489d2_a6dacc65",
+        "filename": "src/com/slimroms/thememanager/adapters/UninstallPagerAdapter.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "format/length",
+      "range": {
+        "startLine": 47,
+        "startChar": 33,
+        "endLine": 47,
+        "endChar": 126
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d9a6b8e_dd588270",
+        "filename": "src/com/slimroms/thememanager/fragments/OverlayGroupFragment.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 54,
+        "startChar": 8,
+        "endLine": 54,
+        "endChar": 102
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5794bd26_32c0919f",
+        "filename": "src/com/slimroms/thememanager/fragments/UninstallFragment.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 64,
+        "startChar": 4,
+        "endLine": 64,
+        "endChar": 123
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da096435_4e7ba701",
+        "filename": "src/com/slimroms/thememanager/fragments/UninstallFragment.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:53:42Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 74,
+        "startChar": 8,
+        "endLine": 74,
+        "endChar": 104
+      },
+      "revId": "e4c205c0ac7c0401a1c06a7ce8c5d8f42b9f3827",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    }
+  ]
+}
