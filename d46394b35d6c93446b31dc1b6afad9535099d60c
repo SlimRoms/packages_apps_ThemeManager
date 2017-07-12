@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26ba1b3b_e68f1580",
+        "filename": "res/layout/item_sound.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:54:48Z",
+      "side": 1,
+      "message": "licensing",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 38
+      },
+      "revId": "d46394b35d6c93446b31dc1b6afad9535099d60c",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9fcaad50_890dfc50",
+        "filename": "src/com/slimroms/thememanager/adapters/SoundsGroupAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:54:48Z",
+      "side": 1,
+      "message": "licensing",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 43
+      },
+      "revId": "d46394b35d6c93446b31dc1b6afad9535099d60c",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2415987c_09212dc8",
+        "filename": "src/com/slimroms/thememanager/adapters/SoundsGroupAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:54:48Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 67,
+        "startChar": 16,
+        "endLine": 67,
+        "endChar": 128
+      },
+      "revId": "d46394b35d6c93446b31dc1b6afad9535099d60c",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b00665d4_8a33b2fd",
+        "filename": "src/com/slimroms/thememanager/adapters/SoundsGroupAdapter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:54:48Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 79,
+        "startChar": 32,
+        "endLine": 79,
+        "endChar": 103
+      },
+      "revId": "d46394b35d6c93446b31dc1b6afad9535099d60c",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f56ace57_61236c5a",
+        "filename": "src/com/slimroms/thememanager/fragments/SoundsGroupFragment.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:54:48Z",
+      "side": 1,
+      "message": "licensing",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 44
+      },
+      "revId": "d46394b35d6c93446b31dc1b6afad9535099d60c",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    }
+  ]
+}
