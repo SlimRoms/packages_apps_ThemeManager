@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b936a9fd_9682f5d2",
+        "filename": "src/com/slimroms/thememanager/fragments/OverlayGroupFragment.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:50:20Z",
+      "side": 1,
+      "message": "formatting is strange, and length",
+      "range": {
+        "startLine": 45,
+        "startChar": 51,
+        "endLine": 45,
+        "endChar": 105
+      },
+      "revId": "aa0b5bdac600c1bda737403c4f550a95f46e29e7",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8826e601_e16dd9df",
+        "filename": "src/com/slimroms/thememanager/fragments/OverlayGroupFragment.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000043
+      },
+      "writtenOn": "2017-07-12T18:50:20Z",
+      "side": 1,
+      "message": "length",
+      "range": {
+        "startLine": 56,
+        "startChar": 8,
+        "endLine": 56,
+        "endChar": 117
+      },
+      "revId": "aa0b5bdac600c1bda737403c4f550a95f46e29e7",
+      "serverId": "f8201d64-d729-4630-b91d-5f8be02869f0",
+      "unresolved": false
+    }
+  ]
+}
